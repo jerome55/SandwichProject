@@ -16,6 +16,6 @@ namespace ClientProject.Models
         private Boolean Admin { get; set; }
 
         //liste des commandes (orders) de l'employe
-        private ICollection<Command> Orders { get; set; }
+        private ICollection<Order> Orders { get; set; }
     }
 }

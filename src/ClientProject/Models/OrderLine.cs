@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ClientProject.Models
 {
-    public class CommandLine
+    public class OrderLine
     {
         private long ID { get; set; }
         private long IDOrders { get; set; }

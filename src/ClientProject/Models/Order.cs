@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ClientProject.Models
 {
-    public class Command
+    public class Order
     {
         private long ID { get; set; }
         private string MailEmploye { get; set; }
@@ -13,6 +13,6 @@ namespace ClientProject.Models
         private double TotalPrice { get; set; }
 
         //liste des lignes de commande (orderLines) de la commande
-        private ICollection<CommandLine> CommandLine { get; set; }
+        private ICollection<OrderLine> CommandLine { get; set; }
     }
 }
