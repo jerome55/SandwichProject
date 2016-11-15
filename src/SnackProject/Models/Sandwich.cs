@@ -7,9 +7,9 @@ namespace SnackProject.Models
 {
     public class Sandwich {
         public int ID { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public double Price { get; set; }
-        public bool Available { get; set; }
+        public string name { get; set; }
+        public string description { get; set; }
+        public double price { get; set; }
+        public bool available { get; set; }
     }
 }

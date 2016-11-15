@@ -1,4 +1,4 @@
-@model SnackProject.Models.Sandwich
+@model SnackProject.Models.Crudity
 
 @{
     ViewData["Title"] = "Details";
@@ -7,7 +7,7 @@
 <h2>Details</h2>
 
 <div>
-    <h4>Sandwich</h4>
+    <h4>Crudity</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -27,12 +27,6 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.price)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.price)
         </dd>
     </dl>
 </div>
