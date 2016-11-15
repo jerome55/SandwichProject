@@ -12,5 +12,10 @@ namespace SnackProject.Data
 
         }
         public DbSet<Sandwich> sandwiches { get; set; }
+        public DbSet<Company> company { get; set; }
+        public DbSet<Crudity> crudities { get; set; }
+        public DbSet<Menu> menu { get; set; }
+        public DbSet<Order> orders { get; set; }
+        public DbSet<OrderLine> orderLines { get; set; }
     }
 }
