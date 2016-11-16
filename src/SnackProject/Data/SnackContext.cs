@@ -13,19 +13,16 @@ namespace SnackProject.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<OrderLineCrudity>()
-                .HasKey(c => new { c.OrdersID, c.CruditiesID });
+            modelBuilder.Entity<OrderLineVegetable>()
+                .HasKey(c => new { c.orderLineId, c.vegetableId });
         }
 
-        public DbSet<Sandwich> sandwiches { get; set; }
-        public DbSet<Company> company { get; set; }
-        public DbSet<Crudity> vegetables { get; set; }
-        public DbSet<Menu> menu { get; set; }
-        public DbSet<Order> orders { get; set; }
-        public DbSet<OrderLine> orderLines { get; set; }
-        public DbSet<OrderLineCrudity> orderLineCrudity { get; set; }
-
-
+        public DbSet<Company> Companies { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderLine> OrderLines { get; set; }
+        public DbSet<Sandwich> Sandwiches { get; set; }
+        public DbSet<Vegetable> Vegetables { get; set; }
+        public DbSet<Menu> Menus { get; set; }
 
     }
 }

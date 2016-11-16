@@ -7,10 +7,10 @@ namespace SnackProject.Models
 {
     public class Order
     {
-        public int ID { get; set; }
+        public int id { get; set; }
         public string dateOfDelivrery { get; set; }
-        public double totalPrice { get; set; }
+        public double totalAmount { get; set; }
 
-        public ICollection<OrderLine> OrderLines { get; set; }
+        public ICollection<OrderLine> orderLines { get; set; }
     }
 }

@@ -7,9 +7,11 @@ namespace SnackProject.Models
 {
     public class OrderLine
     {
-        public int ID { get; set; }
+        public int id { get; set; }
         public int quantity { get; set; }
 
-        public Sandwich Sandwichs { get; set; }
+        public Sandwich sandwich { get; set; }
+
+        public ICollection<OrderLineVegetable> orderLineVegetables { get; set; }
     }
 }

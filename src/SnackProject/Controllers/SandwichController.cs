@@ -22,7 +22,7 @@ namespace SnackProject.Controllers
         // GET: Sandwich
         public async Task<IActionResult> Index()
         {
-            return View(await _context.sandwiches.ToListAsync());
+            return View(await _context.Sandwiches.ToListAsync());
         }
 
         // GET: Sandwich/Details/5
@@ -33,7 +33,7 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var sandwich = await _context.sandwiches.SingleOrDefaultAsync(m => m.ID == id);
+            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.id == id);
             if (sandwich == null)
             {
                 return NotFound();
@@ -72,7 +72,7 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var sandwich = await _context.sandwiches.SingleOrDefaultAsync(m => m.ID == id);
+            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.id == id);
             if (sandwich == null)
             {
                 return NotFound();
@@ -87,7 +87,7 @@ namespace SnackProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,available,description,name,price")] Sandwich sandwich)
         {
-            if (id != sandwich.ID)
+            if (id != sandwich.id)
             {
                 return NotFound();
             }
@@ -101,7 +101,7 @@ namespace SnackProject.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SandwichExists(sandwich.ID))
+                    if (!SandwichExists(sandwich.id))
                     {
                         return NotFound();
                     }
@@ -123,7 +123,7 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var sandwich = await _context.sandwiches.SingleOrDefaultAsync(m => m.ID == id);
+            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.id == id);
             if (sandwich == null)
             {
                 return NotFound();
@@ -137,15 +137,15 @@ namespace SnackProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var sandwich = await _context.sandwiches.SingleOrDefaultAsync(m => m.ID == id);
-            _context.sandwiches.Remove(sandwich);
+            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.id == id);
+            _context.Sandwiches.Remove(sandwich);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
         private bool SandwichExists(int id)
         {
-            return _context.sandwiches.Any(e => e.ID == id);
+            return _context.Sandwiches.Any(e => e.id == id);
         }
     }
 }

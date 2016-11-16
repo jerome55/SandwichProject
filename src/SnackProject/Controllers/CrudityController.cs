@@ -10,22 +10,22 @@ using SnackProject.Models;
 
 namespace SnackProject.Controllers
 {
-    public class CrudityController : Controller
+    public class VegetableController : Controller
     {
         private readonly SnackContext _context;
 
-        public CrudityController(SnackContext context)
+        public VegetableController(SnackContext context)
         {
             _context = context;    
         }
 
-        // GET: Crudity
+        // GET: Vegetable
         public async Task<IActionResult> Index()
         {
-            return View(await _context.vegetables.ToListAsync());
+            return View(await _context.Vegetables.ToListAsync());
         }
 
-        // GET: Crudity/Details/5
+        // GET: Vegetable/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,38 +33,38 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var crudity = await _context.vegetables.SingleOrDefaultAsync(m => m.ID == id);
-            if (crudity == null)
+            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.id == id);
+            if (vegetable == null)
             {
                 return NotFound();
             }
 
-            return View(crudity);
+            return View(vegetable);
         }
 
-        // GET: Crudity/Create
+        // GET: Vegetable/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Crudity/Create
+        // POST: Vegetable/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,available,description,name")] Crudity crudity)
+        public async Task<IActionResult> Create([Bind("ID,available,description,name")] Vegetable vegetable)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(crudity);
+                _context.Add(vegetable);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(crudity);
+            return View(vegetable);
         }
 
-        // GET: Crudity/Edit/5
+        // GET: Vegetable/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -72,22 +72,22 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var crudity = await _context.vegetables.SingleOrDefaultAsync(m => m.ID == id);
-            if (crudity == null)
+            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.id == id);
+            if (vegetable == null)
             {
                 return NotFound();
             }
-            return View(crudity);
+            return View(vegetable);
         }
 
-        // POST: Crudity/Edit/5
+        // POST: Vegetable/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,available,description,name")] Crudity crudity)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,available,description,name")] Vegetable vegetable)
         {
-            if (id != crudity.ID)
+            if (id != vegetable.id)
             {
                 return NotFound();
             }
@@ -96,12 +96,12 @@ namespace SnackProject.Controllers
             {
                 try
                 {
-                    _context.Update(crudity);
+                    _context.Update(vegetable);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CrudityExists(crudity.ID))
+                    if (!VegetableExists(vegetable.id))
                     {
                         return NotFound();
                     }
@@ -112,10 +112,10 @@ namespace SnackProject.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            return View(crudity);
+            return View(vegetable);
         }
 
-        // GET: Crudity/Delete/5
+        // GET: Vegetable/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -123,29 +123,29 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var crudity = await _context.vegetables.SingleOrDefaultAsync(m => m.ID == id);
-            if (crudity == null)
+            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.id == id);
+            if (vegetable == null)
             {
                 return NotFound();
             }
 
-            return View(crudity);
+            return View(vegetable);
         }
 
-        // POST: Crudity/Delete/5
+        // POST: Vegetable/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var crudity = await _context.vegetables.SingleOrDefaultAsync(m => m.ID == id);
-            _context.vegetables.Remove(crudity);
+            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.id == id);
+            _context.Vegetables.Remove(vegetable);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        private bool CrudityExists(int id)
+        private bool VegetableExists(int id)
         {
-            return _context.vegetables.Any(e => e.ID == id);
+            return _context.Vegetables.Any(e => e.id == id);
         }
     }
 }

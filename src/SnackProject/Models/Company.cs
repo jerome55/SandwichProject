@@ -7,7 +7,7 @@ namespace SnackProject.Models
 {
     public class Company
     {
-        public int ID { get; set; }
+        public int id { get; set; }
         public string name { get; set; }
         public int nbEmployes { get; set; }
         public string mail { get; set; }
@@ -15,6 +15,6 @@ namespace SnackProject.Models
         public bool status { get; set; }
         public string chkcode { get; set; }
 
-        public ICollection<Order> Orders { get; set; }
+        public ICollection<Order> orders { get; set; }
     }
 }
