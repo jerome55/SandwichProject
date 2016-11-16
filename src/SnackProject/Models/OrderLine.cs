@@ -10,9 +10,6 @@ namespace SnackProject.Models
         public int ID { get; set; }
         public int quantity { get; set; }
 
-        //many to many a ajouter
-        public ICollection<Crudity> Crudities { get; set; }
-
         public Sandwich Sandwichs { get; set; }
     }
 }

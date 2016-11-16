@@ -11,7 +11,7 @@ namespace SnackProject.Data
         public static void Initialize(SnackContext context) {
             context.Database.EnsureCreated();
             InitializeSandwich(context);
-            InitializeCrutity(context);
+            InitializeCrutity(context); 
         }
 
         private static void InitializeSandwich(SnackContext context) {
@@ -41,5 +41,6 @@ namespace SnackProject.Data
             }
             context.SaveChanges();
         }
+        
     }
 }
