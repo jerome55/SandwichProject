@@ -1,4 +1,4 @@
-﻿{
+{
   "userSecretsId": "aspnet-ClientProject-f4f02f06-8af6-4179-b2e9-1e1ff67bc4d4",
 
   "dependencies": {
@@ -39,7 +39,8 @@
     "Microsoft.VisualStudio.Web.CodeGenerators.Mvc": {
       "version": "1.0.0-preview2-final",
       "type": "build"
-    }
+    },
+    "System.Runtime.Serialization.Primitives": "4.1.1"
   },
 
   "tools": {
@@ -57,7 +58,11 @@
   },
 
   "frameworks": {
-    "net452": { }
+    "net452": {
+      "frameworkAssemblies": {
+        "System.Runtime.Serialization": "4.0.0.0"
+      }
+    }
   },
 
   "buildOptions": {

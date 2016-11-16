@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace ClientProject.Models
 {
+    [DataContract]
     public class OrderLine
     {
-        private long ID { get; set; }
-        private long IDOrders { get; set; }
-        private int quantity { get; set; }
-        private string nameSandwich { get; set; }
-        private double price { get; set; }
+        public int id { get; set; }
+        [DataMember]
+        public int quantity { get; set; }
 
-        //liste des crudites pour le sandwich de la ligne de commande
-        private ICollection<Crudity> Crudities { get; set; }
+        [DataMember]
+        public Sandwich sandwich { get; set; }
+
+        [DataMember]
+        public ICollection<OrderLineVegetable> orderLineVegetables { get; set; }
     }
 }
