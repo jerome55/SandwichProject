@@ -9,8 +9,16 @@ namespace SnackProject.Data
 {
     public class SnackContext : DbContext {
         public SnackContext(DbContextOptions<SnackContext> options) : base(options) {
+            
+        }
+
+        /*
+        protected override void OnModelCreating(ModelBuilder bd)
+        {
 
         }
+        */
+
         public DbSet<Sandwich> sandwiches { get; set; }
         //public DbSet<Company> company { get; set; }
         public DbSet<Crudity> vegetables { get; set; }
