@@ -13,7 +13,7 @@ namespace ClientProject.Models
         public string mail { get; set; }
         public string lastName { get; set; }
         public string firstName { get; set; }
-        public double wallet { get; private set; }
+        public decimal wallet { get; private set; }
         /*public Boolean Admin { get; set; }*/
 
         public ICollection<Order> orders { get; set; }
@@ -27,7 +27,7 @@ namespace ClientProject.Models
          * pre : on suppose que le prix est positif, et que la validation de sa commande a pu se faire
          * return : true si apres le debit, wallet >= 0, false sinon
          */
-        public Boolean debitWallet(double totalAmount)
+        public Boolean debitWallet(decimal totalAmount)
         {
             if (this.wallet - totalAmount >= 0)
             {
@@ -42,7 +42,7 @@ namespace ClientProject.Models
          * param : credit : somme a rajouter a wallet
          * return : true si credit > 0, false sinon
          */
-        public Boolean creditWallet(double credit)
+        public Boolean creditWallet(decimal credit)
         {
             if (credit > 0)
             {
