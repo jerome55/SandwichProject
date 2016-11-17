@@ -12,7 +12,7 @@ namespace SnackProject.Models
     {
         public int id { get; set; }
         [DataMember]
-        public double vegetablesPrice { get; set; }
+        public decimal vegetablesPrice { get; set; }
 
         [DataMember][NotMapped]
         public ICollection<Sandwich> sandwiches { get; set; }

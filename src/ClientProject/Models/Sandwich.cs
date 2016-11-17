@@ -17,6 +17,6 @@ namespace ClientProject.Models
         [DataMember][NotMapped]
         public string description { get; set; }
         [DataMember][NotMapped]
-        public double price { get; set; }
+        public decimal price { get; set; }
     }
 }

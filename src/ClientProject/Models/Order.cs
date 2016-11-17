@@ -13,7 +13,7 @@ namespace ClientProject.Models
         [DataMember]
         public DateTime dateOfDelivery { get; set; }
         [DataMember]
-        public double totalAmount { get; set; }
+        public decimal totalAmount { get; set; }
 
         [DataMember]
         private ICollection<OrderLine> orderLines { get; set; }

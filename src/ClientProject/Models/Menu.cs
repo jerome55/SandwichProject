@@ -13,7 +13,7 @@ namespace ClientProject.Models
     public class Menu
     {
         [DataMember]
-        public double vegetablesPrice { get; set; }
+        public decimal vegetablesPrice { get; set; }
 
         [DataMember]
         public ICollection<Sandwich> sandwiches { get; set; }

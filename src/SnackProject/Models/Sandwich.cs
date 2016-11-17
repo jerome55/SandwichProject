@@ -16,7 +16,7 @@ namespace SnackProject.Models
         [DataMember]
         public string description { get; set; }
         [DataMember]
-        public double price { get; set; }
+        public decimal price { get; set; }
         [DataMember]
         public bool available { get; set; }
     }
