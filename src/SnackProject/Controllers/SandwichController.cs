@@ -53,7 +53,7 @@ namespace SnackProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,available,description,name,price")] Sandwich sandwich)
+        public async Task<IActionResult> Create([Bind("id,available,description,name,price")] Sandwich sandwich)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +85,7 @@ namespace SnackProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,available,description,name,price")] Sandwich sandwich)
+        public async Task<IActionResult> Edit(int id, [Bind("id,available,description,name,price")] Sandwich sandwich)
         {
             if (id != sandwich.id)
             {

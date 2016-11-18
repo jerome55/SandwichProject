@@ -19,8 +19,8 @@ namespace SnackProject.Data
                 return;
             }
             var sandwiches = new Sandwich[] {
-                new Sandwich { name="Americain", description="...", price=2.5D, available=true },
-                new Sandwich { name="Dagobert", description="...", price=1.5D, available=true }
+                new Sandwich { name="Americain", description="...", price=(decimal)2.50, available=true },
+                new Sandwich { name="Dagobert", description="...", price=(decimal)1.50, available=true }
             };
             foreach (Sandwich s in sandwiches) {
                 context.Sandwiches.Add(s);

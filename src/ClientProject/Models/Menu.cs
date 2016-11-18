@@ -5,19 +5,20 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
-namespace SnackProject.Models
+namespace ClientProject.Models
 {
+    //Pas besoin d'indiquer de [NotMapped] partout pour Menu (Côté Client)
+    //On va simplement pas le lister dans le fichier ClientContext (Côté Client)
     [DataContract]
     public class Menu
     {
-        public int id { get; set; }
         [DataMember]
         public decimal vegetablesPrice { get; set; }
 
-        [DataMember][NotMapped]
+        [DataMember]
         public ICollection<Sandwich> sandwiches { get; set; }
-        [DataMember][NotMapped]
+        [DataMember]
         public ICollection<Vegetable> vegetables { get; set; }
-        
+
     }
 }

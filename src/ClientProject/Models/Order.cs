@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace ClientProject.Models
 {
+    [DataContract]
     public class Order
     {
-        private long ID { get; set; }
-        private string MailEmploye { get; set; }
-        private DateTime DateOfDelivery { get; set; }
-        private double TotalPrice { get; set; }
+        public int id { get; set; }
+        [DataMember]
+        public DateTime dateOfDelivery { get; set; }
+        [DataMember]
+        public decimal totalAmount { get; set; }
 
-        //liste des lignes de commande (orderLines) de la commande
-        private ICollection<OrderLine> CommandLine { get; set; }
+        [DataMember]
+        private ICollection<OrderLine> orderLines { get; set; }
     }
 }

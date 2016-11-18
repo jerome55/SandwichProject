@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
-namespace SnackProject.Models
+namespace ClientProject.Models
 {
     [DataContract]
     public class OrderLineVegetable

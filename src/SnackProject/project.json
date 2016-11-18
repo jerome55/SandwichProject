@@ -1,4 +1,4 @@
-﻿{
+{
   "userSecretsId": "aspnet-SnackProject-8bbe2b78-2b6c-4959-b6bd-81606a71f406",
 
   "dependencies": {
@@ -57,7 +57,11 @@
   },
 
   "frameworks": {
-    "net452": { }
+    "net452": {
+      "frameworkAssemblies": {
+        "System.Runtime.Serialization": "4.0.0.0"
+      }
+    }
   },
 
   "buildOptions": {
