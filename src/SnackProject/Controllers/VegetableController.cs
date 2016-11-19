@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SnackProject.Data;
 using SnackProject.Models;
+using SnackProject.Automatics;
 
 namespace SnackProject.Controllers
 {
@@ -94,7 +95,11 @@ namespace SnackProject.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                UpdateVegetableTask newUpdateVegetableTask = new UpdateVegetableTask(vegetable);
+                TenHourExecutionManager.AddNewTask(newUpdateVegetableTask);
+
+                //CE CODE SE SITUE MAINTENANT DANS UpdateVegetableTask
+                /*try
                 {
                     _context.Update(vegetable);
                     await _context.SaveChangesAsync();
@@ -109,13 +114,16 @@ namespace SnackProject.Controllers
                     {
                         throw;
                     }
-                }
+                }*/
                 return RedirectToAction("Index");
             }
             return View(vegetable);
         }
 
-        // GET: Vegetable/Delete/5
+        /*
+         * ON NE SUPPRIME JAMAIS LES SANDWICHES
+         * 
+         * // GET: Vegetable/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -146,6 +154,6 @@ namespace SnackProject.Controllers
         private bool VegetableExists(int id)
         {
             return _context.Vegetables.Any(e => e.id == id);
-        }
+        }*/
     }
 }

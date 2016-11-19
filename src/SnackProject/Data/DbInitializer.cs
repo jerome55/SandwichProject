@@ -14,6 +14,17 @@ namespace SnackProject.Data
             InitializeVegetable(context); 
         }
 
+        private static void InitializeVegetablePrice(SnackContext context)
+        {
+            if (context.Menus.Any())
+            {
+                return;
+            }
+            var menu = new Menu { vegetablesPrice = (decimal)0.50 };
+            context.Menus.Add(menu);
+            context.SaveChanges();
+        }
+
         private static void InitializeSandwich(SnackContext context) {
             if (context.Sandwiches.Any()) {
                 return;

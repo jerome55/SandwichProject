@@ -11,12 +11,19 @@
         <h4>Vegetable</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
+        <!--<div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <div class="checkbox">
                     <input asp-for="available" />
                     <label asp-for="available"></label>
                 </div>
+            </div>
+        </div>-->
+        <div class="form-group">
+            <label asp-for="name" class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input asp-for="name" class="form-control" />
+                <span asp-validation-for="name" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
@@ -24,13 +31,6 @@
             <div class="col-md-10">
                 <input asp-for="description" class="form-control" />
                 <span asp-validation-for="description" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="name" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="name" class="form-control" />
-                <span asp-validation-for="name" class="text-danger" />
             </div>
         </div>
         <div class="form-group">

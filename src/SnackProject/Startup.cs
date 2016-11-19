@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using SnackProject.Data;
 using SnackProject.Models;
 using SnackProject.Services;
+using SnackProject.Automatics;
 
 namespace SnackProject
 {
@@ -32,6 +33,7 @@ namespace SnackProject
 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
+            
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -88,6 +90,9 @@ namespace SnackProject
             });
 
             DbInitializer.Initialize(context);
+
+            //Démarrage du thread TenHourExecutionManager
+            TenHourExecutionManager.StartThread(context);
         }
     }
 }
