@@ -1,14 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SnackProject.Models;
+using ClientProject.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SnackProject.Data
+namespace ClientProject.Data
 {
-    public class SnackContext : DbContext {
-        public SnackContext(DbContextOptions<SnackContext> options) : base(options)
+    public class ClientContext : DbContext
+    {
+        public ClientContext(DbContextOptions<ClientContext> options) : base(options)
         {
         }
 
@@ -23,7 +24,6 @@ namespace SnackProject.Data
         public DbSet<OrderLine> OrderLines { get; set; }
         public DbSet<Sandwich> Sandwiches { get; set; }
         public DbSet<Vegetable> Vegetables { get; set; }
-        public DbSet<Menu> Menus { get; set; }
-
+        
     }
 }

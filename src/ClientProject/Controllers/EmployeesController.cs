@@ -5,27 +5,27 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using SnackProject.Data;
-using SnackProject.Models;
+using ClientProject.Data;
+using ClientProject.Models;
 
-namespace SnackProject.Controllers
+namespace ClientProject.Controllers
 {
-    public class SandwichController : Controller
+    public class EmployeesController : Controller
     {
-        private readonly SnackContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public SandwichController(SnackContext context)
+        public EmployeesController(ApplicationDbContext context)
         {
             _context = context;    
         }
 
-        // GET: Sandwich
+        // GET: Employees
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Sandwiches.ToListAsync());
+            return View(await _context.Employee.ToListAsync());
         }
 
-        // GET: Sandwich/Details/5
+        // GET: Employees/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,38 +33,38 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.id == id);
-            if (sandwich == null)
+            var employee = await _context.Employee.SingleOrDefaultAsync(m => m.id == id);
+            if (employee == null)
             {
                 return NotFound();
             }
 
-            return View(sandwich);
+            return View(employee);
         }
 
-        // GET: Sandwich/Create
+        // GET: Employees/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Sandwich/Create
+        // POST: Employees/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,available,description,name,price")] Sandwich sandwich)
+        public async Task<IActionResult> Create([Bind("id,firstName,lastName,login,mail,password,wallet")] Employee employee)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(sandwich);
+                _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(sandwich);
+            return View(employee);
         }
 
-        // GET: Sandwich/Edit/5
+        // GET: Employees/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -72,22 +72,22 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.id == id);
-            if (sandwich == null)
+            var employee = await _context.Employee.SingleOrDefaultAsync(m => m.id == id);
+            if (employee == null)
             {
                 return NotFound();
             }
-            return View(sandwich);
+            return View(employee);
         }
 
-        // POST: Sandwich/Edit/5
+        // POST: Employees/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,available,description,name,price")] Sandwich sandwich)
+        public async Task<IActionResult> Edit(int id, [Bind("id,firstName,lastName,login,mail,password,wallet")] Employee employee)
         {
-            if (id != sandwich.id)
+            if (id != employee.id)
             {
                 return NotFound();
             }
@@ -96,12 +96,12 @@ namespace SnackProject.Controllers
             {
                 try
                 {
-                    _context.Update(sandwich);
+                    _context.Update(employee);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SandwichExists(sandwich.id))
+                    if (!EmployeeExists(employee.id))
                     {
                         return NotFound();
                     }
@@ -112,10 +112,10 @@ namespace SnackProject.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            return View(sandwich);
+            return View(employee);
         }
 
-        // GET: Sandwich/Delete/5
+        // GET: Employees/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -123,29 +123,29 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.id == id);
-            if (sandwich == null)
+            var employee = await _context.Employee.SingleOrDefaultAsync(m => m.id == id);
+            if (employee == null)
             {
                 return NotFound();
             }
 
-            return View(sandwich);
+            return View(employee);
         }
 
-        // POST: Sandwich/Delete/5
+        // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.id == id);
-            _context.Sandwiches.Remove(sandwich);
+            var employee = await _context.Employee.SingleOrDefaultAsync(m => m.id == id);
+            _context.Employee.Remove(employee);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        private bool SandwichExists(int id)
+        private bool EmployeeExists(int id)
         {
-            return _context.Sandwiches.Any(e => e.id == id);
+            return _context.Employee.Any(e => e.id == id);
         }
     }
 }

@@ -1,15 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace SnackProject.Models
 {
-    public class Sandwich {
-        public int ID { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public double Price { get; set; }
-        public bool Available { get; set; }
+    [DataContract]
+    public class Sandwich
+    {
+        [DataMember]
+        public int id { get; set; }
+        [DataMember]
+        public string name { get; set; }
+        [DataMember]
+        public string description { get; set; }
+        [DataMember]
+        public decimal price { get; set; }
+        [DataMember]
+        public bool available { get; set; }
     }
 }

@@ -10,22 +10,22 @@ using SnackProject.Models;
 
 namespace SnackProject.Controllers
 {
-    public class SandwichController : Controller
+    public class VegetableController : Controller
     {
         private readonly SnackContext _context;
 
-        public SandwichController(SnackContext context)
+        public VegetableController(SnackContext context)
         {
             _context = context;    
         }
 
-        // GET: Sandwich
+        // GET: Vegetable
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Sandwiches.ToListAsync());
+            return View(await _context.Vegetables.ToListAsync());
         }
 
-        // GET: Sandwich/Details/5
+        // GET: Vegetable/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,38 +33,38 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.id == id);
-            if (sandwich == null)
+            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.id == id);
+            if (vegetable == null)
             {
                 return NotFound();
             }
 
-            return View(sandwich);
+            return View(vegetable);
         }
 
-        // GET: Sandwich/Create
+        // GET: Vegetable/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Sandwich/Create
+        // POST: Vegetable/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,available,description,name,price")] Sandwich sandwich)
+        public async Task<IActionResult> Create([Bind("id,available,description,name")] Vegetable vegetable)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(sandwich);
+                _context.Add(vegetable);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(sandwich);
+            return View(vegetable);
         }
 
-        // GET: Sandwich/Edit/5
+        // GET: Vegetable/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -72,22 +72,22 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.id == id);
-            if (sandwich == null)
+            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.id == id);
+            if (vegetable == null)
             {
                 return NotFound();
             }
-            return View(sandwich);
+            return View(vegetable);
         }
 
-        // POST: Sandwich/Edit/5
+        // POST: Vegetable/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,available,description,name,price")] Sandwich sandwich)
+        public async Task<IActionResult> Edit(int id, [Bind("id,available,description,name")] Vegetable vegetable)
         {
-            if (id != sandwich.id)
+            if (id != vegetable.id)
             {
                 return NotFound();
             }
@@ -96,12 +96,12 @@ namespace SnackProject.Controllers
             {
                 try
                 {
-                    _context.Update(sandwich);
+                    _context.Update(vegetable);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SandwichExists(sandwich.id))
+                    if (!VegetableExists(vegetable.id))
                     {
                         return NotFound();
                     }
@@ -112,10 +112,10 @@ namespace SnackProject.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            return View(sandwich);
+            return View(vegetable);
         }
 
-        // GET: Sandwich/Delete/5
+        // GET: Vegetable/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -123,29 +123,29 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.id == id);
-            if (sandwich == null)
+            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.id == id);
+            if (vegetable == null)
             {
                 return NotFound();
             }
 
-            return View(sandwich);
+            return View(vegetable);
         }
 
-        // POST: Sandwich/Delete/5
+        // POST: Vegetable/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.id == id);
-            _context.Sandwiches.Remove(sandwich);
+            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.id == id);
+            _context.Vegetables.Remove(vegetable);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        private bool SandwichExists(int id)
+        private bool VegetableExists(int id)
         {
-            return _context.Sandwiches.Any(e => e.id == id);
+            return _context.Vegetables.Any(e => e.id == id);
         }
     }
 }
