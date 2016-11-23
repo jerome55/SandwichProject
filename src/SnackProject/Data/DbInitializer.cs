@@ -10,6 +10,7 @@ namespace SnackProject.Data
 
         public static void Initialize(SnackContext context) {
             context.Database.EnsureCreated();
+            InitializeVegetablePrice(context);
             InitializeSandwich(context);
             InitializeVegetable(context); 
         }

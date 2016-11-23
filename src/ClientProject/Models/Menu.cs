@@ -12,12 +12,12 @@ namespace ClientProject.Models
     [DataContract]
     public class Menu
     {
-        [DataMember]
+        [DataMember][NotMapped]
         public decimal vegetablesPrice { get; set; }
 
-        [DataMember]
+        [DataMember][NotMapped]
         public ICollection<Sandwich> sandwiches { get; set; }
-        [DataMember]
+        [DataMember][NotMapped]
         public ICollection<Vegetable> vegetables { get; set; }
 
     }

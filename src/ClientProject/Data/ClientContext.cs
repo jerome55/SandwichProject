@@ -20,9 +20,11 @@ namespace ClientProject.Data
         }
 
         public DbSet<Company> Companies { get; set; }
+        public DbSet<Employee> Employees { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderLine> OrderLines { get; set; }
         public DbSet<Sandwich> Sandwiches { get; set; }
+        public DbSet<OrderLineVegetable> OrderLineVegetables { get; set; }
         public DbSet<Vegetable> Vegetables { get; set; }
         
     }
