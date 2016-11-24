@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,9 +10,9 @@ namespace ClientProject.Models
     public class Employee
     {
         public int id { get; set; }
-        public string login { get; set; }
+        /*public string login { get; set; }
         public string password { get; set; }
-        public string mail { get; set; }
+        public string mail { get; set; }*/
         public string lastName { get; set; }
         public string firstName { get; set; }
         public decimal wallet { get; private set; }
@@ -19,8 +21,8 @@ namespace ClientProject.Models
         public ICollection<Order> orders { get; set; }
 
         public Company company { get; set; }
-        
-        
+        [Required]
+        public ApplicationUser user { get; set; }
         
     }
 }

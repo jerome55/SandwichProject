@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace ClientProject.Models
 {
     //Pas besoin d'indiquer de [NotMapped] partout pour Menu (Côté Client)
-    //On va simplement pas le lister dans le fichier ClientContext (Côté Client)
+    //On va simplement pas le lister dans le fichier ApplicationDbContext (Côté Client)
     [DataContract]
     public class Menu
     {
