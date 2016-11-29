@@ -11,35 +11,36 @@ namespace SnackProject.Data
         public static void Initialize(SnackContext context) {
             context.Database.EnsureCreated();
             InitializeSandwich(context);
-            InitializeCrutity(context);
+            InitializeVegetable(context); 
         }
 
         private static void InitializeSandwich(SnackContext context) {
-            if (context.sandwiches.Any()) {
+            if (context.Sandwiches.Any()) {
                 return;
             }
             var sandwiches = new Sandwich[] {
-                new Sandwich { name="Americain", description="...", price=2.5D, available=true },
-                new Sandwich { name="Dagobert", description="...", price=1.5D, available=true }
+                new Sandwich { name="Americain", description="...", price=(decimal)2.50, available=true },
+                new Sandwich { name="Dagobert", description="...", price=(decimal)1.50, available=true }
             };
             foreach (Sandwich s in sandwiches) {
-                context.sandwiches.Add(s);
+                context.Sandwiches.Add(s);
             }
             context.SaveChanges();
         }
 
-        private static void InitializeCrutity(SnackContext context) {
-            if (context.vegetables.Any()) {
+        private static void InitializeVegetable(SnackContext context) {
+            if (context.Vegetables.Any()) {
                 return;
             }
-            var vegetables = new Crudity[] {
-                new Crudity{ name="Carotte", description="...", available=true },
-                new Crudity { name="Salade", description="...", available=true }
+            var vegetables = new Vegetable[] {
+                new Vegetable{ name="Carotte", description="...", available=true },
+                new Vegetable { name="Salade", description="...", available=true }
             };
-            foreach (Crudity s in vegetables) {
-                context.vegetables.Add(s);
+            foreach (Vegetable s in vegetables) {
+                context.Vegetables.Add(s);
             }
             context.SaveChanges();
         }
+        
     }
 }

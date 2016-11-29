@@ -1,4 +1,4 @@
-@model SnackProject.Models.Sandwich
+@model SnackProject.Models.Vegetable
 
 @{
     ViewData["Title"] = "Edit";
@@ -8,7 +8,7 @@
 
 <form asp-action="Edit">
     <div class="form-horizontal">
-        <h4>Sandwich</h4>
+        <h4>Vegetable</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="hidden" asp-for="id" />
@@ -32,13 +32,6 @@
             <div class="col-md-10">
                 <input asp-for="name" class="form-control" />
                 <span asp-validation-for="name" class="text-danger" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="price" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="price" class="form-control" />
-                <span asp-validation-for="price" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
