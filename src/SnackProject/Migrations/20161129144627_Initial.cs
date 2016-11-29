@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace SnackProject.Data.Migrations
+namespace SnackProject.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -62,6 +60,68 @@ namespace SnackProject.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Companies",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    address = table.Column<string>(nullable: true),
+                    chkcode = table.Column<string>(nullable: true),
+                    mail = table.Column<string>(nullable: true),
+                    name = table.Column<string>(nullable: true),
+                    nbEmployes = table.Column<int>(nullable: false),
+                    status = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Companies", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Menus",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    vegetablesPrice = table.Column<decimal>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Menus", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Sandwiches",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    available = table.Column<bool>(nullable: false),
+                    description = table.Column<string>(nullable: true),
+                    name = table.Column<string>(nullable: true),
+                    price = table.Column<decimal>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sandwiches", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Vegetables",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    available = table.Column<bool>(nullable: false),
+                    description = table.Column<string>(nullable: true),
+                    name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Vegetables", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -150,6 +210,78 @@ namespace SnackProject.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Companyid = table.Column<int>(nullable: true),
+                    dateOfDelivery = table.Column<DateTime>(nullable: false),
+                    totalAmount = table.Column<decimal>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_Orders_Companies_Companyid",
+                        column: x => x.Companyid,
+                        principalTable: "Companies",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderLines",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Orderid = table.Column<int>(nullable: true),
+                    quantity = table.Column<int>(nullable: false),
+                    sandwichid = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderLines", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_OrderLines_Orders_Orderid",
+                        column: x => x.Orderid,
+                        principalTable: "Orders",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_OrderLines_Sandwiches_sandwichid",
+                        column: x => x.sandwichid,
+                        principalTable: "Sandwiches",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderLineVegetable",
+                columns: table => new
+                {
+                    orderLineId = table.Column<int>(nullable: false),
+                    vegetableId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderLineVegetable", x => new { x.orderLineId, x.vegetableId });
+                    table.ForeignKey(
+                        name: "FK_OrderLineVegetable_OrderLines_orderLineId",
+                        column: x => x.orderLineId,
+                        principalTable: "OrderLines",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderLineVegetable_Vegetables_vegetableId",
+                        column: x => x.vegetableId,
+                        principalTable: "Vegetables",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
@@ -190,6 +322,31 @@ namespace SnackProject.Data.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_Companyid",
+                table: "Orders",
+                column: "Companyid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderLines_Orderid",
+                table: "OrderLines",
+                column: "Orderid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderLines_sandwichid",
+                table: "OrderLines",
+                column: "sandwichid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderLineVegetable_orderLineId",
+                table: "OrderLineVegetable",
+                column: "orderLineId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderLineVegetable_vegetableId",
+                table: "OrderLineVegetable",
+                column: "vegetableId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -210,10 +367,31 @@ namespace SnackProject.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Menus");
+
+            migrationBuilder.DropTable(
+                name: "OrderLineVegetable");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "OrderLines");
+
+            migrationBuilder.DropTable(
+                name: "Vegetables");
+
+            migrationBuilder.DropTable(
+                name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "Sandwiches");
+
+            migrationBuilder.DropTable(
+                name: "Companies");
         }
     }
 }

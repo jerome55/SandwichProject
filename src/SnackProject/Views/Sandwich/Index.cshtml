@@ -8,17 +8,16 @@
 <table class="table">
     <thead>
         <tr>
+            
             <th>
-                Nom
-            </th>
-            <th>
-                Description
+                @Html.DisplayNameFor(model => model.name)
             </th>
             <th>
                 Prix
+                @Html.DisplayNameFor(model => model.description)
             </th>
             <th>
-                A la carte
+                @Html.DisplayNameFor(model => model.available)
             </th>
             
             <th></th>
@@ -31,7 +30,7 @@
                 @Html.DisplayFor(modelItem => item.name)
             </td>            
             <td>
-                @Html.DisplayFor(modelItem => item.description)
+                @Html.DisplayFor(modelItem => item.name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.price)
