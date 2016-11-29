@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SnackProject.Data;
 using SnackProject.Models;
+using SnackProject.Automatics;
 
 namespace SnackProject.Controllers
 {
     public class VegetableController : Controller
     {
-        private readonly SnackContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public VegetableController(SnackContext context)
+        public VegetableController(ApplicationDbContext context)
         {
             _context = context;    
         }
@@ -85,7 +86,8 @@ namespace SnackProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,available,description,name")] Vegetable vegetable)
+        //public async Task<IActionResult> Edit(int id, [Bind("id,available,description,name")] Vegetable vegetable)
+        public IActionResult Edit(int id, [Bind("id,available,description,name")] Vegetable vegetable)
         {
             if (id != vegetable.id)
             {
@@ -94,7 +96,11 @@ namespace SnackProject.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                UpdateVegetableTask newUpdateVegetableTask = new UpdateVegetableTask(vegetable);
+                TenHourExecutionManager.AddNewTask(newUpdateVegetableTask);
+
+                //CE CODE SE SITUE MAINTENANT DANS UpdateVegetableTask
+                /*try
                 {
                     _context.Update(vegetable);
                     await _context.SaveChangesAsync();
@@ -109,13 +115,16 @@ namespace SnackProject.Controllers
                     {
                         throw;
                     }
-                }
+                }*/
                 return RedirectToAction("Index");
             }
             return View(vegetable);
         }
 
-        // GET: Vegetable/Delete/5
+        /*
+         * ON NE SUPPRIME JAMAIS LES SANDWICHES
+         * 
+         * // GET: Vegetable/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -146,6 +155,6 @@ namespace SnackProject.Controllers
         private bool VegetableExists(int id)
         {
             return _context.Vegetables.Any(e => e.id == id);
-        }
+        }*/
     }
 }

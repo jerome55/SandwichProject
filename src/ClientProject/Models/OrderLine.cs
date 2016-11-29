@@ -10,12 +10,11 @@ namespace ClientProject.Models
     public class OrderLine
     {
         public int id { get; set; }
+
         [DataMember]
         public int quantity { get; set; }
-
         [DataMember]
         public Sandwich sandwich { get; set; }
-
         [DataMember]
         public ICollection<OrderLineVegetable> orderLineVegetables { get; set; }
     }

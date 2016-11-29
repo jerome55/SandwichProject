@@ -16,10 +16,10 @@
                 @Html.DisplayNameFor(model => model.available)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.description)
+                @Html.DisplayNameFor(model => model.name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.name)
+                @Html.DisplayNameFor(model => model.description)
             </th>
             <th></th>
         </tr>
@@ -31,15 +31,17 @@
                 @Html.DisplayFor(modelItem => item.available)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.description)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.name)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.description)
+            </td>
+            <td>
                 <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                <a asp-action="Details" asp-route-id="@item.id">Details</a> 
+                
+                <!-- ON NE SUPPRIME JAMAIS DE SANDWICHES
+                    | <a asp-action="Delete" asp-route-id="@item.id">Delete</a>-->
             </td>
         </tr>
 }

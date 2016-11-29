@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using SnackProject.Data;
 using SnackProject.Models;
 using SnackProject.Services;
+using SnackProject.Automatics;
 
 namespace SnackProject
 {
@@ -32,6 +33,7 @@ namespace SnackProject
 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
+            
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -41,9 +43,6 @@ namespace SnackProject
         {
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            services.AddDbContext<SnackContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -58,7 +57,7 @@ namespace SnackProject
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, SnackContext context)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, ApplicationDbContext context)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -88,6 +87,9 @@ namespace SnackProject
             });
 
             DbInitializer.Initialize(context);
+
+            //Démarrage du thread TenHourExecutionManager
+            TenHourExecutionManager.StartThread(context);
         }
     }
 }

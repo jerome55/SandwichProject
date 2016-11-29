@@ -10,11 +10,11 @@ namespace ClientProject.Models
     public class Order
     {
         public int id { get; set; }
+
         [DataMember]
         public DateTime dateOfDelivery { get; set; }
         [DataMember]
         public decimal totalAmount { get; set; }
-
         [DataMember]
         private ICollection<OrderLine> orderLines { get; set; }
     }

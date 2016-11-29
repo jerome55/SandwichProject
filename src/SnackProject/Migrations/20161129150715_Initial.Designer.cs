@@ -1,21 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using SnackProject.Data;
 
-namespace SnackProject.Data.Migrations
+namespace SnackProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20161129150715_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.0.0-rc3")
+                .HasAnnotation("ProductVersion", "1.0.1")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
@@ -174,6 +173,127 @@ namespace SnackProject.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("SnackProject.Models.Company", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("address");
+
+                    b.Property<string>("chkcode");
+
+                    b.Property<string>("mail");
+
+                    b.Property<string>("name");
+
+                    b.Property<int>("nbEmployes");
+
+                    b.Property<bool>("status");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Companies");
+                });
+
+            modelBuilder.Entity("SnackProject.Models.Menu", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<decimal>("vegetablesPrice");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Menus");
+                });
+
+            modelBuilder.Entity("SnackProject.Models.Order", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("Companyid");
+
+                    b.Property<DateTime>("dateOfDelivery");
+
+                    b.Property<decimal>("totalAmount");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("Companyid");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("SnackProject.Models.OrderLine", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int?>("Orderid");
+
+                    b.Property<int>("quantity");
+
+                    b.Property<int?>("sandwichid");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("Orderid");
+
+                    b.HasIndex("sandwichid");
+
+                    b.ToTable("OrderLines");
+                });
+
+            modelBuilder.Entity("SnackProject.Models.OrderLineVegetable", b =>
+                {
+                    b.Property<int>("orderLineId");
+
+                    b.Property<int>("vegetableId");
+
+                    b.HasKey("orderLineId", "vegetableId");
+
+                    b.HasIndex("orderLineId");
+
+                    b.HasIndex("vegetableId");
+
+                    b.ToTable("OrderLineVegetable");
+                });
+
+            modelBuilder.Entity("SnackProject.Models.Sandwich", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("available");
+
+                    b.Property<string>("description");
+
+                    b.Property<string>("name");
+
+                    b.Property<decimal>("price");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Sandwiches");
+                });
+
+            modelBuilder.Entity("SnackProject.Models.Vegetable", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("available");
+
+                    b.Property<string>("description");
+
+                    b.Property<string>("name");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Vegetables");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole")
@@ -208,6 +328,37 @@ namespace SnackProject.Data.Migrations
                     b.HasOne("SnackProject.Models.ApplicationUser")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SnackProject.Models.Order", b =>
+                {
+                    b.HasOne("SnackProject.Models.Company")
+                        .WithMany("orders")
+                        .HasForeignKey("Companyid");
+                });
+
+            modelBuilder.Entity("SnackProject.Models.OrderLine", b =>
+                {
+                    b.HasOne("SnackProject.Models.Order")
+                        .WithMany("orderLines")
+                        .HasForeignKey("Orderid");
+
+                    b.HasOne("SnackProject.Models.Sandwich", "sandwich")
+                        .WithMany()
+                        .HasForeignKey("sandwichid");
+                });
+
+            modelBuilder.Entity("SnackProject.Models.OrderLineVegetable", b =>
+                {
+                    b.HasOne("SnackProject.Models.OrderLine", "orderLine")
+                        .WithMany("orderLineVegetables")
+                        .HasForeignKey("orderLineId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SnackProject.Models.Vegetable", "vegetable")
+                        .WithMany()
+                        .HasForeignKey("vegetableId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
         }

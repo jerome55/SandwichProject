@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SnackProject.Data;
 using SnackProject.Models;
+using SnackProject.Automatics;
 
 namespace SnackProject.Controllers
 {
     public class SandwichController : Controller
     {
-        private readonly SnackContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public SandwichController(SnackContext context)
+        public SandwichController(ApplicationDbContext context)
         {
             _context = context;    
         }
@@ -85,7 +86,8 @@ namespace SnackProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,available,description,name,price")] Sandwich sandwich)
+        //public async Task<IActionResult> Edit(int id, [Bind("id,available,description,name,price")] Sandwich sandwich)
+        public IActionResult Edit(int id, [Bind("id,available,description,name,price")] Sandwich sandwich)
         {
             if (id != sandwich.id)
             {
@@ -94,7 +96,11 @@ namespace SnackProject.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                UpdateSandwichTask newUpdateSandwichTask = new UpdateSandwichTask(sandwich);
+                TenHourExecutionManager.AddNewTask(newUpdateSandwichTask);
+
+                //CE CODE SE SITUE MAINTENANT DANS UpdateSandwichTask
+                /*try
                 {
                     _context.Update(sandwich);
                     await _context.SaveChangesAsync();
@@ -109,13 +115,16 @@ namespace SnackProject.Controllers
                     {
                         throw;
                     }
-                }
+                }*/
                 return RedirectToAction("Index");
             }
             return View(sandwich);
         }
 
-        // GET: Sandwich/Delete/5
+        /*
+         * ON NE SUPPRIME JAMAIS LES SANDWICHES
+         * 
+         * // GET: Sandwich/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -146,6 +155,6 @@ namespace SnackProject.Controllers
         private bool SandwichExists(int id)
         {
             return _context.Sandwiches.Any(e => e.id == id);
-        }
+        }*/
     }
 }
