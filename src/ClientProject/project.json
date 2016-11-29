@@ -1,4 +1,4 @@
-﻿{
+{
   "userSecretsId": "aspnet-ClientProject-f4f02f06-8af6-4179-b2e9-1e1ff67bc4d4",
 
   "dependencies": {
@@ -57,7 +57,11 @@
   },
 
   "frameworks": {
-    "net452": { }
+    "net452": {
+      "frameworkAssemblies": {
+        "System.Runtime.Serialization": "4.0.0.0"
+      }
+    }
   },
 
   "buildOptions": {

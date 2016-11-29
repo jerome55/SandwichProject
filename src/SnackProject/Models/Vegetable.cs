@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
-namespace ClientProject.Models
+namespace SnackProject.Models
 {
     [DataContract]
-    public class Sandwich
+    public class Vegetable
     {
         [DataMember]
         public int id { get; set; }
-        [DataMember][NotMapped]
+        [DataMember]
         public string name { get; set; }
-        [DataMember][NotMapped]
+        [DataMember]
         public string description { get; set; }
-        [DataMember][NotMapped]
-        public decimal price { get; set; }
+        [DataMember]
+        public bool available { get; set; }
     }
 }

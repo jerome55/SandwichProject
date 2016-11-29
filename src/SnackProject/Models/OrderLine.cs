@@ -7,17 +7,16 @@ using System.Threading.Tasks;
 namespace SnackProject.Models
 {
     [DataContract]
-    public class Sandwich
+    public class OrderLine
     {
-        [DataMember]
         public int id { get; set; }
         [DataMember]
-        public string name { get; set; }
+        public int quantity { get; set; }
+
         [DataMember]
-        public string description { get; set; }
+        public Sandwich sandwich { get; set; }
+
         [DataMember]
-        public decimal price { get; set; }
-        [DataMember]
-        public bool available { get; set; }
+        public ICollection<OrderLineVegetable> orderLineVegetables { get; set; }
     }
 }

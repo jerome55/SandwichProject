@@ -5,18 +5,19 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
-namespace ClientProject.Models
+namespace SnackProject.Models
 {
     [DataContract]
-    public class Sandwich
+    public class Menu
     {
-        [DataMember]
         public int id { get; set; }
+        [DataMember]
+        public decimal vegetablesPrice { get; set; }
+
         [DataMember][NotMapped]
-        public string name { get; set; }
+        public ICollection<Sandwich> sandwiches { get; set; }
         [DataMember][NotMapped]
-        public string description { get; set; }
-        [DataMember][NotMapped]
-        public decimal price { get; set; }
+        public ICollection<Vegetable> vegetables { get; set; }
+        
     }
 }
