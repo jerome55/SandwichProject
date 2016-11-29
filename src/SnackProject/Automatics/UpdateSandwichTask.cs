@@ -10,7 +10,7 @@ namespace SnackProject.Automatics
 {
     public class UpdateSandwichTask : ExecutionTask
     {
-        private SnackContext _context;
+        private ApplicationDbContext _context;
         private Sandwich sandwich;
 
         public UpdateSandwichTask(Sandwich sandwich)
@@ -18,7 +18,7 @@ namespace SnackProject.Automatics
             this.sandwich = sandwich;
         }
 
-        public async void Execute(SnackContext context)
+        public async void Execute(ApplicationDbContext context)
         {
             _context = context;
             try

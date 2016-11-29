@@ -10,7 +10,7 @@ namespace SnackProject.Automatics
 {
     public class UpdateVegetableTask : ExecutionTask
     {
-        private SnackContext _context;
+        private ApplicationDbContext _context;
         private Vegetable vegetable;
 
         public UpdateVegetableTask(Vegetable vegetable)
@@ -18,7 +18,7 @@ namespace SnackProject.Automatics
             this.vegetable = vegetable;
         }
 
-        public async void Execute(SnackContext context)
+        public async void Execute(ApplicationDbContext context)
         {
             _context = context;
             try

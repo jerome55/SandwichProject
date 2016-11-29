@@ -11,7 +11,7 @@ namespace SnackProject.Automatics
         private static bool started = false;
         private static readonly object syncLock = new object();
 
-        private static SnackContext context;
+        private static ApplicationDbContext context;
 
         private static Dictionary<string,ExecutionTask> taskList = new Dictionary<string,ExecutionTask>();
         private static Timer timer = new Timer(ExecuteAllTask);
@@ -19,7 +19,7 @@ namespace SnackProject.Automatics
         private static DateTime now;
         private static DateTime tenHours;
 
-        public static void StartThread(SnackContext _context)
+        public static void StartThread(ApplicationDbContext _context)
         {
             if (started == false)
             {

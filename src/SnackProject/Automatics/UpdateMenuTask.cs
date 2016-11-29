@@ -10,7 +10,7 @@ namespace SnackProject.Automatics
 {
     public class UpdateMenuTask : ExecutionTask
     {
-        private SnackContext _context;
+        private ApplicationDbContext _context;
         private Menu menu;
 
         public UpdateMenuTask(Menu menu)
@@ -18,7 +18,7 @@ namespace SnackProject.Automatics
             this.menu = menu;
         }
 
-        public async void Execute(SnackContext context)
+        public async void Execute(ApplicationDbContext context)
         {
             _context = context;
             try

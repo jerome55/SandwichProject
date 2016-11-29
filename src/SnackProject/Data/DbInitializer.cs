@@ -8,13 +8,13 @@ namespace SnackProject.Data
 {
     public class DbInitializer {
 
-        public static void Initialize(SnackContext context) {
+        public static void Initialize(ApplicationDbContext context) {
             context.Database.EnsureCreated();
             InitializeSandwich(context);
             InitializeVegetable(context); 
         }
 
-        private static void InitializeVegetablePrice(SnackContext context)
+        private static void InitializeVegetablePrice(ApplicationDbContext context)
         {
             if (context.Menus.Any())
             {
@@ -25,7 +25,7 @@ namespace SnackProject.Data
             context.SaveChanges();
         }
 
-        private static void InitializeSandwich(SnackContext context) {
+        private static void InitializeSandwich(ApplicationDbContext context) {
             if (context.Sandwiches.Any()) {
                 return;
             }
@@ -39,7 +39,7 @@ namespace SnackProject.Data
             context.SaveChanges();
         }
 
-        private static void InitializeVegetable(SnackContext context) {
+        private static void InitializeVegetable(ApplicationDbContext context) {
             if (context.Vegetables.Any()) {
                 return;
             }

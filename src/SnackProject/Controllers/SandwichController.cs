@@ -13,9 +13,9 @@ namespace SnackProject.Controllers
 {
     public class SandwichController : Controller
     {
-        private readonly SnackContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public SandwichController(SnackContext context)
+        public SandwichController(ApplicationDbContext context)
         {
             _context = context;    
         }
@@ -86,7 +86,8 @@ namespace SnackProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,available,description,name,price")] Sandwich sandwich)
+        //public async Task<IActionResult> Edit(int id, [Bind("id,available,description,name,price")] Sandwich sandwich)
+        public IActionResult Edit(int id, [Bind("id,available,description,name,price")] Sandwich sandwich)
         {
             if (id != sandwich.id)
             {
