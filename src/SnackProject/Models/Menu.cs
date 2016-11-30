@@ -30,13 +30,13 @@ namespace SnackProject.Models
         public ICollection<Sandwich> sandwiches { get; set; }
         [DataMember][NotMapped]
         public ICollection<Vegetable> vegetables { get; set; }
-
+        /*
         public Menu(decimal vegetablesPrice, ICollection<Sandwich> sandwiches, ICollection<Vegetable> vegetables)
         {
             this.vegetablesPrice = vegetablesPrice;
             this.sandwiches = sandwiches;
             this.vegetables = vegetables;
-        }
+        }*/
 
     }
 }
