@@ -18,6 +18,5 @@ namespace ClientProject.Models
         public ICollection<Sandwich> sandwiches { get; set; }
         [DataMember]
         public ICollection<Vegetable> vegetables { get; set; }
-
     }
 }
