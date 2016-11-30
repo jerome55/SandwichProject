@@ -17,5 +17,13 @@ namespace SnackProject.Models
         public string description { get; set; }
         [DataMember]
         public bool available { get; set; }
+
+        /*
+        public Vegetable(string name, string description, bool available)
+        {
+            this.name = name;
+            this.description = description;
+            this.available = available;
+        }*/
     }
 }

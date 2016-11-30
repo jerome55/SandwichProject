@@ -8,7 +8,7 @@ using SnackProject.Data;
 namespace SnackProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20161129150715_Initial")]
+    [Migration("20161130075731_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
