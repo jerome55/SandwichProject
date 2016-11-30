@@ -9,13 +9,13 @@ namespace SnackProject.Models
     [DataContract]
     public class Order
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         [DataMember]
-        public DateTime dateOfDelivery { get; set; }
+        public DateTime DateOfDelivery { get; set; }
         [DataMember]
-        public decimal totalAmount { get; set; }
+        public decimal TotalAmount { get; set; }
 
         [DataMember]
-        public ICollection<OrderLine> orderLines { get; set; }
+        public ICollection<OrderLine> OrderLines { get; set; }
     }
 }

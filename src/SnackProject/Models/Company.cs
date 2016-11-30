@@ -10,19 +10,20 @@ namespace SnackProject.Models
     public class Company
     {
         [DataMember]
-        public int id { get; set; }
+        public int Id { get; set; }
         [DataMember]
-        public string chkcode { get; set; }
+        public string Chkcode { get; set; }
         [DataMember]
-        public string name { get; set; }
+        //[Index(IsUnique=true)]
+        public string Name { get; set; }
         [DataMember]
-        public int nbEmployes { get; set; }
+        public int NbEmployees { get; set; }
         [DataMember]
-        public string mail { get; set; }
+        public string Mail { get; set; }
         [DataMember]
-        public string address { get; set; }
-        public bool status { get; set; }
+        public string Address { get; set; }
+        public bool Status { get; set; }
 
-        public ICollection<Order> orders { get; set; }
+        public ICollection<Order> Orders { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace SnackProject.Automatics
 {
     public class UpdateSandwichTask : ExecutionTask
     {
-        private SnackContext _context;
+        private ApplicationDbContext _context;
         private Sandwich sandwich;
 
         public UpdateSandwichTask(Sandwich sandwich)
@@ -18,7 +18,7 @@ namespace SnackProject.Automatics
             this.sandwich = sandwich;
         }
 
-        public async void Execute(SnackContext context)
+        public async void Execute(ApplicationDbContext context)
         {
             _context = context;
             try
@@ -28,7 +28,7 @@ namespace SnackProject.Automatics
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SandwichExists(sandwich.id))
+                if (!SandwichExists(sandwich.Id))
                 {
                     throw new Exception("Sandwich Not Found");     
                 }
@@ -41,12 +41,12 @@ namespace SnackProject.Automatics
 
         private bool SandwichExists(int id)
         {
-            return _context.Sandwiches.Any(e => e.id == id);
+            return _context.Sandwiches.Any(e => e.Id == id);
         }
 
         public string GetKey()
         {
-            return "usd"+sandwich.id;
+            return "usd"+sandwich.Id;
         }
     }
 }

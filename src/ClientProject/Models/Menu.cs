@@ -13,12 +13,12 @@ namespace ClientProject.Models
     public class Menu
     {
         [DataMember][NotMapped]
-        public decimal vegetablesPrice { get; set; }
+        public decimal VegetablesPrice { get; set; }
 
         [DataMember][NotMapped]
-        public ICollection<Sandwich> sandwiches { get; set; }
+        public ICollection<Sandwich> Sandwiches { get; set; }
         [DataMember][NotMapped]
-        public ICollection<Vegetable> vegetables { get; set; }
+        public ICollection<Vegetable> Vegetables { get; set; }
 
     }
 }

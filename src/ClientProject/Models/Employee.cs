@@ -9,20 +9,20 @@ namespace ClientProject.Models
 {
     public class Employee
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         /*public string login { get; set; }
         public string password { get; set; }
         public string mail { get; set; }*/
-        public string lastName { get; set; }
-        public string firstName { get; set; }
-        public decimal wallet { get; private set; }
+        public string LastName { get; set; }
+        public string FirstName { get; set; }
+        public decimal Wallet { get; set; }
         /*public Boolean Admin { get; set; }*/
 
-        public ICollection<Order> orders { get; set; }
+        public ICollection<Order> Orders { get; set; }
 
-        public Company company { get; set; }
+        public Company Company { get; set; }
         [Required]
-        public ApplicationUser user { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
         
     }
 }

@@ -11,7 +11,7 @@ namespace ClientProject.Models
     public class ApplicationUser : IdentityUser
     {
         [Required]
-        public Employee employee { get; set; }
-        public int employeeId { get; set; }
+        public Employee Employee { get; set; }
+        public int EmployeeId { get; set; }
     }
 }

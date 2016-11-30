@@ -9,14 +9,14 @@ namespace SnackProject.Models
     [DataContract]
     public class OrderLine
     {
-        public int id { get; set; }
+        public int Id { get; set; }
         [DataMember]
-        public int quantity { get; set; }
+        public int Quantity { get; set; }
 
         [DataMember]
-        public Sandwich sandwich { get; set; }
+        public Sandwich Sandwich { get; set; }
 
         [DataMember]
-        public ICollection<OrderLineVegetable> orderLineVegetables { get; set; }
+        public ICollection<OrderLineVegetable> OrderLineVegetables { get; set; }
     }
 }

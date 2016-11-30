@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using ClientProject.Data;
 using ClientProject.Models;
 using ClientProject.Services;
+using ClientProject.InfoProviders;
 
 namespace ClientProject
 {
@@ -52,6 +53,9 @@ namespace ClientProject
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+
+            // Service Perso Jerome
+            services.AddTransient<ActivationManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -8,31 +8,31 @@ namespace SnackProject.Data
 {
     public class DbInitializer {
 
-        public static void Initialize(SnackContext context) {
+        public static void Initialize(ApplicationDbContext context) {
             context.Database.EnsureCreated();
             InitializeVegetablePrice(context);
             InitializeSandwich(context);
             InitializeVegetable(context); 
         }
 
-        private static void InitializeVegetablePrice(SnackContext context)
+        private static void InitializeVegetablePrice(ApplicationDbContext context)
         {
             if (context.Menus.Any())
             {
                 return;
             }
-            var menu = new Menu { vegetablesPrice = (decimal)0.50 };
+            var menu = new Menu { VegetablesPrice = (decimal)0.50 };
             context.Menus.Add(menu);
             context.SaveChanges();
         }
 
-        private static void InitializeSandwich(SnackContext context) {
+        private static void InitializeSandwich(ApplicationDbContext context) {
             if (context.Sandwiches.Any()) {
                 return;
             }
             var sandwiches = new Sandwich[] {
-                new Sandwich { name="Americain", description="...", price=(decimal)2.50, available=true },
-                new Sandwich { name="Dagobert", description="...", price=(decimal)1.50, available=true }
+                new Sandwich { Name="Americain", Description="...", Price=(decimal)2.50, Available=true },
+                new Sandwich { Name="Dagobert", Description="...", Price=(decimal)1.50, Available=true }
             };
             foreach (Sandwich s in sandwiches) {
                 context.Sandwiches.Add(s);
@@ -40,13 +40,13 @@ namespace SnackProject.Data
             context.SaveChanges();
         }
 
-        private static void InitializeVegetable(SnackContext context) {
+        private static void InitializeVegetable(ApplicationDbContext context) {
             if (context.Vegetables.Any()) {
                 return;
             }
             var vegetables = new Vegetable[] {
-                new Vegetable{ name="Carotte", description="...", available=true },
-                new Vegetable { name="Salade", description="...", available=true }
+                new Vegetable{ Name="Carotte", Description="...", Available=true },
+                new Vegetable { Name="Salade", Description="...", Available=true }
             };
             foreach (Vegetable s in vegetables) {
                 context.Vegetables.Add(s);

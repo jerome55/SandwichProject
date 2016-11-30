@@ -10,7 +10,7 @@ namespace SnackProject.Automatics
 {
     public class UpdateMenuTask : ExecutionTask
     {
-        private SnackContext _context;
+        private ApplicationDbContext _context;
         private Menu menu;
 
         public UpdateMenuTask(Menu menu)
@@ -18,7 +18,7 @@ namespace SnackProject.Automatics
             this.menu = menu;
         }
 
-        public async void Execute(SnackContext context)
+        public async void Execute(ApplicationDbContext context)
         {
             _context = context;
             try
@@ -28,7 +28,7 @@ namespace SnackProject.Automatics
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MenuExists(menu.id))
+                if (!MenuExists(menu.Id))
                 {
                     throw new Exception("Menu Not Found");
                 }
@@ -41,12 +41,12 @@ namespace SnackProject.Automatics
 
         private bool MenuExists(int id)
         {
-            return _context.Menus.Any(e => e.id == id);
+            return _context.Menus.Any(e => e.Id == id);
         }
 
         public string GetKey()
         {
-            return "UM" + menu.id;
+            return "UM" + menu.Id;
         }
     }
 }

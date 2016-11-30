@@ -13,9 +13,9 @@ namespace SnackProject.Controllers
 {
     public class VegetableController : Controller
     {
-        private readonly SnackContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public VegetableController(SnackContext context)
+        public VegetableController(ApplicationDbContext context)
         {
             _context = context;    
         }
@@ -34,7 +34,7 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.id == id);
+            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.Id == id);
             if (vegetable == null)
             {
                 return NotFound();
@@ -73,7 +73,7 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.id == id);
+            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.Id == id);
             if (vegetable == null)
             {
                 return NotFound();
@@ -88,7 +88,7 @@ namespace SnackProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("id,available,description,name")] Vegetable vegetable)
         {
-            if (id != vegetable.id)
+            if (id != vegetable.Id)
             {
                 return NotFound();
             }

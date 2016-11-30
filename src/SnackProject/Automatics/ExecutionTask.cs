@@ -8,7 +8,7 @@ namespace SnackProject.Automatics
 {
     public interface ExecutionTask
     {
-        void Execute(SnackContext context);
+        void Execute(ApplicationDbContext context);
         string GetKey();
     }
 }

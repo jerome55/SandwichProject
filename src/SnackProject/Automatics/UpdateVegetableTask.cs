@@ -10,7 +10,7 @@ namespace SnackProject.Automatics
 {
     public class UpdateVegetableTask : ExecutionTask
     {
-        private SnackContext _context;
+        private ApplicationDbContext _context;
         private Vegetable vegetable;
 
         public UpdateVegetableTask(Vegetable vegetable)
@@ -18,7 +18,7 @@ namespace SnackProject.Automatics
             this.vegetable = vegetable;
         }
 
-        public async void Execute(SnackContext context)
+        public async void Execute(ApplicationDbContext context)
         {
             _context = context;
             try
@@ -28,7 +28,7 @@ namespace SnackProject.Automatics
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!VegetableExists(vegetable.id))
+                if (!VegetableExists(vegetable.Id))
                 {
                     throw new Exception("Vegetable Not Found");
                 }
@@ -41,12 +41,12 @@ namespace SnackProject.Automatics
 
         private bool VegetableExists(int id)
         {
-            return _context.Vegetables.Any(e => e.id == id);
+            return _context.Vegetables.Any(e => e.Id == id);
         }
 
         public string GetKey()
         {
-            return "UVG" + vegetable.id;
+            return "UVG" + vegetable.Id;
         }
     }
 }

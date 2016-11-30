@@ -10,14 +10,14 @@ namespace SnackProject.Models
     public class Sandwich
     {
         [DataMember]
-        public int id { get; set; }
+        public int Id { get; set; }
         [DataMember]
-        public string name { get; set; }
+        public string Name { get; set; }
         [DataMember]
-        public string description { get; set; }
+        public string Description { get; set; }
         [DataMember]
-        public decimal price { get; set; }
+        public decimal Price { get; set; }
         [DataMember]
-        public bool available { get; set; }
+        public bool Available { get; set; }
     }
 }

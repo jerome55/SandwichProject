@@ -11,16 +11,17 @@ namespace ClientProject.Models
     public class Company
     {
         [DataMember]
-        public int id { get; set; }
+        public int Id { get; set; }
         [DataMember]
-        public string chkCode { get; set; }
+        public string ChkCode { get; set; }
         [DataMember][NotMapped]
-        public string name { get; set; }
+        public string Name { get; set; }
         [DataMember][NotMapped]
-        public int nbEmployes { get; set; }
+        public int NbEmployees { get; set; }
         [DataMember][NotMapped]
-        public string mail { get; set; }
+        public string Mail { get; set; }
         [DataMember][NotMapped]
-        public string address { get; set; }
+        public string Address { get; set; }
+        public bool Status { get; set; }
     }
 }
