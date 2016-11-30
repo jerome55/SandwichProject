@@ -13,7 +13,7 @@ namespace SnackProject.Models
         public int id { get; set; }
         [DataMember]
         public decimal vegetablesPrice {
-            get {return vegetablesPrice }
+            get { return vegetablesPrice; }
             set {
                 if (value>=0)
                 {
@@ -21,7 +21,7 @@ namespace SnackProject.Models
                 }
                 else
                 {
-                    throw new Exception("Quantité inférieure a 0");
+                    throw new Exception("Prix inférieure a 0");
                 }       
             }
         }
