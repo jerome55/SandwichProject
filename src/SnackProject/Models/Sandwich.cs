@@ -16,10 +16,13 @@ namespace SnackProject.Models
         [Display(Name = "Nom")]
         public string name { get; set; }
         [DataMember]
+        [Display(Name = "Description")]
         public string description { get; set; }
         [DataMember]
+        [Display(Name = "Prix")]
         public decimal price { get; set; }
         [DataMember]
+        [Display(Name = "Disponible")]
         public bool available { get; set; }
     }
 }

@@ -1,10 +1,10 @@
 @model IEnumerable<SnackProject.Models.Sandwich>
 
 @{
-    ViewData["Title"] = "Liste des sandwiches";
+    ViewData["Title"] = "Liste des sandwichs";
 }
 
-<h2>Liste des sandwiches</h2>
+<h2>Liste des sandwichs</h2>
 <table class="table">
     <thead>
         <tr>
@@ -13,8 +13,10 @@
                 @Html.DisplayNameFor(model => model.name)
             </th>
             <th>
-                Prix
                 @Html.DisplayNameFor(model => model.description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.price)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.available)
