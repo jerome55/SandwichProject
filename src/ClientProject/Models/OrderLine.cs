@@ -17,5 +17,10 @@ namespace ClientProject.Models
         public Sandwich sandwich { get; set; }
         [DataMember]
         public ICollection<OrderLineVegetable> orderLineVegetables { get; set; }
+
+        public decimal getPrice()
+        {
+            return sandwich.price + (new Menu()).vegetablesPrice;
+        }
     }
 }

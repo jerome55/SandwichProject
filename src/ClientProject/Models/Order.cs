@@ -17,5 +17,17 @@ namespace ClientProject.Models
         public decimal totalAmount { get; set; }
         [DataMember]
         private ICollection<OrderLine> orderLines { get; set; }
+
+        public void addOrderLine(OrderLine ol)
+        {
+            this.orderLines.Add(ol);
+            this.totalAmount += ol.getPrice();
+        }
+
+        public void deleteOrderLine(OrderLine ol)
+        {
+            this.orderLines.Remove(ol);
+            this.totalAmount -= ol.getPrice();
+        }
     }
 }
