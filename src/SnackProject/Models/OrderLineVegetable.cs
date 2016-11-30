@@ -15,5 +15,11 @@ namespace SnackProject.Models
         [DataMember]
         public Vegetable vegetable { get; set; }
         public int vegetableId { get; set; }
+
+        public OrderLineVegetable(OrderLine orderLine, Vegetable vegetable)
+        {
+            this.orderLine = orderLine;
+            this.vegetable = vegetable;
+        }
     }
 }

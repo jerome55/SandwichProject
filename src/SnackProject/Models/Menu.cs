@@ -12,12 +12,31 @@ namespace SnackProject.Models
     {
         public int id { get; set; }
         [DataMember]
-        public decimal vegetablesPrice { get; set; }
+        public decimal vegetablesPrice {
+            get {return vegetablesPrice }
+            set {
+                if (value>=0)
+                {
+                    vegetablesPrice = value;
+                }
+                else
+                {
+                    throw new Exception("Quantité inférieure a 0");
+                }       
+            }
+        }
 
         [DataMember][NotMapped]
         public ICollection<Sandwich> sandwiches { get; set; }
         [DataMember][NotMapped]
         public ICollection<Vegetable> vegetables { get; set; }
-        
+
+        public Menu(decimal vegetablesPrice, ICollection<Sandwich> sandwiches, ICollection<Vegetable> vegetables)
+        {
+            this.vegetablesPrice = vegetablesPrice;
+            this.sandwiches = sandwiches;
+            this.vegetables = vegetables;
+        }
+
     }
 }

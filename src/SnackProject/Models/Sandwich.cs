@@ -21,5 +21,13 @@ namespace SnackProject.Models
         public decimal price { get; set; }
         [DataMember]
         public bool available { get; set; }
+
+        public Sandwich(string name, string description, decimal price, bool available)
+        {
+            this.name = name;
+            this.description = description;
+            this.price = price;
+            this.available = available;
+        }
     }
 }
