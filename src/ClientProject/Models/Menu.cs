@@ -14,7 +14,6 @@ namespace ClientProject.Models
     {
         [DataMember]
         public decimal vegetablesPrice { get; set; }
-
         [DataMember]
         public ICollection<Sandwich> sandwiches { get; set; }
         [DataMember]
