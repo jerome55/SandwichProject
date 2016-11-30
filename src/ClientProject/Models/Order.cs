@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
@@ -12,8 +13,10 @@ namespace ClientProject.Models
         public int id { get; set; }
 
         [DataMember]
+        [Display(Name = "Date de Livraison")]
         public DateTime dateOfDelivery { get; set; }
         [DataMember]
+        [Display(Name = "Montant Total")]
         public decimal totalAmount { get; set; }
         [DataMember]
         private ICollection<OrderLine> orderLines { get; set; }

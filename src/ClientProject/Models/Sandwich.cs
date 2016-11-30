@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -13,6 +14,7 @@ namespace ClientProject.Models
         [DataMember]
         public int id { get; set; }
         [DataMember][NotMapped]
+        [Display(Name = "Nom")]
         public string name { get; set; }
         [DataMember][NotMapped]
         public string description { get; set; }
