@@ -12,19 +12,7 @@ namespace SnackProject.Models
     {
         public int id { get; set; }
         [DataMember]
-        public decimal vegetablesPrice {
-            get { return vegetablesPrice; }
-            set {
-                if (value>=0)
-                {
-                    vegetablesPrice = value;
-                }
-                else
-                {
-                    throw new Exception("Prix inférieure a 0");
-                }       
-            }
-        }
+        public decimal vegetablesPrice { get; set; }
 
         [DataMember][NotMapped]
         public ICollection<Sandwich> sandwiches { get; set; }
