@@ -1,11 +1,11 @@
-@model SnackProject.Models.Sandwich
+﻿@model SnackProject.Models.Sandwich
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Modifier un sandwchich";
 }
 
 <h2>Modifier un sandwchich</h2>
-<h4>Les modifications seront pris en compte et seront visible a 10 heures</h4>
+<h4>Les modifications seront pris en compte et seront visible à 10 heures</h4>
 
 <form asp-action="Edit">
     <div class="form-horizontal">
@@ -43,14 +43,14 @@
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Sauvegarder" class="btn btn-default" />
             </div>
         </div>
     </div>
 </form>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Retour à la liste</a>
 </div>
 
 @section Scripts {
