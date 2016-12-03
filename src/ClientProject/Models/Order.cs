@@ -17,5 +17,17 @@ namespace ClientProject.Models
 
         [DataMember]
         private ICollection<OrderLine> OrderLines { get; set; }
+
+        public void AddOrderLine(OrderLine ol)
+        {
+            this.OrderLines.Add(ol);
+            this.TotalAmount += ol.GetPrice();
+        }
+
+        public void DeleteOrderLine(OrderLine ol)
+        {
+            this.OrderLines.Remove(ol);
+            this.TotalAmount -= ol.GetPrice();
+        }
     }
 }

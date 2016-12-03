@@ -18,5 +18,10 @@ namespace ClientProject.Models
 
         [DataMember]
         public ICollection<OrderLineVegetable> OrderLineVegetables { get; set; }
+
+        public decimal GetPrice()
+        {
+            return sandwich.Price + (new Menu()).VegetablesPrice;
+        }
     }
 }

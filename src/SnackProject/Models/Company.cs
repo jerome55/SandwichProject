@@ -25,5 +25,17 @@ namespace SnackProject.Models
         public bool Status { get; set; }
 
         public ICollection<Order> Orders { get; set; }
+        
+
+        /*public Company(string chkcode, string name, int nbEmployes, string mail, string address, bool status, ICollection<Order> orders)
+        {
+            this.chkcode = chkcode;
+            this.name = name;
+            this.nbEmployes = nbEmployes;
+            this.mail = mail;
+            this.address = address;
+            this.status = status;
+            this.orders = orders;
+        }*/
     }
 }

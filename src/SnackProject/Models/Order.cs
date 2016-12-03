@@ -17,5 +17,13 @@ namespace SnackProject.Models
 
         [DataMember]
         public ICollection<OrderLine> OrderLines { get; set; }
+
+        
+        /*public Order(DateTime dateOfDelivery, decimal totalAmount, ICollection<OrderLine> orderLines)
+        {
+            this.dateOfDelivery = dateOfDelivery;
+            this.totalAmount = totalAmount;
+            this.orderLines = orderLines;
+        }*/
     }
 }

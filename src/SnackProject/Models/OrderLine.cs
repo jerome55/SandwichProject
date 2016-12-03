@@ -18,5 +18,13 @@ namespace SnackProject.Models
 
         [DataMember]
         public ICollection<OrderLineVegetable> OrderLineVegetables { get; set; }
+
+        
+        /*public OrderLine(Sandwich sandwich, int quantity, ICollection<OrderLineVegetable> orderLineVegetables)
+        {
+            this.sandwich = sandwich;
+            this.quantity = quantity;
+            this.orderLineVegetables = orderLineVegetables;
+        }*/
     }
 }
