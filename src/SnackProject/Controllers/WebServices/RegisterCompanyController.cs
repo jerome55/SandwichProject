@@ -21,25 +21,8 @@ namespace SnackProject.Controllers.WebServices
             _context = context;
         }
 
-        /*[HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }*/
-
-        /*[HttpGet("{id}", Name = "GetCompany")]
-        public IActionResult GetById(int id)
-        {
-            var item = _context.Companies.SingleOrDefault(m => m.Id == id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-            return new ObjectResult(item);
-        }*/
-
         [HttpPost]
-        public async Task<CommWrap<Company>> Post(Company newCompany)
+        public async Task<CommWrap<Company>> Post([FromBody]Company newCompany)
         {
             try
             {
@@ -51,11 +34,6 @@ namespace SnackProject.Controllers.WebServices
             }
             CommWrap<Company> response = new CommWrap<Company> { RequestStatus = 1, Content = newCompany };
             return response;
-
-            //return newCompany;
-
-            //return CreatedAtRoute("GetCompany", new { id = newCompany.Id }, newCompany);
-
         }
     }
 }

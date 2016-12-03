@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClientProject.Models
 {
@@ -11,6 +12,7 @@ namespace ClientProject.Models
     public class Company
     {
         [DataMember]
+        [Key][DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
         [DataMember]
         public string ChkCode { get; set; }

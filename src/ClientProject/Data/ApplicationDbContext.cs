@@ -22,7 +22,7 @@ namespace ClientProject.Data
             // Add your customizations after calling base.OnModelCreating(builder);
 
             builder.Entity<OrderLineVegetable>()
-                .HasKey(c => new { c.orderLineId, c.vegetableId });
+                .HasKey(c => new { c.OrderLineId, c.VegetableId });
         }
 
         public DbSet<Company> Companies { get; set; }

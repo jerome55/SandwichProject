@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ClientProject.Models.AccountViewModels
+namespace ClientProject.Models.CompanyRegisterViewModels
 {
-    public class RegisterManagerViewModel
+    public class RegisterCompanyViewModel
     {
         [Required]
         [EmailAddress]
@@ -86,5 +86,6 @@ namespace ClientProject.Models.AccountViewModels
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 1)]
         [Display(Name = "Country")]
         public string AddressCountry { get; set; }
+
     }
 }

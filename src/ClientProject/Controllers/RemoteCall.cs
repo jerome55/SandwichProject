@@ -20,7 +20,7 @@ namespace ClientProject.Controllers
         private RemoteCall()
         {
             client = new HttpClient();
-            client.BaseAddress = new Uri("http://localhost:63786/");
+            client.BaseAddress = new Uri("http://localhost:55367/");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }

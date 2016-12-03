@@ -8,7 +8,7 @@ using ClientProject.Data;
 namespace ClientProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20161124113028_Initial")]
+    [Migration("20161203103850_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,6 +30,8 @@ namespace ClientProject.Migrations
                         .HasAnnotation("MaxLength", 256);
 
                     b.Property<bool>("EmailConfirmed");
+
+                    b.Property<int>("EmployeeId");
 
                     b.Property<bool>("LockoutEnabled");
 
@@ -54,9 +56,10 @@ namespace ClientProject.Migrations
                     b.Property<string>("UserName")
                         .HasAnnotation("MaxLength", 256);
 
-                    b.Property<int>("employeeId");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId")
+                        .IsUnique();
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -65,109 +68,107 @@ namespace ClientProject.Migrations
                         .IsUnique()
                         .HasName("UserNameIndex");
 
-                    b.HasIndex("employeeId")
-                        .IsUnique();
-
                     b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("ClientProject.Models.Company", b =>
                 {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id");
 
-                    b.Property<string>("chkCode");
+                    b.Property<string>("ChkCode");
 
-                    b.HasKey("id");
+                    b.Property<bool>("Status");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Companies");
                 });
 
             modelBuilder.Entity("ClientProject.Models.Employee", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("companyid");
+                    b.Property<int?>("CompanyId");
 
-                    b.Property<string>("firstName");
+                    b.Property<string>("FirstName");
 
-                    b.Property<string>("lastName");
+                    b.Property<string>("LastName");
 
-                    b.Property<decimal>("wallet");
+                    b.Property<decimal>("Wallet");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
-                    b.HasIndex("companyid");
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("ClientProject.Models.Order", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("Employeeid");
+                    b.Property<DateTime>("DateOfDelivery");
 
-                    b.Property<DateTime>("dateOfDelivery");
+                    b.Property<int?>("EmployeeId");
 
-                    b.Property<decimal>("totalAmount");
+                    b.Property<decimal>("TotalAmount");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
-                    b.HasIndex("Employeeid");
+                    b.HasIndex("EmployeeId");
 
                     b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("ClientProject.Models.OrderLine", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("quantity");
+                    b.Property<int>("Quantity");
 
-                    b.Property<int?>("sandwichid");
+                    b.Property<int?>("SandwichId");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
-                    b.HasIndex("sandwichid");
+                    b.HasIndex("SandwichId");
 
                     b.ToTable("OrderLines");
                 });
 
             modelBuilder.Entity("ClientProject.Models.OrderLineVegetable", b =>
                 {
-                    b.Property<int>("orderLineId");
+                    b.Property<int>("OrderLineId");
 
-                    b.Property<int>("vegetableId");
+                    b.Property<int>("VegetableId");
 
-                    b.HasKey("orderLineId", "vegetableId");
+                    b.HasKey("OrderLineId", "VegetableId");
 
-                    b.HasIndex("orderLineId");
+                    b.HasIndex("OrderLineId");
 
-                    b.HasIndex("vegetableId");
+                    b.HasIndex("VegetableId");
 
                     b.ToTable("OrderLineVegetables");
                 });
 
             modelBuilder.Entity("ClientProject.Models.Sandwich", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
                     b.ToTable("Sandwiches");
                 });
 
             modelBuilder.Entity("ClientProject.Models.Vegetable", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
                     b.ToTable("Vegetables");
                 });
@@ -281,43 +282,43 @@ namespace ClientProject.Migrations
 
             modelBuilder.Entity("ClientProject.Models.ApplicationUser", b =>
                 {
-                    b.HasOne("ClientProject.Models.Employee", "employee")
-                        .WithOne("user")
-                        .HasForeignKey("ClientProject.Models.ApplicationUser", "employeeId")
+                    b.HasOne("ClientProject.Models.Employee", "Employee")
+                        .WithOne("ApplicationUser")
+                        .HasForeignKey("ClientProject.Models.ApplicationUser", "EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("ClientProject.Models.Employee", b =>
                 {
-                    b.HasOne("ClientProject.Models.Company", "company")
+                    b.HasOne("ClientProject.Models.Company", "Company")
                         .WithMany()
-                        .HasForeignKey("companyid");
+                        .HasForeignKey("CompanyId");
                 });
 
             modelBuilder.Entity("ClientProject.Models.Order", b =>
                 {
                     b.HasOne("ClientProject.Models.Employee")
-                        .WithMany("orders")
-                        .HasForeignKey("Employeeid");
+                        .WithMany("Orders")
+                        .HasForeignKey("EmployeeId");
                 });
 
             modelBuilder.Entity("ClientProject.Models.OrderLine", b =>
                 {
-                    b.HasOne("ClientProject.Models.Sandwich", "sandwich")
+                    b.HasOne("ClientProject.Models.Sandwich", "Sandwich")
                         .WithMany()
-                        .HasForeignKey("sandwichid");
+                        .HasForeignKey("SandwichId");
                 });
 
             modelBuilder.Entity("ClientProject.Models.OrderLineVegetable", b =>
                 {
-                    b.HasOne("ClientProject.Models.OrderLine", "orderLine")
-                        .WithMany("orderLineVegetables")
-                        .HasForeignKey("orderLineId")
+                    b.HasOne("ClientProject.Models.OrderLine", "OrderLine")
+                        .WithMany("OrderLineVegetables")
+                        .HasForeignKey("OrderLineId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("ClientProject.Models.Vegetable", "vegetable")
+                    b.HasOne("ClientProject.Models.Vegetable", "Vegetable")
                         .WithMany()
-                        .HasForeignKey("vegetableId")
+                        .HasForeignKey("VegetableId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

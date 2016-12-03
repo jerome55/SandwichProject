@@ -13,37 +13,37 @@ namespace ClientProject.Migrations
                 name: "Companies",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    chkCode = table.Column<string>(nullable: true)
+                    Id = table.Column<int>(nullable: false),
+                    ChkCode = table.Column<string>(nullable: true),
+                    Status = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Companies", x => x.id);
+                    table.PrimaryKey("PK_Companies", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Sandwiches",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Sandwiches", x => x.id);
+                    table.PrimaryKey("PK_Sandwiches", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Vegetables",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Vegetables", x => x.id);
+                    table.PrimaryKey("PK_Vegetables", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -78,21 +78,21 @@ namespace ClientProject.Migrations
                 name: "Employees",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    companyid = table.Column<int>(nullable: true),
-                    firstName = table.Column<string>(nullable: true),
-                    lastName = table.Column<string>(nullable: true),
-                    wallet = table.Column<decimal>(nullable: false)
+                    CompanyId = table.Column<int>(nullable: true),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    Wallet = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Employees", x => x.id);
+                    table.PrimaryKey("PK_Employees", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Employees_Companies_companyid",
-                        column: x => x.companyid,
+                        name: "FK_Employees_Companies_CompanyId",
+                        column: x => x.CompanyId,
                         principalTable: "Companies",
-                        principalColumn: "id",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -100,19 +100,19 @@ namespace ClientProject.Migrations
                 name: "OrderLines",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    quantity = table.Column<int>(nullable: false),
-                    sandwichid = table.Column<int>(nullable: true)
+                    Quantity = table.Column<int>(nullable: false),
+                    SandwichId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderLines", x => x.id);
+                    table.PrimaryKey("PK_OrderLines", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderLines_Sandwiches_sandwichid",
-                        column: x => x.sandwichid,
+                        name: "FK_OrderLines_Sandwiches_SandwichId",
+                        column: x => x.SandwichId,
                         principalTable: "Sandwiches",
-                        principalColumn: "id",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -146,6 +146,7 @@ namespace ClientProject.Migrations
                     ConcurrencyStamp = table.Column<string>(nullable: true),
                     Email = table.Column<string>(maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(nullable: false),
+                    EmployeeId = table.Column<int>(nullable: false),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
@@ -155,17 +156,16 @@ namespace ClientProject.Migrations
                     PhoneNumberConfirmed = table.Column<bool>(nullable: false),
                     SecurityStamp = table.Column<string>(nullable: true),
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
-                    UserName = table.Column<string>(maxLength: 256, nullable: true),
-                    employeeId = table.Column<int>(nullable: false)
+                    UserName = table.Column<string>(maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_Employees_employeeId",
-                        column: x => x.employeeId,
+                        name: "FK_AspNetUsers_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
                         principalTable: "Employees",
-                        principalColumn: "id",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -173,20 +173,20 @@ namespace ClientProject.Migrations
                 name: "Orders",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Employeeid = table.Column<int>(nullable: true),
-                    dateOfDelivery = table.Column<DateTime>(nullable: false),
-                    totalAmount = table.Column<decimal>(nullable: false)
+                    DateOfDelivery = table.Column<DateTime>(nullable: false),
+                    EmployeeId = table.Column<int>(nullable: true),
+                    TotalAmount = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.id);
+                    table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_Employees_Employeeid",
-                        column: x => x.Employeeid,
+                        name: "FK_Orders_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
                         principalTable: "Employees",
-                        principalColumn: "id",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -194,23 +194,23 @@ namespace ClientProject.Migrations
                 name: "OrderLineVegetables",
                 columns: table => new
                 {
-                    orderLineId = table.Column<int>(nullable: false),
-                    vegetableId = table.Column<int>(nullable: false)
+                    OrderLineId = table.Column<int>(nullable: false),
+                    VegetableId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderLineVegetables", x => new { x.orderLineId, x.vegetableId });
+                    table.PrimaryKey("PK_OrderLineVegetables", x => new { x.OrderLineId, x.VegetableId });
                     table.ForeignKey(
-                        name: "FK_OrderLineVegetables_OrderLines_orderLineId",
-                        column: x => x.orderLineId,
+                        name: "FK_OrderLineVegetables_OrderLines_OrderLineId",
+                        column: x => x.OrderLineId,
                         principalTable: "OrderLines",
-                        principalColumn: "id",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderLineVegetables_Vegetables_vegetableId",
-                        column: x => x.vegetableId,
+                        name: "FK_OrderLineVegetables_Vegetables_VegetableId",
+                        column: x => x.VegetableId,
                         principalTable: "Vegetables",
-                        principalColumn: "id",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -280,6 +280,12 @@ namespace ClientProject.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_EmployeeId",
+                table: "AspNetUsers",
+                column: "EmployeeId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
@@ -291,35 +297,29 @@ namespace ClientProject.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_employeeId",
-                table: "AspNetUsers",
-                column: "employeeId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Employees_companyid",
+                name: "IX_Employees_CompanyId",
                 table: "Employees",
-                column: "companyid");
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_Employeeid",
+                name: "IX_Orders_EmployeeId",
                 table: "Orders",
-                column: "Employeeid");
+                column: "EmployeeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderLines_sandwichid",
+                name: "IX_OrderLines_SandwichId",
                 table: "OrderLines",
-                column: "sandwichid");
+                column: "SandwichId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderLineVegetables_orderLineId",
+                name: "IX_OrderLineVegetables_OrderLineId",
                 table: "OrderLineVegetables",
-                column: "orderLineId");
+                column: "OrderLineId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderLineVegetables_vegetableId",
+                name: "IX_OrderLineVegetables_VegetableId",
                 table: "OrderLineVegetables",
-                column: "vegetableId");
+                column: "VegetableId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",

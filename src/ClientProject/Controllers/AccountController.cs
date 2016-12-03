@@ -21,7 +21,6 @@ namespace ClientProject.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly ActivationManager _acivationManager;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
@@ -89,65 +88,46 @@ namespace ClientProject.Controllers
         }
 
         //
-        // GET: /Account/RegisterManager
+        // GET: /Account/Register
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult RegisterManager(string returnUrl = null)
+        public IActionResult Register(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
 
         //
-        // POST: /Account/RegisterManager
+        // POST: /Account/Register
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RegisterManager(RegisterManagerViewModel model, string returnUrl = null)
+        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var company = new Company { Name = model.CompanyName, NbEmployees = model.NumberOfEmployee, Mail = model.Email, Address = model.AddressNumber + " " + model.AddressStreet + ", " + model.AddressBox + ", " + model.AddressPostalCode + ", " + model.AddressCity + ", " + model.AddressCountry, Status = false };
-                var manager = new Employee { FirstName = model.FirstName, LastName = model.LastName, Wallet = (decimal)0.00, Company = company };
-                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Employee = manager };
-                manager.ApplicationUser = user;
-
-                RemoteCall remoteCaller = RemoteCall.GetInstance();
-                CommWrap<Company> responseCompany = await remoteCaller.RegisterCompany(company);
-
-                if(responseCompany.RequestStatus == 1)
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
                 {
-                    company.Id = responseCompany.Content.Id;
-                    company.ChkCode = responseCompany.Content.ChkCode;
-                    var result = await _userManager.CreateAsync(user, model.Password);
-                    if (result.Succeeded)
-                    {
-                        //Recharger la page
-                    }
-                    else
-                    {
-                        //Recharger la page et indiquer que l'inscription à échoué
-                    }
-
-                
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                     // Send an email with this link
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
                     //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
                     //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
-                    /*await _signInManager.SignInAsync(user, isPersistent: false);
+                    await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation(3, "User created a new account with password.");
-                    return RedirectToLocal(returnUrl);*/
+                    return RedirectToLocal(returnUrl);
                 }
-                //AddErrors(result);
+                AddErrors(result);
             }
 
             // If we got this far, something failed, redisplay form
             return View(model);
         }
-
+        
         //
         // POST: /Account/LogOff
         [HttpPost]
