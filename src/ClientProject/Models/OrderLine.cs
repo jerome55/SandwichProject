@@ -21,7 +21,7 @@ namespace ClientProject.Models
 
         public decimal GetPrice()
         {
-            return sandwich.Price + (new Menu()).VegetablesPrice;
+            return Sandwich.Price + (new Menu()).VegetablesPrice;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace ClientProject.Controllers
         // GET: Employees
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Employee.ToListAsync());
+            return View(await _context.Employees.ToListAsync());
         }
 
         // GET: Employees/Details/5
@@ -33,7 +33,7 @@ namespace ClientProject.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employee.SingleOrDefaultAsync(m => m.id == id);
+            var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == id);
             if (employee == null)
             {
                 return NotFound();
@@ -72,7 +72,7 @@ namespace ClientProject.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employee.SingleOrDefaultAsync(m => m.id == id);
+            var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == id);
             if (employee == null)
             {
                 return NotFound();
@@ -87,7 +87,7 @@ namespace ClientProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("id,firstName,lastName,login,mail,password,wallet")] Employee employee)
         {
-            if (id != employee.id)
+            if (id != employee.Id)
             {
                 return NotFound();
             }
@@ -101,7 +101,7 @@ namespace ClientProject.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmployeeExists(employee.id))
+                    if (!EmployeeExists(employee.Id))
                     {
                         return NotFound();
                     }
@@ -123,7 +123,7 @@ namespace ClientProject.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employee.SingleOrDefaultAsync(m => m.id == id);
+            var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == id);
             if (employee == null)
             {
                 return NotFound();
@@ -137,15 +137,15 @@ namespace ClientProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var employee = await _context.Employee.SingleOrDefaultAsync(m => m.id == id);
-            _context.Employee.Remove(employee);
+            var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == id);
+            _context.Employees.Remove(employee);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
         private bool EmployeeExists(int id)
         {
-            return _context.Employee.Any(e => e.id == id);
+            return _context.Employees.Any(e => e.Id == id);
         }
     }
 }

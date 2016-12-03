@@ -15,7 +15,7 @@ namespace ClientProject.Models
         public string Mail { get; set; }*/
         public string LastName { get; set; }
         public string FirstName { get; set; }
-        public decimal Wallet { get; private set; }
+        public decimal Wallet { get; set; }
         
         public ICollection<Order> Orders { get; set; }
 

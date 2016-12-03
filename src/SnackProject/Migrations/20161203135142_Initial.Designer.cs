@@ -8,7 +8,7 @@ using SnackProject.Data;
 namespace SnackProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20161130075731_Initial")]
+    [Migration("20161203135142_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -175,121 +175,121 @@ namespace SnackProject.Migrations
 
             modelBuilder.Entity("SnackProject.Models.Company", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("address");
+                    b.Property<string>("Address");
 
-                    b.Property<string>("chkcode");
+                    b.Property<string>("Chkcode");
 
-                    b.Property<string>("mail");
+                    b.Property<string>("Mail");
 
-                    b.Property<string>("name");
+                    b.Property<string>("Name");
 
-                    b.Property<int>("nbEmployes");
+                    b.Property<int>("NbEmployees");
 
-                    b.Property<bool>("status");
+                    b.Property<bool>("Status");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
                     b.ToTable("Companies");
                 });
 
             modelBuilder.Entity("SnackProject.Models.Menu", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<decimal>("vegetablesPrice");
+                    b.Property<decimal>("VegetablesPrice");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
                     b.ToTable("Menus");
                 });
 
             modelBuilder.Entity("SnackProject.Models.Order", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("Companyid");
+                    b.Property<int?>("CompanyId");
 
-                    b.Property<DateTime>("dateOfDelivery");
+                    b.Property<DateTime>("DateOfDelivery");
 
-                    b.Property<decimal>("totalAmount");
+                    b.Property<decimal>("TotalAmount");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
-                    b.HasIndex("Companyid");
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("SnackProject.Models.OrderLine", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("Orderid");
+                    b.Property<int?>("OrderId");
 
-                    b.Property<int>("quantity");
+                    b.Property<int>("Quantity");
 
-                    b.Property<int?>("sandwichid");
+                    b.Property<int?>("SandwichId");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
-                    b.HasIndex("Orderid");
+                    b.HasIndex("OrderId");
 
-                    b.HasIndex("sandwichid");
+                    b.HasIndex("SandwichId");
 
                     b.ToTable("OrderLines");
                 });
 
             modelBuilder.Entity("SnackProject.Models.OrderLineVegetable", b =>
                 {
-                    b.Property<int>("orderLineId");
+                    b.Property<int>("OrderLineId");
 
-                    b.Property<int>("vegetableId");
+                    b.Property<int>("VegetableId");
 
-                    b.HasKey("orderLineId", "vegetableId");
+                    b.HasKey("OrderLineId", "VegetableId");
 
-                    b.HasIndex("orderLineId");
+                    b.HasIndex("OrderLineId");
 
-                    b.HasIndex("vegetableId");
+                    b.HasIndex("VegetableId");
 
                     b.ToTable("OrderLineVegetable");
                 });
 
             modelBuilder.Entity("SnackProject.Models.Sandwich", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<bool>("available");
+                    b.Property<bool>("Available");
 
-                    b.Property<string>("description");
+                    b.Property<string>("Description");
 
-                    b.Property<string>("name");
+                    b.Property<string>("Name");
 
-                    b.Property<decimal>("price");
+                    b.Property<decimal>("Price");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
                     b.ToTable("Sandwiches");
                 });
 
             modelBuilder.Entity("SnackProject.Models.Vegetable", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<bool>("available");
+                    b.Property<bool>("Available");
 
-                    b.Property<string>("description");
+                    b.Property<string>("Description");
 
-                    b.Property<string>("name");
+                    b.Property<string>("Name");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
                     b.ToTable("Vegetables");
                 });
@@ -334,31 +334,31 @@ namespace SnackProject.Migrations
             modelBuilder.Entity("SnackProject.Models.Order", b =>
                 {
                     b.HasOne("SnackProject.Models.Company")
-                        .WithMany("orders")
-                        .HasForeignKey("Companyid");
+                        .WithMany("Orders")
+                        .HasForeignKey("CompanyId");
                 });
 
             modelBuilder.Entity("SnackProject.Models.OrderLine", b =>
                 {
                     b.HasOne("SnackProject.Models.Order")
-                        .WithMany("orderLines")
-                        .HasForeignKey("Orderid");
+                        .WithMany("OrderLines")
+                        .HasForeignKey("OrderId");
 
-                    b.HasOne("SnackProject.Models.Sandwich", "sandwich")
+                    b.HasOne("SnackProject.Models.Sandwich", "Sandwich")
                         .WithMany()
-                        .HasForeignKey("sandwichid");
+                        .HasForeignKey("SandwichId");
                 });
 
             modelBuilder.Entity("SnackProject.Models.OrderLineVegetable", b =>
                 {
-                    b.HasOne("SnackProject.Models.OrderLine", "orderLine")
-                        .WithMany("orderLineVegetables")
-                        .HasForeignKey("orderLineId")
+                    b.HasOne("SnackProject.Models.OrderLine", "OrderLine")
+                        .WithMany("OrderLineVegetables")
+                        .HasForeignKey("OrderLineId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SnackProject.Models.Vegetable", "vegetable")
+                    b.HasOne("SnackProject.Models.Vegetable", "Vegetable")
                         .WithMany()
-                        .HasForeignKey("vegetableId")
+                        .HasForeignKey("VegetableId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
         }
