@@ -13,7 +13,7 @@ namespace ClientProject.Models
     {
         [DataMember]
         public int Id { get; set; }
-        //[Display(Name = "Nom blabla")] // "Qu'est-ce que c'est ?" -Jerome
+        //[Display(Name = "Nom blabla")]
         [DataMember][NotMapped]
         public string Name { get; set; }
         [DataMember][NotMapped]

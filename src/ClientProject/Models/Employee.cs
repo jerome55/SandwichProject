@@ -16,7 +16,6 @@ namespace ClientProject.Models
         public string LastName { get; set; }
         public string FirstName { get; set; }
         public decimal Wallet { get; set; }
-        /*public Boolean Admin { get; set; }*/
 
         public ICollection<Order> Orders { get; set; }
 
