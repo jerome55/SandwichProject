@@ -19,7 +19,7 @@ namespace ClientProject.Models
         public ICollection<Order> orders { get; set; }
 
         public Company company { get; set; }
-        
+
         
         /**
          * Methode qui debite le porte-monnaie/credit (wallet) de l'employe du prix total de sa commande
