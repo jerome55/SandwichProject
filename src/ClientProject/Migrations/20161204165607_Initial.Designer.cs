@@ -8,7 +8,7 @@ using ClientProject.Data;
 namespace ClientProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20161203154404_Initial")]
+    [Migration("20161204165607_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -17,11 +17,24 @@ namespace ClientProject.Migrations
                 .HasAnnotation("ProductVersion", "1.0.1")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("ClientProject.Models.ApplicationUser", b =>
+            modelBuilder.Entity("ClientProject.Models.Company", b =>
+                {
+                    b.Property<int>("Id");
+
+                    b.Property<string>("ChkCode");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Companies");
+                });
+
+            modelBuilder.Entity("ClientProject.Models.Employee", b =>
                 {
                     b.Property<string>("Id");
 
                     b.Property<int>("AccessFailedCount");
+
+                    b.Property<int?>("CompanyId");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -31,7 +44,9 @@ namespace ClientProject.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
-                    b.Property<int>("EmployeeId");
+                    b.Property<string>("FirstName");
+
+                    b.Property<string>("LastName");
 
                     b.Property<bool>("LockoutEnabled");
 
@@ -56,10 +71,11 @@ namespace ClientProject.Migrations
                     b.Property<string>("UserName")
                         .HasAnnotation("MaxLength", 256);
 
+                    b.Property<decimal>("Wallet");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId")
-                        .IsUnique();
+                    b.HasIndex("CompanyId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -71,37 +87,6 @@ namespace ClientProject.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("ClientProject.Models.Company", b =>
-                {
-                    b.Property<int>("Id");
-
-                    b.Property<string>("ChkCode");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Companies");
-                });
-
-            modelBuilder.Entity("ClientProject.Models.Employee", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int?>("CompanyId");
-
-                    b.Property<string>("FirstName");
-
-                    b.Property<string>("LastName");
-
-                    b.Property<decimal>("Wallet");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("Employees");
-                });
-
             modelBuilder.Entity("ClientProject.Models.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -109,7 +94,7 @@ namespace ClientProject.Migrations
 
                     b.Property<DateTime>("DateOfDelivery");
 
-                    b.Property<int?>("EmployeeId");
+                    b.Property<string>("EmployeeId");
 
                     b.Property<decimal>("TotalAmount");
 
@@ -278,14 +263,6 @@ namespace ClientProject.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("ClientProject.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("ClientProject.Models.Employee", "Employee")
-                        .WithOne("ApplicationUser")
-                        .HasForeignKey("ClientProject.Models.ApplicationUser", "EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("ClientProject.Models.Employee", b =>
                 {
                     b.HasOne("ClientProject.Models.Company", "Company")
@@ -330,7 +307,7 @@ namespace ClientProject.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("ClientProject.Models.ApplicationUser")
+                    b.HasOne("ClientProject.Models.Employee")
                         .WithMany("Claims")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -338,7 +315,7 @@ namespace ClientProject.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("ClientProject.Models.ApplicationUser")
+                    b.HasOne("ClientProject.Models.Employee")
                         .WithMany("Logins")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -351,7 +328,7 @@ namespace ClientProject.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("ClientProject.Models.ApplicationUser")
+                    b.HasOne("ClientProject.Models.Employee")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);

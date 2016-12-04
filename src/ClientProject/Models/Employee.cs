@@ -1,29 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClientProject.Models
 {
-    public class Employee
+    // Add profile data for application users by adding properties to the ApplicationUser class
+    public class Employee : IdentityUser
     {
-        public int Id { get; set; }
-        /*public string Login { get; set; }
-        public string Password { get; set; }
-        public string Mail { get; set; }*/
         public string LastName { get; set; }
         public string FirstName { get; set; }
         public decimal Wallet { get; set; }
-        
+
         public ICollection<Order> Orders { get; set; }
 
         public Company Company { get; set; }
-        [Required]
-        public ApplicationUser ApplicationUser { get; set; }
-
-
+        
         /**
          * Methode qui debite le porte-monnaie/credit (wallet) de l'employe du prix total de sa commande
          * param : totalAmount : prix totale de sa commande
@@ -54,5 +48,6 @@ namespace ClientProject.Models
             }
             else return false;
         }
+
     }
 }

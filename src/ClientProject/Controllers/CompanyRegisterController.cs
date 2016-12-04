@@ -19,8 +19,8 @@ namespace ClientProject.Controllers
     [Authorize]
     public class CompanyRegisterController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<Employee> _userManager;
+        private readonly SignInManager<Employee> _signInManager;
         private readonly ActivationInformant _activationInformant;
         private readonly ApplicationDbContext _context;
         private readonly IEmailSender _emailSender;
@@ -28,8 +28,8 @@ namespace ClientProject.Controllers
         private readonly ILogger _logger;
 
         public CompanyRegisterController(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
+            UserManager<Employee> userManager,
+            SignInManager<Employee> signInManager,
             ActivationInformant activationInformant,
             ApplicationDbContext context,
             IEmailSender emailSender,
@@ -75,10 +75,8 @@ namespace ClientProject.Controllers
             if (ModelState.IsValid)
             {
                 var company = new Company { Name = model.CompanyName, NbEmployees = model.NumberOfEmployee, Mail = model.Email, Address = model.AddressNumber + " " + model.AddressStreet + ", " + model.AddressBox + ", " + model.AddressPostalCode + ", " + model.AddressCity + ", " + model.AddressCountry, Status = false };
-                var manager = new Employee { FirstName = model.FirstName, LastName = model.LastName, Wallet = (decimal)0.00, Company = company };
-                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Employee = manager };
-                manager.ApplicationUser = user;
-
+                var manager = new Employee { UserName = model.UserName, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, Wallet = (decimal)0.00, Company = company };
+                
                 RemoteCall remoteCaller = RemoteCall.GetInstance();
                 CommWrap<Company> responseCompany = await remoteCaller.RegisterCompany(company);
 
@@ -86,7 +84,7 @@ namespace ClientProject.Controllers
                 {
                     company.Id = responseCompany.Content.Id;
                     company.ChkCode = responseCompany.Content.ChkCode;
-                    var result = await _userManager.CreateAsync(user, model.Password);
+                    var result = await _userManager.CreateAsync(manager, model.Password);
                     if (result.Succeeded)
                     {
                         return RedirectToLocal(returnUrl);

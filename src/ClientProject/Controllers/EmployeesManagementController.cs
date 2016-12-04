@@ -11,21 +11,22 @@ using Microsoft.AspNetCore.Identity;
 using ClientProject.Services;
 using Microsoft.Extensions.Logging;
 using ClientProject.Models.EmployeesManagementViewModels;
+using System.Diagnostics;
 
 namespace ClientProject.Controllers
 {
     public class EmployeesManagementController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<Employee> _userManager;
+        private readonly SignInManager<Employee> _signInManager;
         private readonly ApplicationDbContext _context;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
         
         public EmployeesManagementController(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
+            UserManager<Employee> userManager,
+            SignInManager<Employee> signInManager,
             ApplicationDbContext context,
             IEmailSender emailSender,
             ISmsSender smsSender,
@@ -47,24 +48,6 @@ namespace ClientProject.Controllers
         }
 
         //
-        // GET: Employees/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == id);
-            if (employee == null)
-            {
-                return NotFound();
-            }
-
-            return View(employee);
-        }
-
-        //
         // GET: Employees/Create
         public IActionResult Create()
         {
@@ -79,27 +62,29 @@ namespace ClientProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateViewModel model)
         {
+            Debug.WriteLine("!!!!!!!111111111111111111");
             if (ModelState.IsValid)
             {
-                var employee = new Employee { FirstName = model.FirstName, LastName = model.LastName, Wallet = model.Wallet };
-                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Employee = employee };
-                employee.ApplicationUser = user;
+                Debug.WriteLine("!!!!!!!22222222222222222222");
+                var employee = new Employee { UserName = model.UserName, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, Wallet = model.Wallet };
+                Debug.WriteLine("!!!!!!!33333333333333333333");
+                var user = await _userManager.CreateAsync(employee, model.Password);
+                Debug.WriteLine("!!!!!!!44444444444444444444");
 
-                var userStep2 = await _userManager.CreateAsync(user, model.Password);
-                
-                if (userStep2.Succeeded)
+                if (user.Succeeded)
                 {
+                    Debug.WriteLine("!!!!!!!5555555555555555555");
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                     // Send an email with this link
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
                     //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
                     //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
-                    _context.Add(employee);
-                    await _context.SaveChangesAsync();
+                    Debug.WriteLine("!!!!!!!666666666666666666666");
                     return RedirectToAction("Index");
+                    Debug.WriteLine("!!!!!!!777777777777777777777");
                 }
-                AddErrors(userStep2);
+                AddErrors(user);
             }
             // If we got this far, something failed, redisplay form
             return View(model);
@@ -107,7 +92,7 @@ namespace ClientProject.Controllers
 
         //
         // GET: Employees/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
             {
@@ -128,9 +113,9 @@ namespace ClientProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,firstName,lastName,login,mail,password,wallet")] Employee employee)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,FirstName,LastName,UserName,Email")] Employee model)
         {
-            if (id != employee.Id)
+            if (id != model.Id)
             {
                 return NotFound();
             }
@@ -139,12 +124,21 @@ namespace ClientProject.Controllers
             {
                 try
                 {
-                    _context.Update(employee);
-                    await _context.SaveChangesAsync();
+                    Employee employeeInDb = await _userManager.FindByIdAsync(id);
+                    if (employeeInDb == null)
+                    {
+                        return NotFound();
+                    }
+                    employeeInDb.FirstName = model.FirstName;
+                    employeeInDb.LastName = model.LastName;
+                    employeeInDb.UserName = model.UserName;
+                    employeeInDb.Email = model.Email;
+
+                    await _userManager.UpdateAsync(employeeInDb);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmployeeExists(employee.Id))
+                    if (!EmployeeExists(model.Id))
                     {
                         return NotFound();
                     }
@@ -155,12 +149,59 @@ namespace ClientProject.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            return View(employee);
+            return View(model);
+        }
+
+        //
+        // GET: Employees/Details/5
+        public async Task<IActionResult> AddToWallet(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Employee employee = await _userManager.FindByIdAsync(id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
+            AddToWalletViewModel model = new AddToWalletViewModel { Id = employee.Id, FirstName = employee.FirstName, LastName = employee.LastName, UserName = employee.UserName, Email = employee.Email, AddToWallet = (decimal)0.00 };
+
+            return View(model);
+        }
+
+        //
+        // POST: Employees/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddToWallet(AddToWalletViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == model.Id);
+                if (employee == null)
+                {
+                    return NotFound();
+                }
+
+                employee.Wallet += model.AddToWallet;
+
+                _context.Update(employee);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Index");
+            }
+            // If we got this far, something failed, redisplay form
+            return View(model);
         }
 
         //
         // GET: Employees/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
@@ -180,7 +221,7 @@ namespace ClientProject.Controllers
         // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == id);
             _context.Employees.Remove(employee);
@@ -196,7 +237,7 @@ namespace ClientProject.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
         }
-        private bool EmployeeExists(int id)
+        private bool EmployeeExists(string id)
         {
             return _context.Employees.Any(e => e.Id == id);
         }
