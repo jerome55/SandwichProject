@@ -22,6 +22,7 @@ namespace SnackProject.Models
         public string Mail { get; set; }
         [DataMember]
         public string Address { get; set; }
+        [DataMember]
         public bool Status { get; set; }
 
         public ICollection<Order> Orders { get; set; }

@@ -8,7 +8,7 @@ using ClientProject.Data;
 namespace ClientProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20161203134646_Initial")]
+    [Migration("20161203154404_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,8 +76,6 @@ namespace ClientProject.Migrations
                     b.Property<int>("Id");
 
                     b.Property<string>("ChkCode");
-
-                    b.Property<bool>("Status");
 
                     b.HasKey("Id");
 

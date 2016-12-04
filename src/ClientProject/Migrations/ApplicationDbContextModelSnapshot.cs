@@ -76,8 +76,6 @@ namespace ClientProject.Migrations
 
                     b.Property<string>("ChkCode");
 
-                    b.Property<bool>("Status");
-
                     b.HasKey("Id");
 
                     b.ToTable("Companies");

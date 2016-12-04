@@ -7,24 +7,46 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ClientProject.Data;
 using ClientProject.Models;
+using Microsoft.AspNetCore.Identity;
+using ClientProject.Services;
+using Microsoft.Extensions.Logging;
+using ClientProject.Models.EmployeesManagementViewModels;
 
 namespace ClientProject.Controllers
 {
-    public class EmployeesController : Controller
+    public class EmployeesManagementController : Controller
     {
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ApplicationDbContext _context;
-
-        public EmployeesController(ApplicationDbContext context)
+        private readonly IEmailSender _emailSender;
+        private readonly ISmsSender _smsSender;
+        private readonly ILogger _logger;
+        
+        public EmployeesManagementController(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            ApplicationDbContext context,
+            IEmailSender emailSender,
+            ISmsSender smsSender,
+            ILoggerFactory loggerFactory)
         {
-            _context = context;    
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _context = context;
+            _emailSender = emailSender;
+            _smsSender = smsSender;
+            _logger = loggerFactory.CreateLogger<AccountController>();
         }
 
+        //
         // GET: Employees
         public async Task<IActionResult> Index()
         {
             return View(await _context.Employees.ToListAsync());
         }
 
+        //
         // GET: Employees/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -42,28 +64,48 @@ namespace ClientProject.Controllers
             return View(employee);
         }
 
+        //
         // GET: Employees/Create
         public IActionResult Create()
         {
             return View();
         }
 
+        //
         // POST: Employees/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,firstName,lastName,login,mail,password,wallet")] Employee employee)
+        public async Task<IActionResult> Create(CreateViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(employee);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                var employee = new Employee { FirstName = model.FirstName, LastName = model.LastName, Wallet = model.Wallet };
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Employee = employee };
+                employee.ApplicationUser = user;
+
+                var userStep2 = await _userManager.CreateAsync(user, model.Password);
+                
+                if (userStep2.Succeeded)
+                {
+                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
+                    // Send an email with this link
+                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+                    //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
+                    //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
+                    _context.Add(employee);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index");
+                }
+                AddErrors(userStep2);
             }
-            return View(employee);
+            // If we got this far, something failed, redisplay form
+            return View(model);
         }
 
+        //
         // GET: Employees/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -80,6 +122,7 @@ namespace ClientProject.Controllers
             return View(employee);
         }
 
+        //
         // POST: Employees/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -115,6 +158,7 @@ namespace ClientProject.Controllers
             return View(employee);
         }
 
+        //
         // GET: Employees/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -132,6 +176,7 @@ namespace ClientProject.Controllers
             return View(employee);
         }
 
+        //
         // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -143,6 +188,14 @@ namespace ClientProject.Controllers
             return RedirectToAction("Index");
         }
 
+
+        private void AddErrors(IdentityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
         private bool EmployeeExists(int id)
         {
             return _context.Employees.Any(e => e.Id == id);

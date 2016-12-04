@@ -18,7 +18,5 @@ namespace ClientProject.Models
         public string Name { get; set; }
         [DataMember][NotMapped]
         public string Description { get; set; }
-        [DataMember][NotMapped]
-        public bool Available { get; set; }
     }
 }

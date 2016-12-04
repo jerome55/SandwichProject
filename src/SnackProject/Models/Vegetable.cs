@@ -15,7 +15,6 @@ namespace SnackProject.Models
         public string Name { get; set; }
         [DataMember]
         public string Description { get; set; }
-        [DataMember]
         public bool Available { get; set; }
 
         

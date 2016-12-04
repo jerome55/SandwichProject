@@ -14,8 +14,7 @@ namespace ClientProject.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false),
-                    ChkCode = table.Column<string>(nullable: true),
-                    Status = table.Column<bool>(nullable: false)
+                    ChkCode = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

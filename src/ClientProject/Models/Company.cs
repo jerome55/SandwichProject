@@ -24,7 +24,7 @@ namespace ClientProject.Models
         public string Mail { get; set; }
         [DataMember][NotMapped]
         public string Address { get; set; }
-        [NotMapped]
+        [DataMember][NotMapped]
         public bool Status { get; set; }
     }
 }

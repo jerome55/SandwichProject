@@ -55,7 +55,7 @@ namespace ClientProject
             services.AddTransient<ISmsSender, AuthMessageSender>();
 
             // Service Perso Jerome
-            services.AddTransient<ActivationManager>();
+            services.AddTransient<ActivationInformant>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

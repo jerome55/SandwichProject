@@ -18,7 +18,6 @@ namespace SnackProject.Models
         public string Description { get; set; }
         [DataMember]
         public decimal Price { get; set; }
-        [DataMember]
         public bool Available { get; set; }
 
         

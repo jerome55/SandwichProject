@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace ClientProject.InfoProviders
 {
-    public class ActivationManager
+    public class ActivationInformant
     {
         private ApplicationDbContext _context;
 
-        private ActivationManager(ApplicationDbContext context)
+        public ActivationInformant(ApplicationDbContext context)
         {
             this._context = context;
         }
@@ -42,26 +42,26 @@ namespace ClientProject.InfoProviders
             }
         }*/
 
-        
-       /* public async Task<bool> CheckStatusRegistration()
-        {
-            List<Models.Company> companiesList = await this._context.Companies.ToListAsync();
-            if (companiesList.Count != 0)
-            {
-                if (companiesList[0].status)
-                {
-                    return true;
-                }
-                else
-                {
-                    //distantStatusCall WebService CheckStatus
-                    //If(distantStatus==true)
-                    ////Update localdb change status
-                    ////Return true
-                    //Else
-                    ////Return False
-                }
-            }
-        }*/
+
+        /* public async Task<bool> CheckStatusRegistration()
+         {
+             List<Models.Company> companiesList = await this._context.Companies.ToListAsync();
+             if (companiesList.Count != 0)
+             {
+                 if (companiesList[0].status)
+                 {
+                     return true;
+                 }
+                 else
+                 {
+                     //distantStatusCall WebService CheckStatus
+                     //If(distantStatus==true)
+                     ////Update localdb change status
+                     ////Return true
+                     //Else
+                     ////Return False
+                 }
+             }
+         }*/
     }
 }

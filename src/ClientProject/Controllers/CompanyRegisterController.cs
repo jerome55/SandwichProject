@@ -21,6 +21,7 @@ namespace ClientProject.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ActivationInformant _activationInformant;
         private readonly ApplicationDbContext _context;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
@@ -29,6 +30,7 @@ namespace ClientProject.Controllers
         public CompanyRegisterController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
+            ActivationInformant activationInformant,
             ApplicationDbContext context,
             IEmailSender emailSender,
             ISmsSender smsSender,
@@ -36,6 +38,7 @@ namespace ClientProject.Controllers
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _activationInformant = activationInformant;
             _context = context;
             _emailSender = emailSender;
             _smsSender = smsSender;
@@ -49,7 +52,7 @@ namespace ClientProject.Controllers
         public async Task<IActionResult> Index(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            if (await IsRegistered())
+            if (await _activationInformant.IsRegistered())
             {
                 return RedirectToLocal(returnUrl);
             }
@@ -64,7 +67,7 @@ namespace ClientProject.Controllers
         public async Task<IActionResult> RegisterCompany(RegisterCompanyViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            if (await IsRegistered())
+            if (await _activationInformant.IsRegistered())
             {
                 return RedirectToLocal(returnUrl);
             }
@@ -96,20 +99,7 @@ namespace ClientProject.Controllers
             return View(model);
         }
         
-
-        private async Task<bool> IsRegistered()
-        {
-            List<Models.Company> companiesList = await this._context.Companies.ToListAsync();
-            if (companiesList.Count != 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
+        
         /*//
         // POST: /Account/Register
         [HttpPost]
