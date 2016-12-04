@@ -12,19 +12,7 @@ namespace SnackProject.Models
         public int id { get; set; }
 
         [DataMember]
-        public int quantity {
-            get { return quantity; }
-            set{
-                if(value > 0)
-                {
-                    quantity = value;
-                }
-                else
-                {
-                    throw new Exception("Quantité inférieure a 0");
-                }
-            }
-        }
+        public int quantity { get; set; }
 
         [DataMember]
         public Sandwich sandwich { get; set; }
