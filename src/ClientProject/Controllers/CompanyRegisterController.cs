@@ -13,6 +13,7 @@ using ClientProject.Models.CompanyRegisterViewModels;
 using ClientProject.Models.Communication;
 using ClientProject.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace ClientProject.Controllers
 {
@@ -21,6 +22,7 @@ namespace ClientProject.Controllers
     {
         private readonly UserManager<Employee> _userManager;
         private readonly SignInManager<Employee> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ActivationInformant _activationInformant;
         private readonly ApplicationDbContext _context;
         private readonly IEmailSender _emailSender;
@@ -30,6 +32,7 @@ namespace ClientProject.Controllers
         public CompanyRegisterController(
             UserManager<Employee> userManager,
             SignInManager<Employee> signInManager,
+            RoleManager<IdentityRole> roleManager,
             ActivationInformant activationInformant,
             ApplicationDbContext context,
             IEmailSender emailSender,
@@ -37,6 +40,7 @@ namespace ClientProject.Controllers
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _activationInformant = activationInformant;
             _context = context;
             _emailSender = emailSender;
@@ -74,7 +78,7 @@ namespace ClientProject.Controllers
             {
                 var company = new Company { Name = model.CompanyName, NbEmployees = model.NumberOfEmployee, Mail = model.Email, Address = model.AddressNumber + " " + model.AddressStreet + ", " + model.AddressBox + ", " + model.AddressPostalCode + ", " + model.AddressCity + ", " + model.AddressCountry, Status = false };
                 var manager = new Employee { UserName = model.UserName, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, Wallet = (decimal)0.00, Company = company };
-                
+
                 RemoteCall remoteCaller = RemoteCall.GetInstance();
                 CommWrap<Company> responseCompany = await remoteCaller.RegisterCompany(company);
 
@@ -85,6 +89,18 @@ namespace ClientProject.Controllers
                     var result = await _userManager.CreateAsync(manager, model.Password);
                     if (result.Succeeded)
                     {
+                        IdentityRole role = new IdentityRole { Name = "Responsable", NormalizedName = "RESPONSABLE" };
+                        bool roleExist = await _roleManager.RoleExistsAsync(role.NormalizedName);
+                        if (!roleExist)
+                        {
+                            IdentityResult roleResult = await _roleManager.CreateAsync(role);
+                            if (roleResult.Succeeded)
+                                await _userManager.AddToRoleAsync(manager, role.Name);
+                        }
+                        else {
+                            await _userManager.AddToRoleAsync(manager, role.Name);
+                        }
+
                         return RedirectToLocal(returnUrl);
                     }
                     AddErrors(result);
