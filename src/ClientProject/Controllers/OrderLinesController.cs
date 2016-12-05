@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ClientProject.Data;
 using ClientProject.Models;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Identity;
 
 namespace ClientProject.Controllers
 {
@@ -23,15 +24,9 @@ namespace ClientProject.Controllers
         // GET: OrderLines
         public async Task<IActionResult> Index()
         {
-            if(User.Identity.IsAuthenticated)
-            {
-                return View(await _context.OrderLines.ToListAsync());
-            }
-            else
-            {
-                return RedirectToAction("Account/Login", returnUrl = "OrderLines");
-            }
-            
+            User.Identity.Name
+            return View(await _context.OrderLines.ToListAsync());
+         
         }
 
         // GET: OrderLines/Details/5
