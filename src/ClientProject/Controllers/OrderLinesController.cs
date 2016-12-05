@@ -9,24 +9,58 @@ using ClientProject.Data;
 using ClientProject.Models;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClientProject.Controllers
 {
     public class OrderLinesController : Controller
     {
-        private readonly ClientContext _context;
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<Employee> _userManager;
 
-        public OrderLinesController(ClientContext context)
+        public OrderLinesController(ApplicationDbContext context, UserManager<Employee> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManager = userManager;
         }
-            
+
+        private Order getCurrentOrder(Employee employee)
+        {
+            DateTime now = DateTime.Now;
+
+            DateTime delivreryDate;
+            if (now.Hour >= 10)
+            {
+                delivreryDate = DateTime.Parse(now.Year+"-"+now.Month+"-"+now.Day+1);
+            }
+            else{
+                delivreryDate = DateTime.Parse(now.Year + "-" + now.Month + "-" + now.Day);
+            }
+
+            List<Order> order = employee.Orders.Where(q => q.DateOfDelivery.Equals(delivreryDate)).ToList();
+
+            if(order.Count == 0)
+            {
+                return null;
+            }
+            else
+            {
+                return order.First();
+            }
+        }
+
+
         // GET: OrderLines
+        [Authorize]
         public async Task<IActionResult> Index()
         {
-            User.Identity.Name
-            return View(await _context.OrderLines.ToListAsync());
-         
+            string id = _userManager.GetUserId(User);
+
+            Employee emp = await _userManager.FindByIdAsync(id);
+
+            Order order = getCurrentOrder(emp);
+
+            return View(order.OrderLines.ToList());
         }
 
         // GET: OrderLines/Details/5
@@ -37,7 +71,7 @@ namespace ClientProject.Controllers
                 return NotFound();
             }
 
-            var orderLine = await _context.OrderLines.SingleOrDefaultAsync(m => m.id == id);
+            var orderLine = await _context.OrderLines.SingleOrDefaultAsync(m => m.Id == id);
             if (orderLine == null)
             {
                 return NotFound();
@@ -76,7 +110,7 @@ namespace ClientProject.Controllers
                 return NotFound();
             }
 
-            var orderLine = await _context.OrderLines.SingleOrDefaultAsync(m => m.id == id);
+            var orderLine = await _context.OrderLines.SingleOrDefaultAsync(m => m.Id == id);
             if (orderLine == null)
             {
                 return NotFound();
@@ -91,7 +125,7 @@ namespace ClientProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("id,quantity")] OrderLine orderLine)
         {
-            if (id != orderLine.id)
+            if (id != orderLine.Id)
             {
                 return NotFound();
             }
@@ -105,7 +139,7 @@ namespace ClientProject.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OrderLineExists(orderLine.id))
+                    if (!OrderLineExists(orderLine.Id))
                     {
                         return NotFound();
                     }
@@ -127,7 +161,7 @@ namespace ClientProject.Controllers
                 return NotFound();
             }
 
-            var orderLine = await _context.OrderLines.SingleOrDefaultAsync(m => m.id == id);
+            var orderLine = await _context.OrderLines.SingleOrDefaultAsync(m => m.Id == id);
             if (orderLine == null)
             {
                 return NotFound();
@@ -141,7 +175,7 @@ namespace ClientProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var orderLine = await _context.OrderLines.SingleOrDefaultAsync(m => m.id == id);
+            var orderLine = await _context.OrderLines.SingleOrDefaultAsync(m => m.Id == id);
             _context.OrderLines.Remove(orderLine);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
@@ -149,7 +183,7 @@ namespace ClientProject.Controllers
 
         private bool OrderLineExists(int id)
         {
-            return _context.OrderLines.Any(e => e.id == id);
+            return _context.OrderLines.Any(e => e.Id == id);
         }
     }
 }

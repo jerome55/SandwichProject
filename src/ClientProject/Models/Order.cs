@@ -19,7 +19,7 @@ namespace ClientProject.Models
         public decimal TotalAmount { get; set; }
 
         [DataMember]
-        private ICollection<OrderLine> OrderLines { get; set; }
+        public ICollection<OrderLine> OrderLines { get; private set; }
 
         public void AddOrderLine(OrderLine ol)
         {
