@@ -190,7 +190,7 @@ namespace ClientProject.Controllers
         }
 
         //
-        // GET: Employees/Delete/5
+        // GET: EmployeesManagement/Delete/5
         /*public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -208,7 +208,7 @@ namespace ClientProject.Controllers
         }*/
 
         //
-        // POST: Employees/Delete/5
+        // POST: EmployeesManagement/Delete/5
         /*[HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)

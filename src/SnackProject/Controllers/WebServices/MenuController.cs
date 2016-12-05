@@ -30,7 +30,9 @@ namespace SnackProject.Controllers.WebServices
                                             .Where(q => q.Available == true)
                                             .ToList();
 
-            Menu menu = new Menu { Id = 1, VegetablesPrice = 5, Sandwiches = sand, Vegetables = veg };
+            var menus = _context.Menus.ToList();
+            Menu menu = new Menu { Id = menus[0].Id, VegetablesPrice = menus[0].VegetablesPrice, Sandwiches = sand, Vegetables = veg };
+
             return menu ;
         }
 
