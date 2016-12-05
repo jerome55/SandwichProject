@@ -28,7 +28,7 @@ namespace SnackProject.Automatics
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!MenuExists(menu.id))
+                if (!MenuExists(menu.Id))
                 {
                     throw new Exception("Menu Not Found");
                 }
@@ -41,12 +41,12 @@ namespace SnackProject.Automatics
 
         private bool MenuExists(int id)
         {
-            return _context.Menus.Any(e => e.id == id);
+            return _context.Menus.Any(e => e.Id == id);
         }
 
         public string GetKey()
         {
-            return "UM" + menu.id;
+            return "UM" + menu.Id;
         }
     }
 }

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClientProject.Models
 {
@@ -11,16 +12,24 @@ namespace ClientProject.Models
     public class Company
     {
         [DataMember]
-        public int id { get; set; }
+        [Key][DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int Id { get; set; }
         [DataMember]
-        public string chkCode { get; set; }
+        public string ChkCode { get; set; }
+        [Display(Name = "Nom")]
         [DataMember][NotMapped]
-        public string name { get; set; }
+        public string Name { get; set; }
+        [Display(Name = "Nombre d'employés")]
         [DataMember][NotMapped]
-        public int nbEmployes { get; set; }
+        public int NbEmployees { get; set; }
+        [Display(Name = "Adresse mail")]
         [DataMember][NotMapped]
-        public string mail { get; set; }
+        public string Mail { get; set; }
+        [Display(Name = "Adresse")]
         [DataMember][NotMapped]
-        public string address { get; set; }
+        public string Address { get; set; }
+        [Display(Name = "Status")]
+        [DataMember][NotMapped]
+        public bool Status { get; set; }
     }
 }

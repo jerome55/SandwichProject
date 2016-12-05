@@ -17,15 +17,15 @@ namespace ClientProject.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<Employee> _userManager;
+        private readonly SignInManager<Employee> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
 
         public AccountController(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
+            UserManager<Employee> userManager,
+            SignInManager<Employee> signInManager,
             IEmailSender emailSender,
             ISmsSender smsSender,
             ILoggerFactory loggerFactory)
@@ -59,7 +59,7 @@ namespace ClientProject.Controllers
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
@@ -85,6 +85,7 @@ namespace ClientProject.Controllers
             return View(model);
         }
 
+        /*
         //
         // GET: /Account/Register
         [HttpGet]
@@ -125,6 +126,7 @@ namespace ClientProject.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
+        */
 
         //
         // POST: /Account/LogOff
@@ -136,7 +138,8 @@ namespace ClientProject.Controllers
             _logger.LogInformation(4, "User logged out.");
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
-
+        
+        /*
         //
         // POST: /Account/ExternalLogin
         [HttpPost]
@@ -224,7 +227,7 @@ namespace ClientProject.Controllers
 
             ViewData["ReturnUrl"] = returnUrl;
             return View(model);
-        }
+        }*/
 
         // GET: /Account/ConfirmEmail
         [HttpGet]
@@ -446,7 +449,7 @@ namespace ClientProject.Controllers
             }
         }
 
-        private Task<ApplicationUser> GetCurrentUserAsync()
+        private Task<Employee> GetCurrentUserAsync()
         {
             return _userManager.GetUserAsync(HttpContext.User);
         }

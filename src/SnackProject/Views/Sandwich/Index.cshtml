@@ -1,47 +1,49 @@
 @model IEnumerable<SnackProject.Models.Sandwich>
 
 @{
-    ViewData["Title"] = "Liste des sandwichs";
+    ViewData["Title"] = "Liste des sandwiches";
 }
 
 <h2>Liste des sandwichs</h2>
+
 <table class="table">
     <thead>
         <tr>
-            
             <th>
-                @Html.DisplayNameFor(model => model.name)
+                @Html.DisplayNameFor(model => model.Available)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.description)
+                @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.price)
+                @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.available)
+                @Html.DisplayNameFor(model => model.Price)
             </th>
-            
-            <th></th>
+            <th>
+
+            </th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.name)
+                @Html.DisplayFor(modelItem => item.Available)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
             </td>            
             <td>
-                @Html.DisplayFor(modelItem => item.description)
+                @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.price)
+                @Html.DisplayFor(modelItem => item.Price)
             </td>
+            
             <td>
-                @Html.DisplayFor(modelItem => item.available)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id">Modifier</a> 
+                <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a> 
             </td>
         </tr>
 }
@@ -49,6 +51,10 @@
     </tbody>
  
 </table>
-<p style="text-align:right;">
-    <a  asp-action="Create">Ajouter un sandwich </a>
+<p>
+    <a asp-action="Create">Ajouter un sandwich </a>
 </p>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
