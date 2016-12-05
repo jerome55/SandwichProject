@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
@@ -10,8 +11,10 @@ namespace SnackProject.Models
     public class Order
     {
         public int Id { get; set; }
+        [Display(Name = "Date de livraison")]
         [DataMember]
         public DateTime DateOfDelivery { get; set; }
+        [Display(Name = "Montant total")]
         [DataMember]
         public decimal TotalAmount { get; set; }
 
@@ -21,9 +24,9 @@ namespace SnackProject.Models
         
         /*public Order(DateTime dateOfDelivery, decimal totalAmount, ICollection<OrderLine> orderLines)
         {
-            this.dateOfDelivery = dateOfDelivery;
-            this.totalAmount = totalAmount;
-            this.orderLines = orderLines;
+            this.DateOfDelivery = dateOfDelivery;
+            this.TotalAmount = totalAmount;
+            this.OrderLines = orderLines;
         }*/
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -11,23 +11,21 @@ using Microsoft.Extensions.Logging;
 using ClientProject.Models;
 using ClientProject.Models.AccountViewModels;
 using ClientProject.Services;
-using ClientProject.Models.Communication;
-using ClientProject.InfoProviders;
 
 namespace ClientProject.Controllers
 {
     [Authorize]
     public class AccountController : Controller
     {
-        private readonly UserManager<Employee> _userManager;
-        private readonly SignInManager<Employee> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
 
         public AccountController(
-            UserManager<Employee> userManager,
-            SignInManager<Employee> signInManager,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             ISmsSender smsSender,
             ILoggerFactory loggerFactory)
@@ -61,7 +59,7 @@ namespace ClientProject.Controllers
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
@@ -107,7 +105,7 @@ namespace ClientProject.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new Employee { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -127,7 +125,7 @@ namespace ClientProject.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
-        
+
         //
         // POST: /Account/LogOff
         [HttpPost]
@@ -209,7 +207,7 @@ namespace ClientProject.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new Employee { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -448,7 +446,7 @@ namespace ClientProject.Controllers
             }
         }
 
-        private Task<Employee> GetCurrentUserAsync()
+        private Task<ApplicationUser> GetCurrentUserAsync()
         {
             return _userManager.GetUserAsync(HttpContext.User);
         }
@@ -467,4 +465,4 @@ namespace ClientProject.Controllers
 
         #endregion
     }
-}
+}*/

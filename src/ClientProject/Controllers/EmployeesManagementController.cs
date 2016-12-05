@@ -22,67 +22,57 @@ namespace ClientProject.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
-        private readonly ILogger _logger;
         
         public EmployeesManagementController(
             UserManager<Employee> userManager,
             SignInManager<Employee> signInManager,
             ApplicationDbContext context,
             IEmailSender emailSender,
-            ISmsSender smsSender,
-            ILoggerFactory loggerFactory)
+            ISmsSender smsSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
             _emailSender = emailSender;
             _smsSender = smsSender;
-            _logger = loggerFactory.CreateLogger<AccountController>();
         }
 
         //
-        // GET: Employees
+        // GET: /EmployeesManagement
         public async Task<IActionResult> Index()
         {
             return View(await _context.Employees.ToListAsync());
         }
 
         //
-        // GET: Employees/Create
+        // GET: /EmployeesManagement/Create
         public IActionResult Create()
         {
             return View();
         }
 
         //
-        // POST: Employees/Create
+        // POST: /EmployeesManagement/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateViewModel model)
         {
-            Debug.WriteLine("!!!!!!!111111111111111111");
             if (ModelState.IsValid)
             {
-                Debug.WriteLine("!!!!!!!22222222222222222222");
                 var employee = new Employee { UserName = model.UserName, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, Wallet = model.Wallet };
-                Debug.WriteLine("!!!!!!!33333333333333333333");
                 var user = await _userManager.CreateAsync(employee, model.Password);
-                Debug.WriteLine("!!!!!!!44444444444444444444");
-
+                
                 if (user.Succeeded)
                 {
-                    Debug.WriteLine("!!!!!!!5555555555555555555");
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                     // Send an email with this link
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
                     //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
                     //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
-                    Debug.WriteLine("!!!!!!!666666666666666666666");
                     return RedirectToAction("Index");
-                    Debug.WriteLine("!!!!!!!777777777777777777777");
                 }
                 AddErrors(user);
             }
@@ -91,7 +81,7 @@ namespace ClientProject.Controllers
         }
 
         //
-        // GET: Employees/Edit/5
+        // GET: EmployeesManagement/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -108,7 +98,7 @@ namespace ClientProject.Controllers
         }
 
         //
-        // POST: Employees/Edit/5
+        // POST: EmployeesManagement/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -153,7 +143,7 @@ namespace ClientProject.Controllers
         }
 
         //
-        // GET: Employees/Details/5
+        // GET: EmployeesManagement/AddToWallet/5
         public async Task<IActionResult> AddToWallet(string id)
         {
             if (id == null)
@@ -173,7 +163,7 @@ namespace ClientProject.Controllers
         }
 
         //
-        // POST: Employees/Edit/5
+        // POST: EmployeesManagement/AddToWallet/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -201,7 +191,7 @@ namespace ClientProject.Controllers
 
         //
         // GET: Employees/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        /*public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
@@ -215,11 +205,11 @@ namespace ClientProject.Controllers
             }
 
             return View(employee);
-        }
+        }*/
 
         //
         // POST: Employees/Delete/5
-        [HttpPost, ActionName("Delete")]
+        /*[HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
@@ -227,7 +217,7 @@ namespace ClientProject.Controllers
             _context.Employees.Remove(employee);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
-        }
+        }*/
 
 
         private void AddErrors(IdentityResult result)

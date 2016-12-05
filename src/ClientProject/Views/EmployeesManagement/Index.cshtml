@@ -2,14 +2,11 @@
 @model IEnumerable<ClientProject.Models.Employee>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Liste des employés";
 }
 
-<h2>Index</h2>
+<h2>Liste des employés</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -57,3 +54,10 @@
 }
     </tbody>
 </table>
+<p>
+    <a asp-action="Create">Créer un nouvel employé</a>
+</p>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

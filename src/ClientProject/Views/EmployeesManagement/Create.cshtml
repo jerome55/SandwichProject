@@ -1,14 +1,14 @@
 @model ClientProject.Models.EmployeesManagementViewModels.CreateViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Créer un employé";
 }
 
-<h2>Create</h2>
+<h2>Créer un employé</h2>
 
-<form asp-controller="EmployeesManagement" asp-action="Create" method="post" class="form-horizontal">@*asp-route-returnurl="@ViewData["ReturnUrl"]" *@
+<form asp-controller="EmployeesManagement" asp-action="Create" method="post" class="form-horizontal">
     <div class="form-horizontal">
-        <h4>Employee</h4>
+        <h4>Employé</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -67,7 +67,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Créer" class="btn btn-default" />
             </div>
         </div>
 
@@ -75,7 +75,7 @@
 </form>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Retour à la liste</a>
 </div>
 
 @section Scripts {

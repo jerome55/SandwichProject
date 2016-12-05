@@ -10,8 +10,11 @@ namespace ClientProject.Models
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class Employee : IdentityUser
     {
+        [Display(Name = "Prénom")]
         public string LastName { get; set; }
+        [Display(Name = "Nom")]
         public string FirstName { get; set; }
+        [Display(Name = "Porte-monnaie")]
         public decimal Wallet { get; set; }
 
         public ICollection<Order> Orders { get; set; }

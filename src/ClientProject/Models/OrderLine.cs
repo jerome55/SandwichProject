@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace ClientProject.Models
     public class OrderLine
     {
         public int Id { get; set; }
+        [Display(Name = "Quantité")]
         [DataMember]
         public int Quantity { get; set; }
 
@@ -18,6 +20,7 @@ namespace ClientProject.Models
 
         [DataMember]
         public ICollection<OrderLineVegetable> OrderLineVegetables { get; set; }
+
 
         public decimal GetPrice()
         {

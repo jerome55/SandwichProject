@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -11,6 +12,7 @@ namespace SnackProject.Models
     public class Menu
     {
         public int Id { get; set; }
+        [Display(Name = "Tarif du supplément crudité")]
         [DataMember]
         public decimal VegetablesPrice { get; set; }
 
@@ -22,9 +24,9 @@ namespace SnackProject.Models
 
         /*public Menu(decimal vegetablesPrice, ICollection<Sandwich> sandwiches, ICollection<Vegetable> vegetables)
         {
-            this.vegetablesPrice = vegetablesPrice;
-            this.sandwiches = sandwiches;
-            this.vegetables = vegetables;
+            this.VegetablesPrice = vegetablesPrice;
+            this.Sandwiches = sandwiches;
+            this.Vegetables = vegetables;
         }*/
     }
 }

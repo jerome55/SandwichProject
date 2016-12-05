@@ -19,8 +19,8 @@ namespace SnackProject.Models
         
         /*public OrderLineVegetable(OrderLine orderLine, Vegetable vegetable)
         {
-            this.orderLine = orderLine;
-            this.vegetable = vegetable;
+            this.OrderLine = orderLine;
+            this.Vegetable = vegetable;
         }*/
     }
 }

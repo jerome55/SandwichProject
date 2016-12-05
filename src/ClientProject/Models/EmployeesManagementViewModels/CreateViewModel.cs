@@ -9,39 +9,39 @@ namespace ClientProject.Models.EmployeesManagementViewModels
     public class CreateViewModel
     {
         [Required]
-        [StringLength(60, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
-        [Display(Name = "UserName")]
+        [StringLength(60, ErrorMessage = "Le {0} doit contenir entre {2} et {1} caractères.", MinimumLength = 2)]
+        [Display(Name = "Nom d'utilisateur")]
         public string UserName { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "Le {0} doit contenir entre {2} et {1} caractères.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Mot de passe")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Display(Name = "Confirmer mot de passe")]
+        [Compare("Password", ErrorMessage = "La confirmation et le mot de passe de correspondent pas.")]
         public string ConfirmPassword { get; set; }
 
         [Required]
         [EmailAddress]
-        [Display(Name = "Email")]
+        [Display(Name = "Adresse mail")]
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 1)]
-        [Display(Name = "First name")]
+        [StringLength(100, ErrorMessage = "Le {0} doit contenir entre {2} et {1} caractères.", MinimumLength = 1)]
+        [Display(Name = "Prénom")]
         public string FirstName { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 1)]
-        [Display(Name = "Last name")]
+        [StringLength(100, ErrorMessage = "Le {0} doit contenir entre {2} et {1} caractères.", MinimumLength = 1)]
+        [Display(Name = "Nom")]
         public string LastName { get; set; }
 
         [Required]
         [DataType(DataType.Currency)]
-        [Display(Name = "Wallet")]
+        [Display(Name = "Porte-monnaie")]
         public decimal Wallet { get; set; }
         
     }

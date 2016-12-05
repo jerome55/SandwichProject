@@ -16,14 +16,19 @@ namespace ClientProject.Models
         public int Id { get; set; }
         [DataMember]
         public string ChkCode { get; set; }
+        [Display(Name = "Nom")]
         [DataMember][NotMapped]
         public string Name { get; set; }
+        [Display(Name = "Nombre d'employés")]
         [DataMember][NotMapped]
         public int NbEmployees { get; set; }
+        [Display(Name = "Adresse mail")]
         [DataMember][NotMapped]
         public string Mail { get; set; }
+        [Display(Name = "Adresse")]
         [DataMember][NotMapped]
         public string Address { get; set; }
+        [Display(Name = "Status")]
         [DataMember][NotMapped]
         public bool Status { get; set; }
     }

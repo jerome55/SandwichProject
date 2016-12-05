@@ -51,11 +51,6 @@ namespace ClientProject.Controllers
             return responseReturn;
         }
 
-        /*public static CheckCompanyRegister()
-        {
-
-        }*/
-
 
     }
 }

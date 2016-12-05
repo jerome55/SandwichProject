@@ -20,7 +20,7 @@ namespace ClientProject.Models.EmployeesManagementViewModels
 
         [Required]
         [DataType(DataType.Currency)]
-        [Display(Name = "AddToWallet")]
+        [Display(Name = "Créditer de : ")]
         public decimal AddToWallet { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace SnackProject.Models
     public class OrderLine
     {
         public int Id { get; set; }
+        [Display(Name = "Quantité")]
         [DataMember]
         public int Quantity { get; set; }
 
@@ -22,9 +24,9 @@ namespace SnackProject.Models
         
         /*public OrderLine(Sandwich sandwich, int quantity, ICollection<OrderLineVegetable> orderLineVegetables)
         {
-            this.sandwich = sandwich;
-            this.quantity = quantity;
-            this.orderLineVegetables = orderLineVegetables;
+            this.Sandwich = sandwich;
+            this.Quantity = quantity;
+            this.OrderLineVegetables = orderLineVegetables;
         }*/
     }
 }
