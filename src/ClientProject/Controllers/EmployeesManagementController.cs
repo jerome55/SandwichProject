@@ -157,7 +157,7 @@ namespace ClientProject.Controllers
                 return NotFound();
             }
 
-            AddToWalletViewModel model = new AddToWalletViewModel { Id = employee.Id, FirstName = employee.FirstName, LastName = employee.LastName, UserName = employee.UserName, Email = employee.Email, AddToWallet = (decimal)0.00 };
+            AddToWalletViewModel model = new AddToWalletViewModel { Id = employee.Id, FirstName = employee.FirstName, LastName = employee.LastName, UserName = employee.UserName, Email = employee.Email, Wallet = employee.Wallet, AddToWallet = (decimal)0.00 };
 
             return View(model);
         }
