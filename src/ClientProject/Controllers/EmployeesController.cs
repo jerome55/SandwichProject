@@ -16,7 +16,7 @@ namespace ClientProject.Controllers
 
         public EmployeesController(ApplicationDbContext context)
         {
-            _context = context;    
+            _context = context;
         }
 
         // GET: Employees
