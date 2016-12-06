@@ -35,10 +35,10 @@ namespace ClientProject.Controllers
             DateTime delivreryDate;
             if (now.Hour >= 10)
             {
-                delivreryDate = DateTime.Parse(now.Year+"-"+now.Month+"-"+now.Day+1);
+                delivreryDate = DateTime.Today.AddDays(1.0);
             }
             else{
-                delivreryDate = DateTime.Parse(now.Year + "-" + now.Month + "-" + now.Day);
+                delivreryDate = DateTime.Today;
             }
 
             List<Order> order = employee.Orders.Where(q => q.DateOfDelivery.Equals(delivreryDate)).ToList();
