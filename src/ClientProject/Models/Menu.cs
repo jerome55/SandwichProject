@@ -16,9 +16,9 @@ namespace ClientProject.Models
         public decimal VegetablesPrice { get; set; }
 
         [DataMember][NotMapped]
-        public ICollection<Sandwich> Sandwiches { get; set; }
+        public virtual ICollection<Sandwich> Sandwiches { get; set; }
         [DataMember][NotMapped]
-        public ICollection<Vegetable> Vegetables { get; set; }
+        public virtual ICollection<Vegetable> Vegetables { get; set; }
 
     }
 }

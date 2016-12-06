@@ -16,10 +16,12 @@ namespace ClientProject.Models
         public int Quantity { get; set; }
 
         [DataMember]
-        public Sandwich Sandwich { get; set; }
+        public virtual Sandwich Sandwich { get; set; }
 
         [DataMember]
-        public ICollection<OrderLineVegetable> OrderLineVegetables { get; set; }
+        public virtual ICollection<OrderLineVegetable> OrderLineVegetables { get; set; }
+
+        public virtual Order Order { get; set; }
 
 
         public decimal GetPrice()

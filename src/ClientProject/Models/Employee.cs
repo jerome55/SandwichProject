@@ -17,9 +17,9 @@ namespace ClientProject.Models
         [Display(Name = "Porte-monnaie")]
         public decimal Wallet { get; set; }
 
-        public ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
 
-        public Company Company { get; set; }
+        public virtual Company Company { get; set; }
         
         /**
          * Methode qui debite le porte-monnaie/credit (wallet) de l'employe du prix total de sa commande
