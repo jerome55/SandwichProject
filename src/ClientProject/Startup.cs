@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using ClientProject.Data;
 using ClientProject.Models;
 using ClientProject.Services;
+using ClientProject.InfoProviders;
 
 namespace ClientProject
 {
@@ -42,11 +43,8 @@ namespace ClientProject
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            services.AddDbContext<ClientContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            
+            services.AddIdentity<Employee, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -55,6 +53,9 @@ namespace ClientProject
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+
+            // Service Perso Jerome
+            services.AddTransient<ActivationInformant>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

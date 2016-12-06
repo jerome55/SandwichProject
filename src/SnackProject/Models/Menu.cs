@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -10,21 +11,22 @@ namespace SnackProject.Models
     [DataContract]
     public class Menu
     {
-        public int id { get; set; }
+        public int Id { get; set; }
+        [Display(Name = "Tarif du supplément crudité")]
         [DataMember]
-        public decimal vegetablesPrice { get; set; }
+        public decimal VegetablesPrice { get; set; }
 
         [DataMember][NotMapped]
-        public ICollection<Sandwich> sandwiches { get; set; }
+        public ICollection<Sandwich> Sandwiches { get; set; }
         [DataMember][NotMapped]
-        public ICollection<Vegetable> vegetables { get; set; }
-        /*
-        public Menu(decimal vegetablesPrice, ICollection<Sandwich> sandwiches, ICollection<Vegetable> vegetables)
+        public ICollection<Vegetable> Vegetables { get; set; }
+
+
+        /*public Menu(decimal vegetablesPrice, ICollection<Sandwich> sandwiches, ICollection<Vegetable> vegetables)
         {
-            this.vegetablesPrice = vegetablesPrice;
-            this.sandwiches = sandwiches;
-            this.vegetables = vegetables;
+            this.VegetablesPrice = vegetablesPrice;
+            this.Sandwiches = sandwiches;
+            this.Vegetables = vegetables;
         }*/
-
     }
 }

@@ -3,12 +3,48 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace SnackProject.Migrations
+namespace ClientProject.Migrations
 {
     public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Companies",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false),
+                    ChkCode = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Companies", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Sandwiches",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sandwiches", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Vegetables",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Vegetables", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -43,9 +79,12 @@ namespace SnackProject.Migrations
                 {
                     Id = table.Column<string>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
+                    CompanyId = table.Column<int>(nullable: true),
                     ConcurrencyStamp = table.Column<string>(nullable: true),
                     Email = table.Column<string>(maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(nullable: false),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
@@ -55,73 +94,18 @@ namespace SnackProject.Migrations
                     PhoneNumberConfirmed = table.Column<bool>(nullable: false),
                     SecurityStamp = table.Column<string>(nullable: true),
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
-                    UserName = table.Column<string>(maxLength: 256, nullable: true)
+                    UserName = table.Column<string>(maxLength: 256, nullable: true),
+                    Wallet = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Companies",
-                columns: table => new
-                {
-                    id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    address = table.Column<string>(nullable: true),
-                    chkcode = table.Column<string>(nullable: true),
-                    mail = table.Column<string>(nullable: true),
-                    name = table.Column<string>(nullable: true),
-                    nbEmployes = table.Column<int>(nullable: false),
-                    status = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Companies", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Menus",
-                columns: table => new
-                {
-                    id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    vegetablesPrice = table.Column<decimal>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Menus", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Sandwiches",
-                columns: table => new
-                {
-                    id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    available = table.Column<bool>(nullable: false),
-                    description = table.Column<string>(nullable: true),
-                    name = table.Column<string>(nullable: true),
-                    price = table.Column<decimal>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Sandwiches", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Vegetables",
-                columns: table => new
-                {
-                    id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    available = table.Column<bool>(nullable: false),
-                    description = table.Column<string>(nullable: true),
-                    name = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Vegetables", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -143,6 +127,27 @@ namespace SnackProject.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    DateOfDelivery = table.Column<DateTime>(nullable: false),
+                    EmployeeId = table.Column<string>(nullable: true),
+                    TotalAmount = table.Column<decimal>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_AspNetUsers_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -211,76 +216,96 @@ namespace SnackProject.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Companyid = table.Column<int>(nullable: true),
-                    dateOfDelivery = table.Column<DateTime>(nullable: false),
-                    totalAmount = table.Column<decimal>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_Orders_Companies_Companyid",
-                        column: x => x.Companyid,
-                        principalTable: "Companies",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "OrderLines",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Orderid = table.Column<int>(nullable: true),
-                    quantity = table.Column<int>(nullable: false),
-                    sandwichid = table.Column<int>(nullable: true)
+                    OrderId = table.Column<int>(nullable: true),
+                    Quantity = table.Column<int>(nullable: false),
+                    SandwichId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderLines", x => x.id);
+                    table.PrimaryKey("PK_OrderLines", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderLines_Orders_Orderid",
-                        column: x => x.Orderid,
+                        name: "FK_OrderLines_Orders_OrderId",
+                        column: x => x.OrderId,
                         principalTable: "Orders",
-                        principalColumn: "id",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_OrderLines_Sandwiches_sandwichid",
-                        column: x => x.sandwichid,
+                        name: "FK_OrderLines_Sandwiches_SandwichId",
+                        column: x => x.SandwichId,
                         principalTable: "Sandwiches",
-                        principalColumn: "id",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderLineVegetable",
+                name: "OrderLineVegetables",
                 columns: table => new
                 {
-                    orderLineId = table.Column<int>(nullable: false),
-                    vegetableId = table.Column<int>(nullable: false)
+                    OrderLineId = table.Column<int>(nullable: false),
+                    VegetableId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderLineVegetable", x => new { x.orderLineId, x.vegetableId });
+                    table.PrimaryKey("PK_OrderLineVegetables", x => new { x.OrderLineId, x.VegetableId });
                     table.ForeignKey(
-                        name: "FK_OrderLineVegetable_OrderLines_orderLineId",
-                        column: x => x.orderLineId,
+                        name: "FK_OrderLineVegetables_OrderLines_OrderLineId",
+                        column: x => x.OrderLineId,
                         principalTable: "OrderLines",
-                        principalColumn: "id",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderLineVegetable_Vegetables_vegetableId",
-                        column: x => x.vegetableId,
+                        name: "FK_OrderLineVegetables_Vegetables_VegetableId",
+                        column: x => x.VegetableId,
                         principalTable: "Vegetables",
-                        principalColumn: "id",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_CompanyId",
+                table: "AspNetUsers",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "EmailIndex",
+                table: "AspNetUsers",
+                column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "UserNameIndex",
+                table: "AspNetUsers",
+                column: "NormalizedUserName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_EmployeeId",
+                table: "Orders",
+                column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderLines_OrderId",
+                table: "OrderLines",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderLines_SandwichId",
+                table: "OrderLines",
+                column: "SandwichId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderLineVegetables_OrderLineId",
+                table: "OrderLineVegetables",
+                column: "OrderLineId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderLineVegetables_VegetableId",
+                table: "OrderLineVegetables",
+                column: "VegetableId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
@@ -311,46 +336,13 @@ namespace SnackProject.Migrations
                 name: "IX_AspNetUserRoles_UserId",
                 table: "AspNetUserRoles",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "EmailIndex",
-                table: "AspNetUsers",
-                column: "NormalizedEmail");
-
-            migrationBuilder.CreateIndex(
-                name: "UserNameIndex",
-                table: "AspNetUsers",
-                column: "NormalizedUserName",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Orders_Companyid",
-                table: "Orders",
-                column: "Companyid");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderLines_Orderid",
-                table: "OrderLines",
-                column: "Orderid");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderLines_sandwichid",
-                table: "OrderLines",
-                column: "sandwichid");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderLineVegetable_orderLineId",
-                table: "OrderLineVegetable",
-                column: "orderLineId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderLineVegetable_vegetableId",
-                table: "OrderLineVegetable",
-                column: "vegetableId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "OrderLineVegetables");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -367,28 +359,22 @@ namespace SnackProject.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Menus");
-
-            migrationBuilder.DropTable(
-                name: "OrderLineVegetable");
-
-            migrationBuilder.DropTable(
-                name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
                 name: "OrderLines");
 
             migrationBuilder.DropTable(
                 name: "Vegetables");
 
             migrationBuilder.DropTable(
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Sandwiches");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Companies");

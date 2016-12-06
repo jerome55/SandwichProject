@@ -9,11 +9,11 @@ namespace ClientProject.Models
     [DataContract]
     public class OrderLineVegetable
     {
-        public OrderLine orderLine { get; set; }
-        public int orderLineId { get; set; }
+        public virtual OrderLine OrderLine { get; set; }
+        public int OrderLineId { get; set; }
 
         [DataMember]
-        public Vegetable vegetable { get; set; }
-        public int vegetableId { get; set; }
+        public virtual Vegetable Vegetable { get; set; }
+        public int VegetableId { get; set; }
     }
 }

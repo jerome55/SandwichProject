@@ -1,54 +1,55 @@
-ï»¿@model SnackProject.Models.Sandwich
+@model SnackProject.Models.Sandwich
 
 @{
-    ViewData["Title"] = "Ajouter un sandwish";
+    ViewData["Title"] = "Créer un sandwich";
 }
 
-<h2>Ajouter un sandwish</h2>
+<h2>Créer un sandwich</h2>
 
 <form asp-action="Create">
     <div class="form-horizontal">
+        <h4>Sandwich</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <!--<div class="form-group">
+        <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <div class="checkbox">
-                    <input asp-for="available" />
-                    <label asp-for="available"></label>
+                    <input asp-for="Available" />
+                    <label asp-for="Available"></label>
                 </div>
             </div>
-        </div>-->
+        </div>
         <div class="form-group">
-            <label asp-for="name" class="col-md-2 control-label"></label>
+            <label asp-for="Name" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="name" class="form-control" />
-                <span asp-validation-for="name" class="text-danger" />
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="description" class="col-md-2 control-label"></label>
+            <label asp-for="Description" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="description" class="form-control" />
-                <span asp-validation-for="description" class="text-danger" />
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
-            <label asp-for="price" class="col-md-2 control-label"></label>
+            <label asp-for="Price" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="price" class="form-control" />
-                <span asp-validation-for="price" class="text-danger" />
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Ajouter" class="btn btn-default" />
+                <input type="submit" value="Créer" class="btn btn-default" />
             </div>
         </div>
     </div>
 </form>
 
 <div>
-    <a asp-action="Index">Retour Ã  la liste</a>
+    <a asp-action="Index">Retour à la liste</a>
 </div>
 
 @section Scripts {

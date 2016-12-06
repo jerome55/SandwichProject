@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
@@ -9,18 +10,23 @@ namespace ClientProject.Models
     [DataContract]
     public class OrderLine
     {
-        public int id { get; set; }
+        public int Id { get; set; }
+        [Display(Name = "Quantité")]
+        [DataMember]
+        public int Quantity { get; set; }
 
         [DataMember]
-        public int quantity { get; set; }
-        [DataMember]
-        public Sandwich sandwich { get; set; }
-        [DataMember]
-        public ICollection<OrderLineVegetable> orderLineVegetables { get; set; }
+        public virtual Sandwich Sandwich { get; set; }
 
-        public decimal getPrice()
+        [DataMember]
+        public virtual ICollection<OrderLineVegetable> OrderLineVegetables { get; set; }
+
+        public virtual Order Order { get; set; }
+
+
+        public decimal GetPrice()
         {
-            return sandwich.price + (new Menu()).vegetablesPrice;
+            return Sandwich.Price + (new Menu()).VegetablesPrice;
         }
     }
 }

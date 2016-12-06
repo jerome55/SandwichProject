@@ -34,7 +34,7 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.id == id);
+            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.Id == id);
             if (sandwich == null)
             {
                 return NotFound();
@@ -73,7 +73,7 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.id == id);
+            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.Id == id);
             if (sandwich == null)
             {
                 return NotFound();
@@ -89,7 +89,7 @@ namespace SnackProject.Controllers
         //public async Task<IActionResult> Edit(int id, [Bind("id,available,description,name,price")] Sandwich sandwich)
         public IActionResult Edit(int id, [Bind("id,available,description,name,price")] Sandwich sandwich)
         {
-            if (id != sandwich.id)
+            if (id != sandwich.Id)
             {
                 return NotFound();
             }

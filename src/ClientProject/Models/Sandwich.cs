@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -11,12 +12,15 @@ namespace ClientProject.Models
     public class Sandwich
     {
         [DataMember]
-        public int id { get; set; }
+        public int Id { get; set; }
+        [Display(Name = "Nom")]
         [DataMember][NotMapped]
-        public string name { get; set; }
+        public string Name { get; set; }
+        [Display(Name = "Description")]
         [DataMember][NotMapped]
-        public string description { get; set; }
+        public string Description { get; set; }
+        [Display(Name = "Prix")]
         [DataMember][NotMapped]
-        public decimal price { get; set; }
+        public decimal Price { get; set; }
     }
 }
