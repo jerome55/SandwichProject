@@ -16,18 +16,18 @@ using Newtonsoft.Json;
 
 namespace ClientProject.Controllers
 {
-    public class OrderLinesController : Controller
+    public class MenuController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<Employee> _userManager;
 
-        public OrderLinesController(ApplicationDbContext context, UserManager<Employee> userManager)
+        public MenuController(ApplicationDbContext context, UserManager<Employee> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
-        private Order getCurrentOrder(Employee employee)
+        private Order GetCurrentOrder(Employee employee)
         {
 
 
@@ -63,7 +63,7 @@ namespace ClientProject.Controllers
 
             Employee emp = _context.Employees.Where(e => e.Id == id).FirstOrDefault();
 
-            //Order order = getCurrentOrder(emp);
+            //Order order = GetCurrentOrder(emp);
 
             string serializable = HttpContext.Session.GetString("cart");
 

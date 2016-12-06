@@ -51,6 +51,19 @@ namespace ClientProject.Controllers
             return responseReturn;
         }
 
+        public async Task<Menu> GetMenu()
+        {
+            Menu responseReturn = null;
+
+            HttpResponseMessage response = await this.client.GetAsync("api/Menu");
+            if (response.IsSuccessStatusCode)
+            {
+                responseReturn = await response.Content.ReadAsAsync<Menu>();
+            }
+
+            return responseReturn;
+        }
+
 
     }
 }
