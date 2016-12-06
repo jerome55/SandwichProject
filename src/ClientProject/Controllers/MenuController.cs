@@ -72,7 +72,14 @@ namespace ClientProject.Controllers
 
             Menu menu = await RemoteCall.GetInstance().GetMenu();
 
-            return View(menu);
+            if(menu == null)
+            {
+                return View(menu);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         // GET: OrderLines/Details/5
