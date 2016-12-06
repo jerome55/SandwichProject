@@ -12,6 +12,7 @@ using ClientProject.Services;
 using Microsoft.Extensions.Logging;
 using ClientProject.Models.EmployeesManagementViewModels;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace ClientProject.Controllers
 {
@@ -19,6 +20,7 @@ namespace ClientProject.Controllers
     {
         private readonly UserManager<Employee> _userManager;
         private readonly SignInManager<Employee> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
@@ -26,12 +28,14 @@ namespace ClientProject.Controllers
         public EmployeesManagementController(
             UserManager<Employee> userManager,
             SignInManager<Employee> signInManager,
+            RoleManager<IdentityRole> roleManager,
             ApplicationDbContext context,
             IEmailSender emailSender,
             ISmsSender smsSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _context = context;
             _emailSender = emailSender;
             _smsSender = smsSender;
@@ -66,6 +70,19 @@ namespace ClientProject.Controllers
                 
                 if (user.Succeeded)
                 {
+                    IdentityRole role = new IdentityRole { Name = "Responsable", NormalizedName = "RESPONSABLE" };
+                    bool roleExist = await _roleManager.RoleExistsAsync(role.NormalizedName);
+                    if (!roleExist)
+                    {
+                        IdentityResult roleResult = await _roleManager.CreateAsync(role);
+                        if (roleResult.Succeeded)
+                            await _userManager.AddToRoleAsync(employee, role.Name);
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(employee, role.Name);
+                    }
+
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                     // Send an email with this link
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

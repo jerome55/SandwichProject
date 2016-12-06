@@ -41,7 +41,8 @@ namespace ClientProject.Controllers
                 delivreryDate = DateTime.Today;
             }
 
-            List<Order> order = employee.Orders.Where(q => q.DateOfDelivery.Equals(delivreryDate)).ToList();
+            List<Order> order = employee.Orders.Where(o => o.DateOfDelivery.Equals(delivreryDate)).ToList();
+            //List<Order> order = _context.Orders.Where(o => o.DateOfDelivery.Equals(delivreryDate)).ToList();//o => o.Employee == employee && 
 
             if (order.Count == 0)
             {
@@ -60,7 +61,7 @@ namespace ClientProject.Controllers
         {
             string id = _userManager.GetUserId(User);
 
-            Employee emp = await _userManager.FindByIdAsync(id);
+            Employee emp = _context.Employees.Where(e => e.Id == id).FirstOrDefault();
 
             //Order order = getCurrentOrder(emp);
 
