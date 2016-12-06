@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SnackProject.Controllers
 {
@@ -20,6 +21,7 @@ namespace SnackProject.Controllers
             return View();
         }
 
+        [Authorize(Roles="Responsable")]
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";

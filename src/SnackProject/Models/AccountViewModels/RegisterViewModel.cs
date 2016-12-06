@@ -9,6 +9,10 @@ namespace SnackProject.Models.AccountViewModels
     public class RegisterViewModel
     {
         [Required]
+        [Display(Name = "UserName")]
+        public string UserName { get; set; }
+
+        [Required]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
@@ -23,5 +27,9 @@ namespace SnackProject.Models.AccountViewModels
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        //Test provisoire pour role responsable ou non
+        [Display(Name = "Responsable")]
+        public bool Responsable { get; set; }
     }
 }

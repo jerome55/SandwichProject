@@ -9,8 +9,14 @@ namespace SnackProject.Models.AccountViewModels
     public class LoginViewModel
     {
         [Required]
+        public string UserName { get; set; }
+
+        /*
+        ///Si utilisé, remettre dans controller login()
+        [Required]
         [EmailAddress]
         public string Email { get; set; }
+        */
 
         [Required]
         [DataType(DataType.Password)]

@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using SnackProject.Models;
 using SnackProject.Models.AccountViewModels;
 using SnackProject.Services;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace SnackProject.Controllers
 {
@@ -19,6 +20,7 @@ namespace SnackProject.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
@@ -28,13 +30,15 @@ namespace SnackProject.Controllers
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             ISmsSender smsSender,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
+            _roleManager = roleManager;
         }
 
         //
@@ -59,7 +63,8 @@ namespace SnackProject.Controllers
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                // Login via Username
+                var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
@@ -92,6 +97,7 @@ namespace SnackProject.Controllers
         public IActionResult Register(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
+            Console.WriteLine("Test");
             return View();
         }
 
@@ -105,10 +111,24 @@ namespace SnackProject.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
+                //On range la valeur chéckée de la checkbox responsable dans la var
+                var responsable = model.Responsable;
                 if (result.Succeeded)
                 {
+                    //Si responsable == true, on attribue le rôle de responsable
+                    if (responsable) {
+                        IdentityRole role = new IdentityRole { Name = "Responsable", NormalizedName = "RESPONSABLE" };
+                        bool roleExist = await _roleManager.RoleExistsAsync(role.NormalizedName);
+                        if (!roleExist)
+                        {
+                            IdentityResult roleResult = await _roleManager.CreateAsync(role);
+                            if (roleResult.Succeeded)
+                                await _userManager.AddToRoleAsync(user, role.Name);
+                        }
+                    }
+                    
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
                     // Send an email with this link
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
