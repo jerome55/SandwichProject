@@ -1,14 +1,14 @@
-@model ClientProject.Models.Employee
+﻿@model ClientProject.Models.Employee
 
 @{
     ViewData["Title"] = "Credit";
 }
 
-<h2>Credit</h2>
+<h2>Ajout de Crédit</h2>
 
 <form asp-action="Credit">
     <div class="form-horizontal">
-        <h4>Employee</h4>
+        <h4>@Html.DisplayFor(model => model.lastName), @Html.DisplayFor(model => model.firstName)</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="hidden" asp-for="id" />

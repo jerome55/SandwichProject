@@ -1,13 +1,13 @@
-@model IEnumerable<ClientProject.Models.Employee>
+ï»¿@model IEnumerable<ClientProject.Models.Employee>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h2>Liste des Employés</h2>
+<h2>Liste des EmployÃ©s</h2>
 
 <p>
-    <a asp-action="Create">Nouvel Employé</a>
+    <a asp-action="Create">Nouvel EmployÃ©</a>
 </p>
 <table class="table">
     <thead>
@@ -56,9 +56,9 @@
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.id">Modifier</a> |
-                <a asp-action="Details" asp-route-id="@item.id">Détails</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Supprimer</a> |
-                <a asp-action="Credit" asp-route-id="@item.id">Créditer Compte</a>
+                <a asp-action="Details" asp-route-id="@item.id">DÃ©tails</a> |
+                <a asp-action="Credit" asp-route-id="@item.id">CrÃ©diter Compte</a> |
+                <a asp-action="Delete" asp-route-id="@item.id">Supprimer</a>
             </td>
         </tr>
 }

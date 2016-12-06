@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -55,6 +55,7 @@ namespace ClientProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,firstName,lastName,login,mail,password,wallet")] Employee employee)
         {
+            
             if (ModelState.IsValid)
             {
                 _context.Add(employee);
@@ -146,6 +147,58 @@ namespace ClientProject.Controllers
         private bool EmployeeExists(int id)
         {
             return _context.Employee.Any(e => e.id == id);
+        }
+
+
+        // GET: Employees/Credit/5
+        public async Task<IActionResult> Credit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var employee = await _context.Employee.SingleOrDefaultAsync(m => m.id == id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+            return View(employee);
+        }
+
+        // POST: Employees/Credit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Credit(int id, [Bind("wallet")] Employee employee)
+        {
+            if (id != employee.id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(employee);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!EmployeeExists(employee.id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index");
+            }
+            return View(employee);
         }
     }
 }
