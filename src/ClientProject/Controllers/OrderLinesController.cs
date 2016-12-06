@@ -10,6 +10,9 @@ using ClientProject.Models;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace ClientProject.Controllers
 {
@@ -26,8 +29,9 @@ namespace ClientProject.Controllers
 
         private Order getCurrentOrder(Employee employee)
         {
-            DateTime now = DateTime.Now;
 
+
+            DateTime now = DateTime.Now;
             DateTime delivreryDate;
             if (now.Hour >= 10)
             {
@@ -39,7 +43,7 @@ namespace ClientProject.Controllers
 
             List<Order> order = employee.Orders.Where(q => q.DateOfDelivery.Equals(delivreryDate)).ToList();
 
-            if(order.Count == 0)
+            if (order.Count == 0)
             {
                 return null;
             }
@@ -58,7 +62,11 @@ namespace ClientProject.Controllers
 
             Employee emp = await _userManager.FindByIdAsync(id);
 
-            Order order = getCurrentOrder(emp);
+            //Order order = getCurrentOrder(emp);
+
+            string serializable = HttpContext.Session.GetString("cart");
+
+            Order order = JsonConvert.DeserializeObject<Order>(serializable);
 
             return View(order.OrderLines.ToList());
         }
@@ -95,8 +103,10 @@ namespace ClientProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(orderLine);
-                await _context.SaveChangesAsync();
+                string orderLineSerializable = JsonConvert.SerializeObject(orderLine);
+                HttpContext.Session.SetString("cart", orderLineSerializable);
+                //_context.Add(orderLine);
+                //await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             return View(orderLine);
