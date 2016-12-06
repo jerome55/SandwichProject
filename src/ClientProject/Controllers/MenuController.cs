@@ -55,21 +55,24 @@ namespace ClientProject.Controllers
         }
 
 
-        // GET: OrderLines
-        [Authorize]
+        // GET: Menu
         public async Task<IActionResult> Index()
         {
-            string id = _userManager.GetUserId(User);
+            //string id = _userManager.GetUserId(User);
 
-            Employee emp = _context.Employees.Where(e => e.Id == id).FirstOrDefault();
+            //Employee emp = _context.Employees.Where(e => e.Id == id).FirstOrDefault();
 
             //Order order = GetCurrentOrder(emp);
 
-            string serializable = HttpContext.Session.GetString("cart");
+            //string serializable = HttpContext.Session.GetString("cart");
 
-            Order order = JsonConvert.DeserializeObject<Order>(serializable);
+            //Order order = JsonConvert.DeserializeObject<Order>(serializable);
 
-            return View(order.OrderLines.ToList());
+            //return View(order.OrderLines.ToList());
+
+            Menu menu = await RemoteCall.GetInstance().GetMenu();
+
+            return View(menu);
         }
 
         // GET: OrderLines/Details/5
