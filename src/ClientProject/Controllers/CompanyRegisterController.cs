@@ -62,7 +62,7 @@ namespace ClientProject.Controllers
         }
 
         //
-        // POST: /CompanyRegister/Register
+        // POST: /CompanyRegister/Register 
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
