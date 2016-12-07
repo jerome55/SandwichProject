@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SnackProject.Data;
 using SnackProject.Models;
+using SnackProject.Models.Communication;
 
 namespace SnackProject.Controllers.WebServices
 {
@@ -21,19 +22,29 @@ namespace SnackProject.Controllers.WebServices
         }
 
         [HttpGet]
-        public async Task<Menu> Get()
+        public async Task<CommWrap<Menu>> Get()
         {
-            ICollection<Sandwich> sand = (ICollection<Sandwich>)_context.Sandwiches
+            ICollection<Sandwich> sand = _context.Sandwiches
                                             .Where(q => q.Available == true)
                                             .ToList();
             ICollection<Vegetable> veg = _context.Vegetables
                                             .Where(q => q.Available == true)
                                             .ToList();
 
-            var menus = _context.Menus.ToList();
-            Menu menu = new Menu { Id = menus[0].Id, VegetablesPrice = menus[0].VegetablesPrice, Sandwiches = sand, Vegetables = veg };
+            List<Menu> menus = _context.Menus.ToList();
 
-            return menu ;
+            CommWrap<Menu> commRes = null;
+            if(menus.Count == 0)
+            {
+                commRes = new CommWrap<Menu> { RequestStatus = 0};
+            }
+            else
+            {
+                Menu menu = new Menu { Id = menus[0].Id, VegetablesPrice = menus[0].VegetablesPrice, Sandwiches = sand, Vegetables = veg };
+                commRes = new CommWrap<Menu> { RequestStatus = 1, Content = menu };
+            }
+
+            return commRes;
         }
 
 

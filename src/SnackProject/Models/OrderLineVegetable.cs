@@ -22,5 +22,10 @@ namespace SnackProject.Models
             this.OrderLine = orderLine;
             this.Vegetable = vegetable;
         }*/
+
+        public bool Equals(OrderLineVegetable other)
+        {
+            return other.Vegetable.Id.Equals(Vegetable.Id) && Vegetable.Available && other.Vegetable.Available;
+        }
     }
 }
