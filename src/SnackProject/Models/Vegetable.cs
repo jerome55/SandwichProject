@@ -21,7 +21,7 @@ namespace SnackProject.Models
         [Display(Name = "Disponibilité")]
         public bool Available { get; set; }
 
-        
+
         /*public Vegetable(string name, string description, bool available)
         {
             this.Name = name;

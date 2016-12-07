@@ -28,5 +28,26 @@ namespace SnackProject.Models
             this.TotalAmount = totalAmount;
             this.OrderLines = orderLines;
         }*/
+
+        public void AddOrderLine(ICollection<OrderLine> AddOrderLines)
+        {
+            List<OrderLine> listAdd = AddOrderLines.ToList();
+            List<OrderLine> listCurrent = OrderLines.ToList();
+
+            for(int i=0;i<listAdd.Count;++i)
+            {
+                int j = 0;
+                for (j = 0; j < listCurrent.Count && !listCurrent[j].Equals(listAdd); ++j);
+
+                if(j == listCurrent.Count)
+                {
+                    OrderLines.Add(listAdd[i]);
+                }
+                else
+                {
+                    listCurrent[j].Quantity += listAdd[i].Quantity;
+                }
+            }
+        }
     }
 }
