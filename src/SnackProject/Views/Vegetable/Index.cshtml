@@ -1,53 +1,44 @@
-@model IEnumerable<SnackProject.Models.Vegetable>
+ï»¿@model IEnumerable<SnackProject.Models.Vegetable>
 
 @{
-    ViewData["Title"] = "Liste des crudités";
+    ViewData["Title"] = "Liste des cruditÃ©s";
 }
 
-<h2>Liste des crudités</h2>
-
+<h2>Liste des cruditÃ©s</h2>
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Available)
-            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Description)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Available)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Available)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Détails</a> 
-                
-                @* ON NE SUPPRIME JAMAIS DE SANDWICHES
-                    | <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>*@
-            </td>
-        </tr>
-}
+        @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Available)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
-<p>
-    <a asp-action="Create">Ajouter une crudité</a>
+<p style="text-align:right;">
+    <a asp-action="Create">Ajouter une cruditÃ©</a>
 </p>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
