@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using ClientProject.Data;
 using ClientProject.Models;
 using Microsoft.AspNetCore.Identity;
+using ClientProject.Models.ProfileViewModels;
+using System.Diagnostics;
 
 namespace ClientProject.Controllers
 {
@@ -37,7 +39,8 @@ namespace ClientProject.Controllers
             {
                 return NotFound();
             }
-
+            Debug.WriteLine("-------------"+_context.Entry(employee).//.Collection(e=>e.Orders).Load()+"______");
+            //ProfilePageViewModel Profile = new ProfilePageViewModel(employee, employee.Orders);
             return View(employee);
         }
 
