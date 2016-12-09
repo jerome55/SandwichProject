@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using ClientProject.Data;
 using ClientProject.Models;
 using Microsoft.AspNetCore.Identity;
-using ClientProject.Models.ProfileViewModels;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace ClientProject.Controllers
 {
@@ -34,13 +34,34 @@ namespace ClientProject.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == id);
+            /*var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == id);
             if (employee == null)
             {
                 return NotFound();
-            }
-            Debug.WriteLine("-------------"+_context.Entry(employee).//.Collection(e=>e.Orders).Load()+"______");
-            //ProfilePageViewModel Profile = new ProfilePageViewModel(employee, employee.Orders);
+            }*/
+
+            var employee = await _context.Employees
+                                .Include(emp => emp.Orders)
+                                    .ThenInclude(order => order.OrderLines)
+                                        .ThenInclude(orderLine => orderLine.Sandwich)
+                                .Include(emp => emp.Orders)
+                                    .ThenInclude(order => order.OrderLines)
+                                        .ThenInclude(orderLine => orderLine.OrderLineVegetables)
+                                            .ThenInclude(orderLineVegetable => orderLineVegetable.Vegetable)
+                                .SingleOrDefaultAsync(m => m.Id == id);
+
+            /*IIncludableQueryable<Employee, ICollection<OrderLine>> incluQueryOrderLines = _context.Employees.Include(emp => emp.Orders).ThenInclude(order => order.OrderLines);
+
+            incluQueryOrderLines.ThenInclude(orderLine => orderLine.Sandwich);
+            incluQueryOrderLines.ThenInclude(orderLine => orderLine.OrderLineVegetables).ThenInclude(orderLineVegetable => orderLineVegetable.Vegetable);
+
+            var employee = await incluQueryOrderLines.SingleOrDefaultAsync(m => m.Id == id);
+            if (employee == null)
+            {
+                return NotFound();
+            }*/
+
+            Debug.WriteLine("-------------"+employee.Orders.First().Id+"______");
             return View(employee);
         }
 
