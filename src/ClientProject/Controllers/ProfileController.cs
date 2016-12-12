@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using ClientProject.Data;
 using ClientProject.Models;
 using Microsoft.AspNetCore.Identity;
-using ClientProject.Models.ProfileViewModels;
 using System.Diagnostics;
 
 namespace ClientProject.Controllers
@@ -34,13 +33,21 @@ namespace ClientProject.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == id);
+            Employee employee = await _context.Employees
+                .Include(emp => emp.Orders)
+                    .ThenInclude(order => order.OrderLines)
+                    .ThenInclude(odLin => odLin.Sandwich)
+                .Include(emp => emp.Orders)
+                    .ThenInclude(order => order.OrderLines)
+                    .ThenInclude(odLin => odLin.OrderLineVegetables)
+                    .ThenInclude(odLinVeg => odLinVeg.Vegetable)
+                .SingleOrDefaultAsync(m => m.Id == id);
+
             if (employee == null)
             {
                 return NotFound();
             }
-            Debug.WriteLine("-------------"+_context.Entry(employee).//.Collection(e=>e.Orders).Load()+"______");
-            //ProfilePageViewModel Profile = new ProfilePageViewModel(employee, employee.Orders);
+            employee.Orders = employee.Orders.Where(q => q.DateOfDelivery.Equals(DateTime.Today)).ToList();
             return View(employee);
         }
 

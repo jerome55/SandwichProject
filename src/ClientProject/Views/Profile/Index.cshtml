@@ -47,6 +47,48 @@
 
         </dd>
     </dl>
+     @if (Model.Orders.Count <= 0)
+     {
+
+         <p>Il n'y a aucune commande en cours </p>
+     }
+     else
+     {
+        <table>
+            <tr>
+                <td>
+                    Sandwich
+                </td>
+                <td>
+                    Cruditées
+                </td>
+                <td>
+                    Prix
+                </td>
+            </tr>
+            @foreach (var orderLine in Model.Orders.First().OrderLines)
+            {
+                <tr>
+                    <td>
+                        @orderLine.Sandwich.Name;
+                    </td>
+                    <td>
+                        @if(orderLine.OrderLineVegetables.Count <= 0){
+                           <p> Pas de cruditées</p>
+                        }else{
+                                @foreach (var lineVegetables in orderLine.OrderLineVegetables)
+                                {
+                                    @lineVegetables.Vegetable.Name;
+                                }
+                        }
+                    </td>
+                    <td>
+                       @orderLine.GetPrice();
+                    </td>
+                </tr>
+            }
+        </table>
+     }
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
