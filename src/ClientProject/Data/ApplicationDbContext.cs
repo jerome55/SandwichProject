@@ -24,5 +24,9 @@ namespace ClientProject.Data
         }
 
         public DbSet<Employee> Employee { get; set; }
+
+        public DbSet<Sandwich> Sandwich { get; set; }
+
+        public DbSet<Vegetable> Vegetable { get; set; }
     }
 }
