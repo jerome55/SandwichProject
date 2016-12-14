@@ -64,6 +64,17 @@ namespace ClientProject.Controllers
             return responseReturn;
         }
 
+        public async Task<CommWrap<Order>> sendOrder(Order toSend)
+        {
+            CommWrap<Order> responseReturn = null;
 
+            HttpResponseMessage response = await this.client.PostAsJsonAsync("api/Order", toSend);
+            if (response.IsSuccessStatusCode)
+            {
+                responseReturn = await response.Content.ReadAsAsync<CommWrap<Order>>();
+            }
+
+            return responseReturn;
+        }
     }
 }

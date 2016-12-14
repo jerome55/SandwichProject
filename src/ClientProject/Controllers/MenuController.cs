@@ -29,10 +29,9 @@ namespace ClientProject.Controllers
             _userManager = userManager;
         }
 
+        // pre : employer contient ses orders.
         private Order GetCurrentOrder(Employee employee)
         {
-
-
             DateTime now = DateTime.Now;
             DateTime delivreryDate;
             if (now.Hour >= 10)
@@ -264,6 +263,60 @@ namespace ClientProject.Controllers
             return _context.OrderLines.Any(e => e.Id == id);
         }
 
+        private void addOrderLineToCartSession(OrderLine add)
+        {
+            string id = _userManager.GetUserId(User);
+
+            DateTime now = DateTime.Now;
+            DateTime delivreryDate;
+            if (now.Hour >= 10)
+            {
+                delivreryDate = DateTime.Today.AddDays(1.0);
+            }
+            else
+            {
+                delivreryDate = DateTime.Today;
+            }
+
+            string serializable = HttpContext.Session.GetString("cart");
+
+            Order TodayOrder;
+            if (serializable == null || serializable.Equals(""))
+            {
+                TodayOrder = new Order { DateOfDelivery = delivreryDate, TotalAmount = 0, OrderLines = new List<OrderLine>() };
+            }
+            else
+            {
+                TodayOrder = JsonConvert.DeserializeObject<Order>(serializable);
+            }
+
+            if (TodayOrder == null)
+            {
+                TodayOrder = new Order { DateOfDelivery = delivreryDate, TotalAmount = 0, OrderLines = new List<OrderLine>()};
+            }
+
+            TodayOrder.AddOrderLine(add);
+
+            serializable = JsonConvert.SerializeObject(TodayOrder);
+
+            HttpContext.Session.SetString("cart", serializable);
+        }
+
+        private async void validateCartSession()
+        {
+            string serializable = HttpContext.Session.GetString("cart");
+
+            if (serializable == null || serializable.Equals(""))
+            {
+                return;
+            }
+
+            Order TodayOrder = JsonConvert.DeserializeObject<Order>(serializable);
+
+            CommWrap<Order> comm =  await RemoteCall.GetInstance().sendOrder(TodayOrder);
+            
+
+        }
 
         private void AddErrors(String errorMessage)
         {
