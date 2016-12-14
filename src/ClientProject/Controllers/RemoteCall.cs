@@ -51,19 +51,30 @@ namespace ClientProject.Controllers
             return responseReturn;
         }
 
-        public async Task<Menu> GetMenu()
+        public async Task<CommWrap<Menu>> GetMenu()
         {
-            Menu responseReturn = null;
+            CommWrap<Menu> responseReturn = null;
 
             HttpResponseMessage response = await this.client.GetAsync("api/Menu");
             if (response.IsSuccessStatusCode)
             {
-                responseReturn = await response.Content.ReadAsAsync<Menu>();
+                responseReturn = await response.Content.ReadAsAsync<CommWrap<Menu>>();
             }
 
             return responseReturn;
         }
 
+        public async Task<CommWrap<Order>> sendOrder(Order toSend)
+        {
+            CommWrap<Order> responseReturn = null;
 
+            HttpResponseMessage response = await this.client.PostAsJsonAsync("api/Order", toSend);
+            if (response.IsSuccessStatusCode)
+            {
+                responseReturn = await response.Content.ReadAsAsync<CommWrap<Order>>();
+            }
+
+            return responseReturn;
+        }
     }
 }

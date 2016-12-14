@@ -46,7 +46,5 @@ namespace SnackProject.Controllers.WebServices
 
             return commRes;
         }
-
-
     }
 }

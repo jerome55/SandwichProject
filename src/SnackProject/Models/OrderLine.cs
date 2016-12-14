@@ -44,7 +44,13 @@ namespace SnackProject.Models
                 }
             }
 
+
             return follow;
+        }
+
+        public decimal GetPrice()
+        {
+            return Sandwich.Price * Quantity + (new Menu()).VegetablesPrice;
         }
     }
 }

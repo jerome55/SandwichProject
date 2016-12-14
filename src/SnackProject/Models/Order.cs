@@ -16,7 +16,7 @@ namespace SnackProject.Models
         public DateTime DateOfDelivery { get; set; }
         [Display(Name = "Montant total")]
         [DataMember]
-        public decimal TotalAmount { get; set; }
+        public decimal TotalAmount { get;}
 
         [DataMember]
         public ICollection<OrderLine> OrderLines { get; set; }
@@ -31,21 +31,26 @@ namespace SnackProject.Models
 
         public void AddOrderLine(ICollection<OrderLine> AddOrderLines)
         {
-            List<OrderLine> listAdd = AddOrderLines.ToList();
-            List<OrderLine> listCurrent = OrderLines.ToList();
-
-            for(int i=0;i<listAdd.Count;++i)
+            lock(this)
             {
-                int j = 0;
-                for (j = 0; j < listCurrent.Count && !listCurrent[j].Equals(listAdd); ++j);
+                List<OrderLine> listAdd = AddOrderLines.ToList();
+                List<OrderLine> listCurrent = OrderLines.ToList();
 
-                if(j == listCurrent.Count)
+                for(int i=0;i<listAdd.Count;++i)
                 {
-                    OrderLines.Add(listAdd[i]);
-                }
-                else
-                {
-                    listCurrent[j].Quantity += listAdd[i].Quantity;
+                    int j = 0;
+                    for (j = 0; j < listCurrent.Count && !listCurrent[j].Equals(listAdd); ++j);
+
+                    if(j == listCurrent.Count)
+                    {
+                        OrderLines.Add(listAdd[i]);
+                        TotalAmount += listAdd[i].GetPrice();
+                    }
+                    else
+                    {
+                        listCurrent[j].Quantity += listAdd[i].Quantity;
+                        TotalAmount += listAdd[i].GetPrice();
+                    }
                 }
             }
         }
