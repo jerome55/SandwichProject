@@ -9,6 +9,7 @@ using ClientProject.Data;
 using ClientProject.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Diagnostics;
+using ClientProject.Models.Communication;
 
 namespace ClientProject.Controllers
 {
@@ -48,10 +49,35 @@ namespace ClientProject.Controllers
                 return NotFound();
             }
             employee.Orders = employee.Orders.Where(q => q.DateOfDelivery.Equals(DateTime.Today)).ToList();
+            foreach (Order order in employee.Orders){
+                foreach (OrderLine orderline in order.OrderLines)
+                {
+                   CommWrap<Sandwich> CommSan = await RemoteCall.GetInstance().getSandwichById(orderline.Sandwich.Id);
+                    if(CommSan.RequestStatus == 1)
+                    {
+                        orderline.Sandwich = CommSan.Content;
+                    }else
+                    {
+                        return NotFound();
+                    }
+                    foreach(OrderLineVegetable orderLineVeg in orderline.OrderLineVegetables)
+                    {
+                        CommWrap<Vegetable> CommVeg = await RemoteCall.GetInstance().getVegetableById(orderLineVeg.Vegetable.Id);
+                        if (CommVeg.RequestStatus == 1)
+                        {
+                            orderLineVeg.Vegetable = CommVeg.Content;
+                        }
+                        else
+                        {
+                            return NotFound();
+                        }
+                    }
+                }
+            }
             return View(employee);
         }
 
-        // GET: Employees/Details/5
+        // GET: Employees/Details/5s
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)

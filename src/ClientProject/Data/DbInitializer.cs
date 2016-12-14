@@ -26,7 +26,7 @@ namespace ClientProject.Data
                 OrderLine ordLin = new OrderLine { Quantity = 1, Sandwich = san };
                 List<OrderLine> ordLinList = new List<OrderLine>();
                 ordLinList.Add(ordLin);
-                Order ord = new Order { DateOfDelivery = DateTime.Now, TotalAmount = (decimal)1.00, OrderLines = ordLinList };
+                Order ord = new Order { DateOfDelivery = DateTime.Today, TotalAmount = (decimal)1.00, OrderLines = ordLinList };
                 List < Order > ordList= new List<Order>();
                 ordList.Add(ord);
                 emp.Orders = ordList;

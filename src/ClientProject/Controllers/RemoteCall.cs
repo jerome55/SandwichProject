@@ -24,7 +24,6 @@ namespace ClientProject.Controllers
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
-
         public static RemoteCall GetInstance()
         {
             //Mettre un lock ici
@@ -51,6 +50,30 @@ namespace ClientProject.Controllers
             return responseReturn;
         }
 
+        public async Task<CommWrap<Sandwich>> getSandwichById(int id)
+        {
+            CommWrap<Sandwich> responseReturn = null;
+
+            HttpResponseMessage response = await this.client.GetAsync("api/Sandwich?id="+id);
+            if (response.IsSuccessStatusCode)
+            {
+                responseReturn = await response.Content.ReadAsAsync<CommWrap<Sandwich>>();
+            }
+
+            return responseReturn;
+        }
+        public async Task<CommWrap<Vegetable>> getVegetableById(int id)
+        {
+            CommWrap<Vegetable> responseReturn = null;
+
+            HttpResponseMessage response = await this.client.GetAsync("api/Vegetable?id=" + id);
+            if (response.IsSuccessStatusCode)
+            {
+                responseReturn = await response.Content.ReadAsAsync<CommWrap<Vegetable>>();
+            }
+
+            return responseReturn;
+        }
         public async Task<Menu> GetMenu()
         {
             Menu responseReturn = null;
