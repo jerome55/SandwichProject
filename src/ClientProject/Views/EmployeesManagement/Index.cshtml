@@ -1,11 +1,11 @@
-@using ClientProject.Models
+ï»¿@using ClientProject.Models
 @model IEnumerable<ClientProject.Models.Employee>
 
 @{
-    ViewData["Title"] = "Liste des employés";
+    ViewData["Title"] = "Liste des employÃ©s";
 }
 
-<h2>Liste des employés</h2>
+<h2>Liste des employÃ©s</h2>
 
 <table class="table">
     <thead>
@@ -29,33 +29,33 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Wallet)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a> |
-                <a asp-action="AddToWallet" asp-route-id="@item.Id">Créditer</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Wallet)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a> |
+                    <a asp-action="AddToWallet" asp-route-id="@item.Id">CrÃ©diter</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 <p>
-    <a asp-action="Create">Créer un nouvel employé</a>
+    <a asp-action="Create">CrÃ©er un nouvel employÃ©</a>
 </p>
 
 @section Scripts {
