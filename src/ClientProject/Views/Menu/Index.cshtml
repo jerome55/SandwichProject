@@ -1,4 +1,4 @@
-@model IEnumerable<ClientProject.Models.OrderLine>
+@model ClientProject.Models.MenuViewModels.MenuViewModel
 
 @{
     ViewData["Title"] = "Carte du snack";
@@ -10,95 +10,76 @@
     <a asp-action="Create">Create New</a>
 </p>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th></th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sandwich.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sandwich.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sandwich.Description)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+@using (Html.BeginForm())
+{
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.quantity)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-                </td>
+                <th></th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Menu.Sandwiches.First().Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Menu.Sandwiches.First().Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Menu.Sandwiches.First().Description)
+                </th>
             </tr>
-        }
-    </tbody>
-</table>
-
-<table>
-    <thead>
-        <tr>
-            <th></th>
-            <th>
-                @Html.DisplayNameFor(model => model.Vegetable.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Menu.VegetablesPrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Vegetable.Description)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.quantity)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-
-
-
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.quantity)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.quantity)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-            </td>
-        </tr>
+        </thead>
+        <tbody>
+            @foreach (var sandwich in Model.Menu.Sandwiches)
+            {
+                <tr>
+                    <td>
+                        @Html.RadioButtonFor(m => m.SelectedSandwich, sandwich.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => sandwich.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => sandwich.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => sandwich.Description)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <input type="submit" value="AddToCart" class="btn btn-default" />
 }
-    </tbody>
-</table>
+
+
+@*<table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Vegetable.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Menu.VegetablesPrice)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Vegetable.Description)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.quantity)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>*@
+

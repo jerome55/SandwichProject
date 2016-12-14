@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using ClientProject.Models.Communication;
+using ClientProject.Models.MenuViewModels;
 
 namespace ClientProject.Controllers
 {
@@ -58,6 +60,40 @@ namespace ClientProject.Controllers
         // GET: Menu
         public async Task<IActionResult> Index()
         {
+            RemoteCall remoteCaller = RemoteCall.GetInstance();
+            CommWrap<Menu> responseMenu = await remoteCaller.GetMenu();
+
+            MenuViewModel menuViewModel = new MenuViewModel();
+
+            if (responseMenu.RequestStatus == 1)
+            {
+                Menu menu = responseMenu.Content;
+
+                menuViewModel = new MenuViewModel { Menu = menu, SelectedSandwich = null };
+            }
+            AddErrors("Le menu n'a pu être chargé correctement");
+
+            return View(menuViewModel);
+
+            /*string id = _userManager.GetUserId(User);
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var employee = await _context.Employees
+                                .Include(emp => emp.Orders)
+                                    .ThenInclude(order => order.OrderLines)
+                                        .ThenInclude(orderLine => orderLine.Sandwich)
+                                .Include(emp => emp.Orders)
+                                    .ThenInclude(order => order.OrderLines)
+                                        .ThenInclude(orderLine => orderLine.OrderLineVegetables)
+                                            .ThenInclude(orderLineVegetable => orderLineVegetable.Vegetable)
+                                .SingleOrDefaultAsync(m => m.Id == id);
+
+            */
+
             //string id = _userManager.GetUserId(User);
 
             //Employee emp = _context.Employees.Where(e => e.Id == id).FirstOrDefault();
@@ -70,7 +106,10 @@ namespace ClientProject.Controllers
 
             //return View(order.OrderLines.ToList());
 
-            Menu menu = await RemoteCall.GetInstance().GetMenu();
+
+
+
+            /*Menu menu = await RemoteCall.GetInstance().GetMenu();
 
             if(menu == null)
             {
@@ -79,8 +118,26 @@ namespace ClientProject.Controllers
             else
             {
                 return NotFound();
-            }
+            }*/
         }
+
+
+
+        // POST: OrderLines/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<string> Index(MenuViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+            }
+            return model.SelectedSandwich;
+        }
+
+
+
 
         // GET: OrderLines/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -205,6 +262,12 @@ namespace ClientProject.Controllers
         private bool OrderLineExists(int id)
         {
             return _context.OrderLines.Any(e => e.Id == id);
+        }
+
+
+        private void AddErrors(String errorMessage)
+        {
+            ModelState.AddModelError(string.Empty, errorMessage);
         }
     }
 }
