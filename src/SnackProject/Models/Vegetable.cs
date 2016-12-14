@@ -11,23 +11,15 @@ namespace SnackProject.Models
     public class Vegetable
     {
         [DataMember]
-        public int id { get; set; }
+        public int Id { get; set; }
         [DataMember]
         [Display(Name = "Nom")]
-        public string name { get; set; }
+        public string Name { get; set; }
         [DataMember]
         [Display(Name = "Description")]
-        public string description { get; set; }
+        public string Description { get; set; }
         [DataMember]
         [Display(Name = "Disponible")]
-        public bool available { get; set; }
-
-        /*
-        public Vegetable(string name, string description, bool available)
-        {
-            this.name = name;
-            this.description = description;
-            this.available = available;
-        }*/
+        public bool Available { get; set; }
     }
 }

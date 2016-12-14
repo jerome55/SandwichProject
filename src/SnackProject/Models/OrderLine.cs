@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
@@ -9,22 +10,23 @@ namespace SnackProject.Models
     [DataContract]
     public class OrderLine
     {
-        public int id { get; set; }
+        public int Id { get; set; }
+        [Display(Name = "Quantité")]
+        [DataMember]
+        public int Quantity { get; set; }
 
         [DataMember]
-        public int quantity { get; set; }
+        public Sandwich Sandwich { get; set; }
 
         [DataMember]
-        public Sandwich sandwich { get; set; }
+        public ICollection<OrderLineVegetable> OrderLineVegetables { get; set; }
 
-        [DataMember]
-        public ICollection<OrderLineVegetable> orderLineVegetables { get; set; }
-        /*
-        public OrderLine(Sandwich sandwich, int quantity, ICollection<OrderLineVegetable> orderLineVegetables)
+        
+        /*public OrderLine(Sandwich sandwich, int quantity, ICollection<OrderLineVegetable> orderLineVegetables)
         {
-            this.sandwich = sandwich;
-            this.quantity = quantity;
-            this.orderLineVegetables = orderLineVegetables;
+            this.Sandwich = sandwich;
+            this.Quantity = quantity;
+            this.OrderLineVegetables = orderLineVegetables;
         }*/
     }
 }

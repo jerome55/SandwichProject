@@ -20,11 +20,18 @@ namespace SnackProject.Controllers
             _context = context;    
         }
 
-        // GET: Vegetable
+
+        //Tri l'affichage des crudités par ordre de disponibilité
+        // GET: Crudité
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Vegetables.ToListAsync());
+            var vegies = from v in _context.Vegetables
+                             select v;
+
+            vegies = vegies.OrderBy(s => s.Available ? 0 : 1);
+            return View(await vegies.AsNoTracking().ToListAsync());
         }
+
 
         // GET: Vegetable/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -34,7 +41,7 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.id == id);
+            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.Id == id);
             if (vegetable == null)
             {
                 return NotFound();
@@ -73,7 +80,7 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.id == id);
+            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.Id == id);
             if (vegetable == null)
             {
                 return NotFound();
@@ -89,7 +96,7 @@ namespace SnackProject.Controllers
         //public async Task<IActionResult> Edit(int id, [Bind("id,available,description,name")] Vegetable vegetable)
         public IActionResult Edit(int id, [Bind("id,available,description,name")] Vegetable vegetable)
         {
-            if (id != vegetable.id)
+            if (id != vegetable.Id)
             {
                 return NotFound();
             }

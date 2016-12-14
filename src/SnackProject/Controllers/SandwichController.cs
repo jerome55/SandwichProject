@@ -20,11 +20,27 @@ namespace SnackProject.Controllers
             _context = context;    
         }
 
+
+        //Tri les sandwichs par odre de disponibilité
+        // GET: Sandwich
+        public async Task<IActionResult> Index()
+        {
+            var sandwiches = from s in _context.Sandwiches
+                             select s;
+
+            sandwiches = sandwiches.OrderBy(s => s.Available ? 0 : 1);
+            return View(await _context.Sandwiches.ToListAsync());
+        }
+
+
+        /*
         // GET: Sandwich
         public async Task<IActionResult> Index()
         {
             return View(await _context.Sandwiches.ToListAsync());
         }
+        */
+
 
         // GET: Sandwich/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -34,7 +50,7 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.id == id);
+            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.Id == id);
             if (sandwich == null)
             {
                 return NotFound();
@@ -73,7 +89,7 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.id == id);
+            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.Id == id);
             if (sandwich == null)
             {
                 return NotFound();
@@ -89,7 +105,7 @@ namespace SnackProject.Controllers
         //public async Task<IActionResult> Edit(int id, [Bind("id,available,description,name,price")] Sandwich sandwich)
         public IActionResult Edit(int id, [Bind("id,available,description,name,price")] Sandwich sandwich)
         {
-            if (id != sandwich.id)
+            if (id != sandwich.Id)
             {
                 return NotFound();
             }

@@ -7,33 +7,59 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ClientProject.Data;
 using ClientProject.Models;
+using Microsoft.AspNetCore.Identity;
+using System.Diagnostics;
 
 namespace ClientProject.Controllers
 {
-    public class EmployeesController : Controller
+    public class ProfileController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<Employee> _userManager;
 
-        public EmployeesController(ApplicationDbContext context)
+        public ProfileController(ApplicationDbContext context, UserManager<Employee> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManager = userManager; 
         }
 
         // GET: Employees
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Employee.ToListAsync());
+            string id = _userManager.GetUserId(User);
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Employee employee = await _context.Employees
+                .Include(emp => emp.Orders)
+                    .ThenInclude(order => order.OrderLines)
+                    .ThenInclude(odLin => odLin.Sandwich)
+                .Include(emp => emp.Orders)
+                    .ThenInclude(order => order.OrderLines)
+                    .ThenInclude(odLin => odLin.OrderLineVegetables)
+                    .ThenInclude(odLinVeg => odLinVeg.Vegetable)
+                .SingleOrDefaultAsync(m => m.Id == id);
+
+            if (employee == null)
+            {
+                return NotFound();
+            }
+            employee.Orders = employee.Orders.Where(q => q.DateOfDelivery.Equals(DateTime.Today)).ToList();
+            return View(employee);
         }
 
         // GET: Employees/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var employee = await _context.Employee.SingleOrDefaultAsync(m => m.id == id);
+            var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == id);
             if (employee == null)
             {
                 return NotFound();
@@ -53,7 +79,7 @@ namespace ClientProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,firstName,lastName,login,mail,password,wallet")] Employee employee)
+        public async Task<IActionResult> Create([Bind("Id,AccessFailedCount,ConcurrencyStamp,Email,EmailConfirmed,FirstName,LastName,LockoutEnabled,LockoutEnd,NormalizedEmail,NormalizedUserName,PasswordHash,PhoneNumber,PhoneNumberConfirmed,SecurityStamp,TwoFactorEnabled,UserName,Wallet")] Employee employee)
         {
             if (ModelState.IsValid)
             {
@@ -65,14 +91,14 @@ namespace ClientProject.Controllers
         }
 
         // GET: Employees/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var employee = await _context.Employee.SingleOrDefaultAsync(m => m.id == id);
+            var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == id);
             if (employee == null)
             {
                 return NotFound();
@@ -85,9 +111,9 @@ namespace ClientProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,firstName,lastName,login,mail,password,wallet")] Employee employee)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,AccessFailedCount,ConcurrencyStamp,Email,EmailConfirmed,FirstName,LastName,LockoutEnabled,LockoutEnd,NormalizedEmail,NormalizedUserName,PasswordHash,PhoneNumber,PhoneNumberConfirmed,SecurityStamp,TwoFactorEnabled,UserName,Wallet")] Employee employee)
         {
-            if (id != employee.id)
+            if (id != employee.Id)
             {
                 return NotFound();
             }
@@ -101,7 +127,7 @@ namespace ClientProject.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmployeeExists(employee.id))
+                    if (!EmployeeExists(employee.Id))
                     {
                         return NotFound();
                     }
@@ -116,14 +142,14 @@ namespace ClientProject.Controllers
         }
 
         // GET: Employees/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var employee = await _context.Employee.SingleOrDefaultAsync(m => m.id == id);
+            var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == id);
             if (employee == null)
             {
                 return NotFound();
@@ -135,17 +161,17 @@ namespace ClientProject.Controllers
         // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var employee = await _context.Employee.SingleOrDefaultAsync(m => m.id == id);
-            _context.Employee.Remove(employee);
+            var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == id);
+            _context.Employees.Remove(employee);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        private bool EmployeeExists(int id)
+        private bool EmployeeExists(string id)
         {
-            return _context.Employee.Any(e => e.id == id);
+            return _context.Employees.Any(e => e.Id == id);
         }
     }
 }
