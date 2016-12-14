@@ -44,7 +44,7 @@ namespace SnackProject.Automatics
         private static void StartTimer()
         {
             now = DateTime.Now;
-            tenHours = DateTime.Today.AddHours(19.0).AddMinutes(53);//10.0
+            tenHours = DateTime.Today.AddHours(15.0).AddMinutes(15);//10.0
 
             //Si on est déjà au delà de 10 heures, alors ce sera demain
             if (now > tenHours)

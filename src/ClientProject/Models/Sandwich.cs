@@ -12,6 +12,7 @@ namespace ClientProject.Models
     public class Sandwich
     {
         [DataMember]
+        [Key][DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
         [Display(Name = "Nom")]
         [DataMember][NotMapped]
