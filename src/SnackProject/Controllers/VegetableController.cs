@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using SnackProject.Data;
 using SnackProject.Models;
 using SnackProject.Automatics;
+using SnackProject.Models.VegetableViewModels;
 
 namespace SnackProject.Controllers
 {
@@ -23,7 +24,13 @@ namespace SnackProject.Controllers
         // GET: Vegetable
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Vegetables.ToListAsync());
+            IList<Vegetable> vegetables = await _context.Vegetables.ToListAsync();
+            decimal VegetablesPrice = _context.Menus.First().VegetablesPrice;
+            VegetableViewModel model = new VegetableViewModel { Vegetables = vegetables, VegetablesPrice = VegetablesPrice };
+
+            //AddToWalletViewModel model = new AddToWalletViewModel { Id = employee.Id, FirstName = employee.FirstName, LastName = employee.LastName, UserName = employee.UserName, Email = employee.Email, Wallet = employee.Wallet, AddToWallet = (decimal)0.00 };
+
+            return View(model);
         }
 
         // GET: Vegetable/Details/5
