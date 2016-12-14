@@ -28,7 +28,7 @@ namespace SnackProject.Automatics
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SandwichExists(sandwich.id))
+                if (!SandwichExists(sandwich.Id))
                 {
                     throw new Exception("Sandwich Not Found");     
                 }
@@ -41,12 +41,12 @@ namespace SnackProject.Automatics
 
         private bool SandwichExists(int id)
         {
-            return _context.Sandwiches.Any(e => e.id == id);
+            return _context.Sandwiches.Any(e => e.Id == id);
         }
 
         public string GetKey()
         {
-            return "usd"+sandwich.id;
+            return "usd"+sandwich.Id;
         }
     }
 }

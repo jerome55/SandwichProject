@@ -12,19 +12,24 @@ namespace ClientProject.Models
     public class Company
     {
         [DataMember]
-        public int id { get; set; }
+        [Key][DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int Id { get; set; }
         [DataMember]
-        public string chkCode { get; set; }
-        [DataMember][NotMapped]
+        public string ChkCode { get; set; }
         [Display(Name = "Nom")]
-        public string name { get; set; }
         [DataMember][NotMapped]
-        [Display(Name = "Nombre d'Employés")]
-        public int nbEmployes { get; set; }
+        public string Name { get; set; }
+        [Display(Name = "Nombre d'employés")]
         [DataMember][NotMapped]
-        public string mail { get; set; }
+        public int NbEmployees { get; set; }
+        [Display(Name = "Adresse mail")]
         [DataMember][NotMapped]
+        public string Mail { get; set; }
         [Display(Name = "Adresse")]
-        public string address { get; set; }
+        [DataMember][NotMapped]
+        public string Address { get; set; }
+        [Display(Name = "Status")]
+        [DataMember][NotMapped]
+        public bool Status { get; set; }
     }
 }

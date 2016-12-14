@@ -10,19 +10,23 @@ namespace ClientProject.Models
     [DataContract]
     public class OrderLine
     {
-        public int id { get; set; }
-
-        [DataMember]
+        public int Id { get; set; }
         [Display(Name = "Quantité")]
-        public int quantity { get; set; }
         [DataMember]
-        public Sandwich sandwich { get; set; }
-        [DataMember]
-        public ICollection<OrderLineVegetable> orderLineVegetables { get; set; }
+        public int Quantity { get; set; }
 
-        public decimal getPrice()
+        [DataMember]
+        public virtual Sandwich Sandwich { get; set; }
+
+        [DataMember]
+        public virtual ICollection<OrderLineVegetable> OrderLineVegetables { get; set; }
+
+        public virtual Order Order { get; set; }
+
+
+        public decimal GetPrice()
         {
-            return sandwich.price + (new Menu()).vegetablesPrice;
+            return Sandwich.Price + (new Menu()).VegetablesPrice;
         }
     }
 }

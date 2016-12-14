@@ -12,13 +12,15 @@ namespace ClientProject.Models
     public class Sandwich
     {
         [DataMember]
-        public int id { get; set; }
-        [DataMember][NotMapped]
+        public int Id { get; set; }
         [Display(Name = "Nom")]
-        public string name { get; set; }
         [DataMember][NotMapped]
-        public string description { get; set; }
+        public string Name { get; set; }
+        [Display(Name = "Description")]
         [DataMember][NotMapped]
-        public decimal price { get; set; }
+        public string Description { get; set; }
+        [Display(Name = "Prix")]
+        [DataMember][NotMapped]
+        public decimal Price { get; set; }
     }
 }

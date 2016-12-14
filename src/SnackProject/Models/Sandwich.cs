@@ -8,30 +8,20 @@ using System.Threading.Tasks;
 namespace SnackProject.Models
 {
     [DataContract]
-    public class Sandwich
-    {
+    public class Sandwich {
         [DataMember]
-        public int id { get; set; }
-        [DataMember]
+        public int Id { get; set; }
         [Display(Name = "Nom")]
-        public string name { get; set; }
         [DataMember]
+        public string Name { get; set; }
         [Display(Name = "Description")]
-        public string description { get; set; }
         [DataMember]
+        public string Description { get; set; }
         [Display(Name = "Prix")]
-        public decimal price { get; set; }
+        [DataMember]
+        public decimal Price { get; set; }
         [DataMember]
         [Display(Name = "Disponible")]
-        public bool available { get; set; }
-
-        /*
-        public Sandwich(string name, string description, decimal price, bool available)
-        {
-            this.name = name;
-            this.description = description;
-            this.price = price;
-            this.available = available;
-        }*/
+        public bool Available { get; set; }
     }
 }

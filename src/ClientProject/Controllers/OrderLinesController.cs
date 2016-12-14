@@ -7,25 +7,64 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ClientProject.Data;
 using ClientProject.Models;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClientProject.Controllers
 {
-    public class EmployeesController : Controller
+    public class OrderLinesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<Employee> _userManager;
 
-        public EmployeesController(ApplicationDbContext context)
+        public OrderLinesController(ApplicationDbContext context, UserManager<Employee> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManager = userManager;
         }
 
-        // GET: Employees
+        private Order getCurrentOrder(Employee employee)
+        {
+            DateTime now = DateTime.Now;
+
+            DateTime delivreryDate;
+            if (now.Hour >= 10)
+            {
+                delivreryDate = DateTime.Today.AddDays(1.0);
+            }
+            else{
+                delivreryDate = DateTime.Today;
+            }
+
+            List<Order> order = employee.Orders.Where(o => o.DateOfDelivery.Equals(delivreryDate)).ToList();
+            //List<Order> order = _context.Orders.Where(o => o.DateOfDelivery.Equals(delivreryDate)).ToList();//o => o.Employee == employee && 
+
+            if (order.Count == 0)
+            {
+                return null;
+            }
+            else
+            {
+                return order.First();
+            }
+        }
+
+
+        // GET: OrderLines
+        [Authorize]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Employee.ToListAsync());
+            string id = _userManager.GetUserId(User);
+
+            Employee emp = _context.Employees.Where(e => e.Id == id).FirstOrDefault();
+
+            Order order = getCurrentOrder(emp);
+
+            return View(order.OrderLines.ToList());
         }
 
-        // GET: Employees/Details/5
+        // GET: OrderLines/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +72,39 @@ namespace ClientProject.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employee.SingleOrDefaultAsync(m => m.id == id);
-            if (employee == null)
+            var orderLine = await _context.OrderLines.SingleOrDefaultAsync(m => m.Id == id);
+            if (orderLine == null)
             {
                 return NotFound();
             }
 
-            return View(employee);
+            return View(orderLine);
         }
 
-        // GET: Employees/Create
+        // GET: OrderLines/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Employees/Create
+        // POST: OrderLines/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,firstName,lastName,login,mail,password,wallet")] Employee employee)
+        public async Task<IActionResult> Create([Bind("id,quantity")] OrderLine orderLine)
         {
             
             if (ModelState.IsValid)
             {
-                _context.Add(employee);
+                _context.Add(orderLine);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(employee);
+            return View(orderLine);
         }
 
-        // GET: Employees/Edit/5
+        // GET: OrderLines/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +112,22 @@ namespace ClientProject.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employee.SingleOrDefaultAsync(m => m.id == id);
-            if (employee == null)
+            var orderLine = await _context.OrderLines.SingleOrDefaultAsync(m => m.Id == id);
+            if (orderLine == null)
             {
                 return NotFound();
             }
-            return View(employee);
+            return View(orderLine);
         }
 
-        // POST: Employees/Edit/5
+        // POST: OrderLines/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,firstName,lastName,login,mail,password,wallet")] Employee employee)
+        public async Task<IActionResult> Edit(int id, [Bind("id,quantity")] OrderLine orderLine)
         {
-            if (id != employee.id)
+            if (id != orderLine.Id)
             {
                 return NotFound();
             }
@@ -97,12 +136,12 @@ namespace ClientProject.Controllers
             {
                 try
                 {
-                    _context.Update(employee);
+                    _context.Update(orderLine);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmployeeExists(employee.id))
+                    if (!OrderLineExists(orderLine.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +152,10 @@ namespace ClientProject.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            return View(employee);
+            return View(orderLine);
         }
 
-        // GET: Employees/Delete/5
+        // GET: OrderLines/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,29 +163,29 @@ namespace ClientProject.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employee.SingleOrDefaultAsync(m => m.id == id);
-            if (employee == null)
+            var orderLine = await _context.OrderLines.SingleOrDefaultAsync(m => m.Id == id);
+            if (orderLine == null)
             {
                 return NotFound();
             }
 
-            return View(employee);
+            return View(orderLine);
         }
 
-        // POST: Employees/Delete/5
+        // POST: OrderLines/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var employee = await _context.Employee.SingleOrDefaultAsync(m => m.id == id);
-            _context.Employee.Remove(employee);
+            var orderLine = await _context.OrderLines.SingleOrDefaultAsync(m => m.Id == id);
+            _context.OrderLines.Remove(orderLine);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        private bool EmployeeExists(int id)
+        private bool OrderLineExists(int id)
         {
-            return _context.Employee.Any(e => e.id == id);
+            return _context.OrderLines.Any(e => e.Id == id);
         }
 
 

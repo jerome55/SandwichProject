@@ -34,7 +34,7 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.id == id);
+            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.Id == id);
             if (vegetable == null)
             {
                 return NotFound();
@@ -73,7 +73,7 @@ namespace SnackProject.Controllers
                 return NotFound();
             }
 
-            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.id == id);
+            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.Id == id);
             if (vegetable == null)
             {
                 return NotFound();
@@ -89,7 +89,7 @@ namespace SnackProject.Controllers
         //public async Task<IActionResult> Edit(int id, [Bind("id,available,description,name")] Vegetable vegetable)
         public IActionResult Edit(int id, [Bind("id,available,description,name")] Vegetable vegetable)
         {
-            if (id != vegetable.id)
+            if (id != vegetable.Id)
             {
                 return NotFound();
             }

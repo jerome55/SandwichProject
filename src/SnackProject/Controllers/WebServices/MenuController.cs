@@ -23,15 +23,16 @@ namespace SnackProject.Controllers.WebServices
         [HttpGet]
         public async Task<Menu> Get()
         {
-
             ICollection<Sandwich> sand = (ICollection<Sandwich>)_context.Sandwiches
-                                            .Where(q => q.available == true)
+                                            .Where(q => q.Available == true)
                                             .ToList();
             ICollection<Vegetable> veg = _context.Vegetables
-                                            .Where(q => q.available == true)
+                                            .Where(q => q.Available == true)
                                             .ToList();
 
-            Menu menu = new Menu { id = 1, vegetablesPrice  =5,sandwiches= sand, vegetables = veg };
+            var menus = _context.Menus.ToList();
+            Menu menu = new Menu { Id = menus[0].Id, VegetablesPrice = menus[0].VegetablesPrice, Sandwiches = sand, Vegetables = veg };
+
             return menu ;
         }
 

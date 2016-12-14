@@ -10,27 +10,30 @@ namespace ClientProject.Models
     [DataContract]
     public class Order
     {
-        public int id { get; set; }
+        public int Id { get; set; }
+        [Display(Name = "Date de livraison")]
+        [DataMember]
+        public DateTime DateOfDelivery { get; set; }
+        [Display(Name = "Montant total")]
+        [DataMember]
+        public decimal TotalAmount { get; set; }
 
         [DataMember]
-        [Display(Name = "Date de Livraison")]
-        public DateTime dateOfDelivery { get; set; }
-        [DataMember]
-        [Display(Name = "Montant Total")]
-        public decimal totalAmount { get; set; }
-        [DataMember]
-        private ICollection<OrderLine> orderLines { get; set; }
+        public virtual ICollection<OrderLine> OrderLines { get; set; }
 
-        public void addOrderLine(OrderLine ol)
+        public virtual Employee Employee { get; set; }
+
+
+        public void AddOrderLine(OrderLine ol)
         {
-            this.orderLines.Add(ol);
-            this.totalAmount += ol.getPrice();
+            this.OrderLines.Add(ol);
+            this.TotalAmount += ol.GetPrice();
         }
 
-        public void deleteOrderLine(OrderLine ol)
+        public void DeleteOrderLine(OrderLine ol)
         {
-            this.orderLines.Remove(ol);
-            this.totalAmount -= ol.getPrice();
+            this.OrderLines.Remove(ol);
+            this.TotalAmount -= ol.GetPrice();
         }
     }
 }

@@ -12,13 +12,12 @@ namespace ClientProject.Models
     public class Vegetable
     {
         [DataMember]
-        public int id { get; set; }
+        public int Id { get; set; }
         [Display(Name = "Nom")]
         [DataMember][NotMapped]
-        public string name { get; set; }
+        public string Name { get; set; }
+        [Display(Name = "Description")]
         [DataMember][NotMapped]
-        public string description { get; set; }
-        [DataMember][NotMapped]
-        public bool available { get; set; }
+        public string Description { get; set; }
     }
 }
