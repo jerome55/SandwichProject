@@ -20,11 +20,27 @@ namespace SnackProject.Controllers
             _context = context;    
         }
 
+
+        //Tri les sandwichs par odre de disponibilité
+        // GET: Sandwich
+        public async Task<IActionResult> Index()
+        {
+            var sandwiches = from s in _context.Sandwiches
+                             select s;
+
+            sandwiches = sandwiches.OrderBy(s => s.Available ? 0 : 1);
+            return View(await _context.Sandwiches.ToListAsync());
+        }
+
+
+        /*
         // GET: Sandwich
         public async Task<IActionResult> Index()
         {
             return View(await _context.Sandwiches.ToListAsync());
         }
+        */
+
 
         // GET: Sandwich/Details/5
         public async Task<IActionResult> Details(int? id)

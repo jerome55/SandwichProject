@@ -20,11 +20,18 @@ namespace SnackProject.Controllers
             _context = context;    
         }
 
-        // GET: Vegetable
+
+        //Tri l'affichage des crudités par ordre de disponibilité
+        // GET: Crudité
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Vegetables.ToListAsync());
+            var vegies = from v in _context.Vegetables
+                             select v;
+
+            vegies = vegies.OrderBy(s => s.Available ? 0 : 1);
+            return View(await vegies.AsNoTracking().ToListAsync());
         }
+
 
         // GET: Vegetable/Details/5
         public async Task<IActionResult> Details(int? id)
