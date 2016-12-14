@@ -21,6 +21,7 @@ namespace SnackProject.Controllers.WebServices
             _context = context;
         }
         [HttpGet]
+        //Permet de recuperer une cruditée par son id
         public async Task<CommWrap<Vegetable>> Get(int id)
         {
 

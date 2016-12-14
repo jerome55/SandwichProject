@@ -34,6 +34,7 @@ namespace ClientProject.Controllers
                 return NotFound();
             }
 
+            //Permet de recuperer un employer ainsi que toutes c'est commandes avec toutes les info ( sandwich , cruditees). 
             Employee employee = await _context.Employees
                 .Include(emp => emp.Orders)
                     .ThenInclude(order => order.OrderLines)
@@ -48,7 +49,21 @@ namespace ClientProject.Controllers
             {
                 return NotFound();
             }
-            employee.Orders = employee.Orders.Where(q => q.DateOfDelivery.Equals(DateTime.Today)).ToList();
+
+            //Permet de supprimer les commande dont l'on a pas besoin pour l'affichage des commande du jour ou du lendemain si apres  10h
+            DateTime now = DateTime.Now;
+            DateTime delivreryDate;
+            if (now.Hour >= 10)
+            {
+                delivreryDate = DateTime.Today.AddDays(1.0);
+            }
+            else
+            {
+                delivreryDate = DateTime.Today;
+            }
+            employee.Orders = employee.Orders.Where(q => q.DateOfDelivery.Equals(delivreryDate)).ToList();
+
+            //Permet de recupere les infos relatives aux sandwich et cruditées des commandes
             foreach (Order order in employee.Orders){
                 foreach (OrderLine orderline in order.OrderLines)
                 {

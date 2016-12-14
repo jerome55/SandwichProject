@@ -49,7 +49,7 @@ namespace ClientProject.Controllers
             
             return responseReturn;
         }
-
+        //Permet de recuperer un sandwich par son id
         public async Task<CommWrap<Sandwich>> getSandwichById(int id)
         {
             CommWrap<Sandwich> responseReturn = null;
@@ -62,6 +62,7 @@ namespace ClientProject.Controllers
 
             return responseReturn;
         }
+        //Permet de recuperer une cruditée par son id
         public async Task<CommWrap<Vegetable>> getVegetableById(int id)
         {
             CommWrap<Vegetable> responseReturn = null;
