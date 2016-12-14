@@ -20,11 +20,27 @@ namespace SnackProject.Controllers
             _context = context;    
         }
 
+
+        //Tri les sandwichs par odre de disponibilité
+        // GET: Sandwich
+        public async Task<IActionResult> Index()
+        {
+            var sandwiches = from s in _context.Sandwiches
+                             select s;
+
+            sandwiches = sandwiches.OrderBy(s => s.Available ? 0 : 1);
+            return View(await _context.Sandwiches.ToListAsync());
+        }
+
+
+        /*
         // GET: Sandwich
         public async Task<IActionResult> Index()
         {
             return View(await _context.Sandwiches.ToListAsync());
         }
+        */
+
 
         // GET: Sandwich/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -54,7 +70,7 @@ namespace SnackProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,available,description,name,price")] Sandwich sandwich)
+        public async Task<IActionResult> Create([Bind("Id,Available,Description,Name,Price")] Sandwich sandwich)
         {
             if (ModelState.IsValid)
             {
@@ -87,7 +103,7 @@ namespace SnackProject.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //public async Task<IActionResult> Edit(int id, [Bind("id,available,description,name,price")] Sandwich sandwich)
-        public IActionResult Edit(int id, [Bind("id,available,description,name,price")] Sandwich sandwich)
+        public IActionResult Edit(int id, [Bind("Id,Available,Description,Name,Price")] Sandwich sandwich)
         {
             if (id != sandwich.Id)
             {
