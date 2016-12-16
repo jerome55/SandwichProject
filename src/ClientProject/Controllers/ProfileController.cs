@@ -9,7 +9,6 @@ using ClientProject.Data;
 using ClientProject.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Diagnostics;
-using Microsoft.EntityFrameworkCore.Query;
 
 namespace ClientProject.Controllers
 {
@@ -34,34 +33,21 @@ namespace ClientProject.Controllers
                 return NotFound();
             }
 
-            /*var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == id);
+            Employee employee = await _context.Employees
+                .Include(emp => emp.Orders)
+                    .ThenInclude(order => order.OrderLines)
+                    .ThenInclude(odLin => odLin.Sandwich)
+                .Include(emp => emp.Orders)
+                    .ThenInclude(order => order.OrderLines)
+                    .ThenInclude(odLin => odLin.OrderLineVegetables)
+                    .ThenInclude(odLinVeg => odLinVeg.Vegetable)
+                .SingleOrDefaultAsync(m => m.Id == id);
+
             if (employee == null)
             {
                 return NotFound();
-            }*/
-
-            var employee = await _context.Employees
-                                .Include(emp => emp.Orders)
-                                    .ThenInclude(order => order.OrderLines)
-                                        .ThenInclude(orderLine => orderLine.Sandwich)
-                                .Include(emp => emp.Orders)
-                                    .ThenInclude(order => order.OrderLines)
-                                        .ThenInclude(orderLine => orderLine.OrderLineVegetables)
-                                            .ThenInclude(orderLineVegetable => orderLineVegetable.Vegetable)
-                                .SingleOrDefaultAsync(m => m.Id == id);
-
-            /*IIncludableQueryable<Employee, ICollection<OrderLine>> incluQueryOrderLines = _context.Employees.Include(emp => emp.Orders).ThenInclude(order => order.OrderLines);
-
-            incluQueryOrderLines.ThenInclude(orderLine => orderLine.Sandwich);
-            incluQueryOrderLines.ThenInclude(orderLine => orderLine.OrderLineVegetables).ThenInclude(orderLineVegetable => orderLineVegetable.Vegetable);
-
-            var employee = await incluQueryOrderLines.SingleOrDefaultAsync(m => m.Id == id);
-            if (employee == null)
-            {
-                return NotFound();
-            }*/
-
-            Debug.WriteLine("-------------"+employee.Orders.First().Id+"______");
+            }
+            employee.Orders = employee.Orders.Where(q => q.DateOfDelivery.Equals(DateTime.Today)).ToList();
             return View(employee);
         }
 
