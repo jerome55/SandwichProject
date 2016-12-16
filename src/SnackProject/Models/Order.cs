@@ -16,7 +16,7 @@ namespace SnackProject.Models
         public DateTime DateOfDelivery { get; set; }
         [Display(Name = "Montant total")]
         [DataMember]
-        public decimal TotalAmount { get;}
+        public decimal TotalAmount { get; set; }
 
         [DataMember]
         public ICollection<OrderLine> OrderLines { get; set; }

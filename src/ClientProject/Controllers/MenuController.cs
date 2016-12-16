@@ -15,6 +15,7 @@ using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using ClientProject.Models.Communication;
 using ClientProject.Models.MenuViewModels;
+using System.Diagnostics;
 
 namespace ClientProject.Controllers
 {
@@ -68,7 +69,16 @@ namespace ClientProject.Controllers
             {
                 Menu menu = responseMenu.Content;
 
-                menuViewModel = new MenuViewModel { Menu = menu, SelectedSandwich = null };
+                menuViewModel.ListSandwiches = menu.Sandwiches.ToList();
+                menuViewModel.SelectedSandwich = null;
+                List<VegWithChkBxViewModel> listVegWithChkBxViewModels = new List<VegWithChkBxViewModel>();
+                foreach (Vegetable veg in menu.Vegetables) {
+                    VegWithChkBxViewModel vegWithChkBxViewModel = new VegWithChkBxViewModel { Checked = false, Id = veg.Id, Name = veg.Name, Description = veg.Description };
+                    listVegWithChkBxViewModels.Add(vegWithChkBxViewModel);
+                }
+                menuViewModel.ListVegetablesWithCheckBoxes = listVegWithChkBxViewModels;
+
+                return View(menuViewModel);
             }
             AddErrors("Le menu n'a pu être chargé correctement");
 
@@ -127,16 +137,24 @@ namespace ClientProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<string> Index(MenuViewModel model)
+        public async Task<IActionResult> Index(MenuViewModel model)
         {
             if (ModelState.IsValid)
             {
+                String selectedVegetables = "";
+                foreach (VegWithChkBxViewModel vegWithChkBx in model.ListVegetablesWithCheckBoxes)
+                {
+                    if(vegWithChkBx.Checked == true)
+                    {
+                        selectedVegetables += vegWithChkBx.Id + "/";
+                    }
+                }
+                Debug.WriteLine("-------------- selectedSandwich : " + model.SelectedSandwich);
+                Debug.WriteLine("-------------- selectedVegetables : " + selectedVegetables);
             }
-            return model.SelectedSandwich;
+            return View(model);//model.SelectedSandwich;
         }
-
-
-
+        
 
         // GET: OrderLines/Details/5
         public async Task<IActionResult> Details(int? id)

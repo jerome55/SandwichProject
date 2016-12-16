@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ClientProject.Models;
+using ClientProject.Models.MenuViewModels;
 
 namespace ClientProject.Data
 {
@@ -32,5 +33,6 @@ namespace ClientProject.Data
         public DbSet<Sandwich> Sandwiches { get; set; }
         public DbSet<OrderLineVegetable> OrderLineVegetables { get; set; }
         public DbSet<Vegetable> Vegetables { get; set; }
+        public DbSet<VegWithChkBxViewModel> VegetableWithCheckBox { get; set; }
     }
 }
