@@ -33,6 +33,16 @@ namespace SnackProject.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Index(VegetableViewModel model) {
+            Menu menu = _context.Menus.First();
+            if (menu != null) {
+                menu.VegetablesPrice = model.VegetablesPrice;
+                await _context.SaveChangesAsync();
+            }
+            return await Index();
+        }
+
         // GET: Vegetable/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -127,7 +137,7 @@ namespace SnackProject.Controllers
             }
             return View(vegetable);
         }
-
+        
         /*
          * ON NE SUPPRIME JAMAIS LES SANDWICHES
          * 
