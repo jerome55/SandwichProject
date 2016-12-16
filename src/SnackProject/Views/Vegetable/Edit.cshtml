@@ -1,18 +1,16 @@
-@model SnackProject.Models.Vegetable
+ï»¿@model SnackProject.Models.Vegetable
 
 @{
-    ViewData["Title"] = "Modifier la crudité";
+    ViewData["Title"] = "Modifier une cruditÃ©";
 }
 
-<h2>Modifier la crudité</h2>
-<h4>Les modifications ne seront prises en compte et ne seront visibles qu'à 10 heures</h4>
+<h2>Modifier une cruditÃ©</h2>
 
 <form asp-action="Edit">
     <div class="form-horizontal">
-        <h4>Crudité</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Id" />
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <div class="checkbox">
@@ -44,7 +42,7 @@
 </form>
 
 <div>
-    <a asp-action="Index">Retour à la liste</a>
+    <a asp-action="Index">Retour Ã  la liste</a>
 </div>
 
 @section Scripts {

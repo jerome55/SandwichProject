@@ -8,11 +8,10 @@ using System.Threading.Tasks;
 namespace SnackProject.Models
 {
     [DataContract]
-    public class Sandwich
-    {
+    public class Sandwich {
         [DataMember]
         public int Id { get; set; }
-        [Display(Name = "Name")]
+        [Display(Name = "Nom")]
         [DataMember]
         public string Name { get; set; }
         [Display(Name = "Description")]
@@ -21,16 +20,8 @@ namespace SnackProject.Models
         [Display(Name = "Prix")]
         [DataMember]
         public decimal Price { get; set; }
-        [Display(Name = "Disponibilité")]
+        [DataMember]
+        [Display(Name = "Disponible")]
         public bool Available { get; set; }
-
-        
-        /*public Sandwich(string name, string description, decimal price, bool available)
-        {
-            this.Name = name;
-            this.Description = description;
-            this.Price = price;
-            this.Available = available;
-        }*/
     }
 }

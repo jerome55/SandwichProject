@@ -1,17 +1,17 @@
-@model SnackProject.Models.Sandwich
+ï»¿@model SnackProject.Models.Sandwich
 
 @{
-    ViewData["Title"] = "Modifier le sandwich";
+    ViewData["Title"] = "Modifier un sandwchich";
 }
 
 <h2>Modifier un sandwchich</h2>
-<h4>Les modifications ne seront prises en compte et ne seront visibles qu'à 10 heures</h4>
+<h4>Les modifications seront pris en compte et seront visible Ã  10 heures</h4>
 
 <form asp-action="Edit">
     <div class="form-horizontal">
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Id" />
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <div class="checkbox">
@@ -50,7 +50,7 @@
 </form>
 
 <div>
-    <a asp-action="Index">Retour à la liste</a>
+    <a asp-action="Index">Retour Ã  la liste</a>
 </div>
 
 @section Scripts {
