@@ -54,39 +54,45 @@
      }
      else
      {
-        <table>
-            <tr>
-                <td>
-                    Sandwich
-                </td>
-                <td>
-                    Cruditées
-                </td>
-                <td>
-                    Prix
-                </td>
-            </tr>
-            @foreach (var orderLine in Model.Orders.First().OrderLines)
-            {
+        <table class="table-bordered table table-condensed">
+            <thead>
                 <tr>
                     <td>
-                        @orderLine.Sandwich.Name;
+                        <p> Sandwich </p>
                     </td>
                     <td>
-                        @if(orderLine.OrderLineVegetables.Count <= 0){
-                           <p> Pas de cruditées</p>
-                        }else{
-                                @foreach (var lineVegetables in orderLine.OrderLineVegetables)
-                                {
-                                    @lineVegetables.Vegetable.Name;
-                                }
-                        }
-                    </td>
-                    <td>
-                       @orderLine.GetPrice();
+                       <p> Cruditées </p>
                     </td>
                 </tr>
-            }
+            </thead>
+            <tbody>
+                @foreach (var order in Model.Orders)
+                {
+                    <p> Prix de la commande : @order.TotalAmount </p>
+                    @foreach (var orderLine in order.OrderLines)
+                    {
+                        <tr>
+                            <td>
+                               <p> @orderLine.Sandwich.Name </p>
+                            </td>
+                            <td>
+                                @if (orderLine.OrderLineVegetables.Count <= 0)
+                                {
+                                    <p> Pas de cruditées</p>
+                                }
+                                else
+                                {
+                                   <p> @foreach (var lineVegetables in orderLine.OrderLineVegetables)
+                                    {
+                                        @lineVegetables.Vegetable.Name
+                                    }
+                                    </p>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
         </table>
      }
 </div>
