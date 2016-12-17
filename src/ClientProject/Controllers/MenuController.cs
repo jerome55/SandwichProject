@@ -30,32 +30,6 @@ namespace ClientProject.Controllers
             _userManager = userManager;
         }
 
-        // pre : employer contient ses orders.
-        private Order GetCurrentOrder(Employee employee)
-        {
-            DateTime now = DateTime.Now;
-            DateTime delivreryDate;
-            if (now.Hour >= 10)
-            {
-                delivreryDate = DateTime.Today.AddDays(1.0);
-            }
-            else{
-                delivreryDate = DateTime.Today;
-            }
-
-            List<Order> order = employee.Orders.Where(o => o.DateOfDelivery.Equals(delivreryDate)).ToList();
-            //List<Order> order = _context.Orders.Where(o => o.DateOfDelivery.Equals(delivreryDate)).ToList();//o => o.Employee == employee && 
-
-            if (order.Count == 0)
-            {
-                return null;
-            }
-            else
-            {
-                return order.First();
-            }
-        }
-
 
         // GET: Menu
         public async Task<IActionResult> Index()
@@ -71,6 +45,8 @@ namespace ClientProject.Controllers
 
                 menuViewModel.ListSandwiches = menu.Sandwiches.ToList();
                 menuViewModel.SelectedSandwich = null;
+
+                menuViewModel.VegetablesPrice = menu.VegetablesPrice;
                 List<VegWithChkBxViewModel> listVegWithChkBxViewModels = new List<VegWithChkBxViewModel>();
                 foreach (Vegetable veg in menu.Vegetables) {
                     VegWithChkBxViewModel vegWithChkBxViewModel = new VegWithChkBxViewModel { Checked = false, Id = veg.Id, Name = veg.Name, Description = veg.Description };
@@ -130,8 +106,7 @@ namespace ClientProject.Controllers
             }*/
         }
 
-
-
+        
         // POST: OrderLines/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -141,7 +116,7 @@ namespace ClientProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                String selectedVegetables = "";
+                /*String selectedVegetables = "";
                 foreach (VegWithChkBxViewModel vegWithChkBx in model.ListVegetablesWithCheckBoxes)
                 {
                     if(vegWithChkBx.Checked == true)
@@ -151,8 +126,28 @@ namespace ClientProject.Controllers
                 }
                 Debug.WriteLine("-------------- selectedSandwich : " + model.SelectedSandwich);
                 Debug.WriteLine("-------------- selectedVegetables : " + selectedVegetables);
+                */
+                if(model.SelectedSandwich != null)
+                {
+                    OrderLine newOrderLine = new OrderLine { Quantity = 1, VegetablesPrice = model.VegetablesPrice, OrderLineVegetables = new List<OrderLineVegetable>() };
+
+                    Sandwich selectedSandwich = model.ListSandwiches.Where(s => s.Id == Int32.Parse(model.SelectedSandwich)).First();
+                    newOrderLine.Sandwich = selectedSandwich;
+
+                    foreach (VegWithChkBxViewModel vegWithChkBx in model.ListVegetablesWithCheckBoxes)
+                    {
+                        if (vegWithChkBx.Checked == true)
+                        {
+                            VegWithChkBxViewModel selectedVegWithChkBx = model.ListVegetablesWithCheckBoxes.Where(v => v.Id == vegWithChkBx.Id).First();
+                            Vegetable selectedVegetable = new Vegetable { Id = selectedVegWithChkBx.Id, Name = selectedVegWithChkBx.Name, Description = selectedVegWithChkBx.Description };
+                            newOrderLine.AddVegetable(selectedVegetable);
+                        }
+                    }
+
+                    AddOrderLineToCartSession(newOrderLine);
+                }
             }
-            return View(model);//model.SelectedSandwich;
+            return View(model);
         }
         
 
@@ -276,15 +271,18 @@ namespace ClientProject.Controllers
             return RedirectToAction("Index");
         }
 
+
+
         private bool OrderLineExists(int id)
         {
             return _context.OrderLines.Any(e => e.Id == id);
         }
-
-        private void addOrderLineToCartSession(OrderLine add)
+        
+        private void AddOrderLineToCartSession(OrderLine add)
         {
             string id = _userManager.GetUserId(User);
 
+            //On détermine si la commande est pour aujourd'hui ou pour demain (après 10h).
             DateTime now = DateTime.Now;
             DateTime delivreryDate;
             if (now.Hour >= 10)
@@ -296,31 +294,32 @@ namespace ClientProject.Controllers
                 delivreryDate = DateTime.Today;
             }
 
+            //On récupère l'objet order stocké dans la session de l'utilisateur (son panier).
             string serializable = HttpContext.Session.GetString("cart");
 
-            Order TodayOrder;
+            Order cartOrder;
             if (serializable == null || serializable.Equals(""))
             {
-                TodayOrder = new Order { DateOfDelivery = delivreryDate, TotalAmount = 0, OrderLines = new List<OrderLine>() };
+                cartOrder = new Order { DateOfDelivery = delivreryDate, TotalAmount = 0, OrderLines = new List<OrderLine>() };
             }
             else
             {
-                TodayOrder = JsonConvert.DeserializeObject<Order>(serializable);
+                cartOrder = JsonConvert.DeserializeObject<Order>(serializable);
             }
-
-            if (TodayOrder == null)
+            //Si pour des raison spécial l'objet est bien dans la session mais à null (invalidation), on le recrée.
+            if (cartOrder == null)
             {
-                TodayOrder = new Order { DateOfDelivery = delivreryDate, TotalAmount = 0, OrderLines = new List<OrderLine>()};
+                cartOrder = new Order { DateOfDelivery = delivreryDate, TotalAmount = 0, OrderLines = new List<OrderLine>()};
             }
 
-            TodayOrder.AddOrderLine(add);
+            cartOrder.AddOrderLine(add);
 
-            serializable = JsonConvert.SerializeObject(TodayOrder);
-
+            //On restock l'objet order mis à jour dans la session
+            serializable = JsonConvert.SerializeObject(cartOrder);
             HttpContext.Session.SetString("cart", serializable);
         }
 
-        private async void validateCartSession()
+        private async void ValidateCartSession()
         {
             string serializable = HttpContext.Session.GetString("cart");
 
@@ -331,9 +330,36 @@ namespace ClientProject.Controllers
 
             Order TodayOrder = JsonConvert.DeserializeObject<Order>(serializable);
 
-            CommWrap<Order> comm =  await RemoteCall.GetInstance().sendOrder(TodayOrder);
+            CommWrap<Order> comm =  await RemoteCall.GetInstance().SendOrder(TodayOrder);
             
 
+        }
+
+        // pre : employer contient ses orders.
+        private Order GetCurrentOrder(Employee employee)
+        {
+            DateTime now = DateTime.Now;
+            DateTime delivreryDate;
+            if (now.Hour >= 10)
+            {
+                delivreryDate = DateTime.Today.AddDays(1.0);
+            }
+            else
+            {
+                delivreryDate = DateTime.Today;
+            }
+
+            List<Order> order = employee.Orders.Where(o => o.DateOfDelivery.Equals(delivreryDate)).ToList();
+            //List<Order> order = _context.Orders.Where(o => o.DateOfDelivery.Equals(delivreryDate)).ToList();//o => o.Employee == employee && 
+
+            if (order.Count == 0)
+            {
+                return null;
+            }
+            else
+            {
+                return order.First();
+            }
         }
 
         private void AddErrors(String errorMessage)

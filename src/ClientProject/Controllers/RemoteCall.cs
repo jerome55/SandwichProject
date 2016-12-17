@@ -64,7 +64,7 @@ namespace ClientProject.Controllers
             return responseReturn;
         }
 
-        public async Task<CommWrap<Order>> sendOrder(Order toSend)
+        public async Task<CommWrap<Order>> SendOrder(Order toSend)
         {
             CommWrap<Order> responseReturn = null;
 

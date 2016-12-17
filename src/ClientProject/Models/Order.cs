@@ -27,12 +27,14 @@ namespace ClientProject.Models
         public void AddOrderLine(OrderLine ol)
         {
             this.OrderLines.Add(ol);
+            ol.Order = this;
             this.TotalAmount += ol.GetPrice();
         }
 
         public void DeleteOrderLine(OrderLine ol)
         {
             this.OrderLines.Remove(ol);
+            ol.Order = null;
             this.TotalAmount -= ol.GetPrice();
         }
     }
