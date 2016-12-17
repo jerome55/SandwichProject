@@ -51,7 +51,7 @@ namespace ClientProject.Controllers
             return responseReturn;
         }
 
-        public async Task<Menu> GetMenu()
+        public async Task<CommWrap<Menu>> GetMenu()
         {
             CommWrap<Menu> responseReturn = null;
 

@@ -10,6 +10,7 @@ using ClientProject.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Diagnostics;
 using ClientProject.Models.Communication;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClientProject.Controllers
 {
@@ -25,6 +26,7 @@ namespace ClientProject.Controllers
         }
 
         // GET: Employees
+        [Authorize(Roles = "Employe, Responsable")]
         public async Task<IActionResult> Index()
         {
             string id = _userManager.GetUserId(User);
@@ -92,6 +94,7 @@ namespace ClientProject.Controllers
             return View(employee);
         }
 
+        /*
         // GET: Employees/Details/5s
         public async Task<IActionResult> Details(string id)
         {
@@ -208,7 +211,7 @@ namespace ClientProject.Controllers
             _context.Employees.Remove(employee);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
-        }
+        }*/
 
         private bool EmployeeExists(string id)
         {

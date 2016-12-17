@@ -1,5 +1,11 @@
 @model ClientProject.Models.MenuViewModels.MenuViewModel
 
+@using Microsoft.AspNetCore.Identity
+@using ClientProject.Models
+
+@inject SignInManager<Employee> SignInManager
+@inject UserManager<Employee> UserManager
+
 @{
     ViewData["Title"] = "Carte du snack";
 }
@@ -81,7 +87,9 @@
             }
         </tbody>
     </table>
-
-    <input type="submit" value="AddToCart" class="btn btn-default" />
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <input type="submit" value="Ajouter au panier" class="btn btn-default" />
+    }
 }
 

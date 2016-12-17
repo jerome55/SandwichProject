@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using ClientProject.Models
+
+@inject SignInManager<Employee> SignInManager
+@inject UserManager<Employee> UserManager
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -30,9 +36,16 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="EmployeesManagement" asp-action="Index">Employés</a></li> 
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a asp-area="" asp-controller="Menu" asp-action="Index">Carte du snack</a></li>
+                    @if (User != null)
+                    {
+                        var user = await UserManager.GetUserAsync(User);
+                        @if (user != null && await UserManager.IsInRoleAsync(user, "Responsable"))
+                        {
+                        <li><a asp-area="" asp-controller="EmployeesManagement" asp-action="Index">Gestion des employés</a></li>
+                        }
+                    }
+                    @*<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>

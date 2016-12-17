@@ -30,34 +30,8 @@ namespace ClientProject.Controllers
             _userManager = userManager;
         }
 
-        // pre : employer contient ses orders.
-        private Order GetCurrentOrder(Employee employee)
-        {
-            DateTime now = DateTime.Now;
-            DateTime delivreryDate;
-            if (now.Hour >= 10)
-            {
-                delivreryDate = DateTime.Today.AddDays(1.0);
-            }
-            else{
-                delivreryDate = DateTime.Today;
-            }
-
-            List<Order> order = employee.Orders.Where(o => o.DateOfDelivery.Equals(delivreryDate)).ToList();
-            //List<Order> order = _context.Orders.Where(o => o.DateOfDelivery.Equals(delivreryDate)).ToList();//o => o.Employee == employee && 
-
-            if (order.Count == 0)
-            {
-                return null;
-            }
-            else
-            {
-                return order.First();
-            }
-        }
-
-
         // GET: Menu
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             RemoteCall remoteCaller = RemoteCall.GetInstance();
@@ -113,23 +87,8 @@ namespace ClientProject.Controllers
 
             //Order order = JsonConvert.DeserializeObject<Order>(serializable);
 
-            //return View(order.OrderLines.ToList());
-
-
-
-
-            /*Menu menu = await RemoteCall.GetInstance().GetMenu();
-
-            if(menu == null)
-            {
-                return View(menu);
-            }
-            else
-            {
-                return NotFound();
-            }*/
+            //return View(order.OrderLines.ToList());            
         }
-
 
 
         // POST: OrderLines/Create
@@ -137,6 +96,7 @@ namespace ClientProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Employe, Responsable")]
         public async Task<IActionResult> Index(MenuViewModel model)
         {
             if (ModelState.IsValid)
@@ -155,7 +115,7 @@ namespace ClientProject.Controllers
             return View(model);//model.SelectedSandwich;
         }
         
-
+        /*
         // GET: OrderLines/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -275,10 +235,40 @@ namespace ClientProject.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
+        */
+
+
 
         private bool OrderLineExists(int id)
         {
             return _context.OrderLines.Any(e => e.Id == id);
+        }
+
+        // pre : employer contient ses orders.
+        private Order GetCurrentOrder(Employee employee)
+        {
+            DateTime now = DateTime.Now;
+            DateTime delivreryDate;
+            if (now.Hour >= 10)
+            {
+                delivreryDate = DateTime.Today.AddDays(1.0);
+            }
+            else
+            {
+                delivreryDate = DateTime.Today;
+            }
+
+            List<Order> order = employee.Orders.Where(o => o.DateOfDelivery.Equals(delivreryDate)).ToList();
+            //List<Order> order = _context.Orders.Where(o => o.DateOfDelivery.Equals(delivreryDate)).ToList();//o => o.Employee == employee && 
+
+            if (order.Count == 0)
+            {
+                return null;
+            }
+            else
+            {
+                return order.First();
+            }
         }
 
         private void addOrderLineToCartSession(OrderLine add)
