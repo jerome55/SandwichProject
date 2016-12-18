@@ -36,7 +36,10 @@
             <tr>
                 <td>
                     @Html.HiddenFor(modelItem => Model.ListSandwiches[i].Id)
-                    @Html.RadioButtonFor(m => m.SelectedSandwich, Model.ListSandwiches[i].Id)
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        @Html.RadioButtonFor(m => m.SelectedSandwich, Model.ListSandwiches[i].Id)
+                    }
                 </td>
                 <td>
                     @Html.HiddenFor(modelItem => Model.ListSandwiches[i].Name)
@@ -76,7 +79,10 @@
                 <tr>
                     <td>
                         @Html.HiddenFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Id)
-                        @Html.CheckBoxFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Checked, new { @checked = false })
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            @Html.CheckBoxFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Checked, new { @checked = false })
+                        }
                     </td>
                     <td>
                         @Html.HiddenFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Name)
