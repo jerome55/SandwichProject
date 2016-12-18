@@ -280,57 +280,18 @@ namespace ClientProject.Controllers
         
         private void AddOrderLineToCartSession(OrderLine add)
         {
-            string id = _userManager.GetUserId(User);
-
-            //On détermine si la commande est pour aujourd'hui ou pour demain (après 10h).
-            DateTime now = DateTime.Now;
-            DateTime delivreryDate;
-            if (now.Hour >= 10)
-            {
-                delivreryDate = DateTime.Today.AddDays(1.0);
-            }
-            else
-            {
-                delivreryDate = DateTime.Today;
-            }
-
-            //On récupère l'objet order stocké dans la session de l'utilisateur (son panier).
-            string serializable = HttpContext.Session.GetString("cart");
-
-            Order cartOrder;
-            if (serializable == null || serializable.Equals(""))
-            {
-                cartOrder = new Order { DateOfDelivery = delivreryDate, TotalAmount = 0, OrderLines = new List<OrderLine>() };
-            }
-            else
-            {
-                cartOrder = JsonConvert.DeserializeObject<Order>(serializable);
-            }
-            //Si pour des raison spécial l'objet est bien dans la session mais à null (invalidation), on le recrée.
-            if (cartOrder == null)
-            {
-                cartOrder = new Order { DateOfDelivery = delivreryDate, TotalAmount = 0, OrderLines = new List<OrderLine>()};
-            }
+            Order cartOrder = ShoppingCart.GetCartContent(User, HttpContext);
 
             cartOrder.AddOrderLine(add);
 
-            //On restock l'objet order mis à jour dans la session
-            serializable = JsonConvert.SerializeObject(cartOrder);
-            HttpContext.Session.SetString("cart", serializable);
+            ShoppingCart.UpdateCartContent(HttpContext, cartOrder);
         }
 
         private async void ValidateCartSession()
         {
-            string serializable = HttpContext.Session.GetString("cart");
+            Order cartOrder = ShoppingCart.GetCartContent(User, HttpContext);
 
-            if (serializable == null || serializable.Equals(""))
-            {
-                return;
-            }
-
-            Order TodayOrder = JsonConvert.DeserializeObject<Order>(serializable);
-
-            CommWrap<Order> comm =  await RemoteCall.GetInstance().SendOrder(TodayOrder);
+            CommWrap<Order> comm =  await RemoteCall.GetInstance().SendOrder(cartOrder);
             
 
         }

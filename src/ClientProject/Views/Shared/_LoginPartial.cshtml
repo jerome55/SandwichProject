@@ -9,6 +9,11 @@
     <form asp-area="" asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
             <li>
+                <a data-toggle="modal" data-target="#myCart">
+                    <img src="~/images/ShoppingCartIcon.png" width="30px" height="25px" />
+                </a>
+            </li>
+            <li>
                 <a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">Bonjour @UserManager.GetUserName(User)!</a>
             </li>
             <li>

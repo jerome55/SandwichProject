@@ -15,7 +15,7 @@ namespace ClientProject.Models
         [Display(Name = "Quantité")]
         [DataMember]
         public int Quantity { get; set; }
-
+        [Display(Name = "Sandwich")]
         [DataMember]
         public virtual Sandwich Sandwich { get; set; }
 
@@ -23,6 +23,7 @@ namespace ClientProject.Models
         [NotMapped]
         public decimal VegetablesPrice { get; set; }
 
+        [Display(Name = "Liste des crudités")]
         [DataMember]
         public virtual ICollection<OrderLineVegetable> OrderLineVegetables { get; set; }
 
