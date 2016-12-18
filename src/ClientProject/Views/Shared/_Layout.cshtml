@@ -1,8 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using ClientProject.Models
+@using ClientProject.Data;
 
 @inject SignInManager<Employee> SignInManager
 @inject UserManager<Employee> UserManager
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 <!DOCTYPE html>
 <html>
@@ -23,6 +25,80 @@
     </environment>
 </head>
 <body>
+    @{ 
+        Order cartOrder = ShoppingCart.GetCartContent(User, HttpContextAccessor.HttpContext);
+    }
+    <div class="modal fade" id="myCart" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p style="display:inline;">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <img src="~/images/ShoppingCartIcon.png" height="30px" width="30px" style="display: inline;" />
+                        <h4 class="modal-title" id="cartModalLabel" style="display: inline;">Panier</h4>
+                    </p>
+                </div>
+                <div class="modal-body">
+                    
+                    @if (cartOrder.OrderLines.Count == 0)
+                    {
+                        @:Votre panier est vide.
+                    }
+                    else
+                    {
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(m => cartOrder.OrderLines.First().Quantity)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(m => cartOrder.OrderLines.First().Sandwich)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(m => cartOrder.OrderLines.First().OrderLineVegetables)
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var orderLine in cartOrder.OrderLines)
+                                {
+                                    String vegetablesListDisplay = "";
+                                    if (orderLine.OrderLineVegetables.Count != 0)
+                                    {
+                                        for (var i = 1; i < orderLine.OrderLineVegetables.Count; i++)
+                                        {
+                                            vegetablesListDisplay += orderLine.OrderLineVegetables.ElementAt(i).Vegetable.Name + ", ";
+                                        }
+                                        vegetablesListDisplay += orderLine.OrderLineVegetables.ElementAt(orderLine.OrderLineVegetables.Count - 1).Vegetable.Name;
+                                    }
+                                
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(mItem => orderLine.Quantity)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(mItem => orderLine.Sandwich.Name)
+                                        </td>
+                                        <td>
+                                            @vegetablesListDisplay
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -59,6 +135,7 @@
         </footer>
     </div>
 
+    
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>

@@ -11,6 +11,7 @@ namespace ClientProject.Models.MenuViewModels
         public List<Sandwich> ListSandwiches { get; set; }
         public string SelectedSandwich { get; set; }
 
+        public decimal VegetablesPrice { get; set; }
         public List<VegWithChkBxViewModel> ListVegetablesWithCheckBoxes { get; set; }
     }
 }

@@ -29,7 +29,7 @@ namespace ClientProject.Controllers
             _context = context;
             _userManager = userManager;
         }
-
+        
         // GET: Menu
         [AllowAnonymous]
         public async Task<IActionResult> Index()
@@ -45,6 +45,8 @@ namespace ClientProject.Controllers
 
                 menuViewModel.ListSandwiches = menu.Sandwiches.ToList();
                 menuViewModel.SelectedSandwich = null;
+
+                menuViewModel.VegetablesPrice = menu.VegetablesPrice;
                 List<VegWithChkBxViewModel> listVegWithChkBxViewModels = new List<VegWithChkBxViewModel>();
                 foreach (Vegetable veg in menu.Vegetables) {
                     VegWithChkBxViewModel vegWithChkBxViewModel = new VegWithChkBxViewModel { Checked = false, Id = veg.Id, Name = veg.Name, Description = veg.Description };
@@ -90,7 +92,7 @@ namespace ClientProject.Controllers
             //return View(order.OrderLines.ToList());            
         }
 
-
+        
         // POST: OrderLines/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -101,7 +103,7 @@ namespace ClientProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                String selectedVegetables = "";
+                /*String selectedVegetables = "";
                 foreach (VegWithChkBxViewModel vegWithChkBx in model.ListVegetablesWithCheckBoxes)
                 {
                     if(vegWithChkBx.Checked == true)
@@ -111,8 +113,28 @@ namespace ClientProject.Controllers
                 }
                 Debug.WriteLine("-------------- selectedSandwich : " + model.SelectedSandwich);
                 Debug.WriteLine("-------------- selectedVegetables : " + selectedVegetables);
+                */
+                if(model.SelectedSandwich != null)
+                {
+                    OrderLine newOrderLine = new OrderLine { Quantity = 1, VegetablesPrice = model.VegetablesPrice, OrderLineVegetables = new List<OrderLineVegetable>() };
+
+                    Sandwich selectedSandwich = model.ListSandwiches.Where(s => s.Id == Int32.Parse(model.SelectedSandwich)).First();
+                    newOrderLine.Sandwich = selectedSandwich;
+
+                    foreach (VegWithChkBxViewModel vegWithChkBx in model.ListVegetablesWithCheckBoxes)
+                    {
+                        if (vegWithChkBx.Checked == true)
+                        {
+                            VegWithChkBxViewModel selectedVegWithChkBx = model.ListVegetablesWithCheckBoxes.Where(v => v.Id == vegWithChkBx.Id).First();
+                            Vegetable selectedVegetable = new Vegetable { Id = selectedVegWithChkBx.Id, Name = selectedVegWithChkBx.Name, Description = selectedVegWithChkBx.Description };
+                            newOrderLine.AddVegetable(selectedVegetable);
+                        }
+                    }
+
+                    AddOrderLineToCartSession(newOrderLine);
+                }
             }
-            return View(model);//model.SelectedSandwich;
+            return View(model);
         }
         
         /*
@@ -243,6 +265,24 @@ namespace ClientProject.Controllers
         {
             return _context.OrderLines.Any(e => e.Id == id);
         }
+        
+        private void AddOrderLineToCartSession(OrderLine add)
+        {
+            Order cartOrder = ShoppingCart.GetCartContent(User, HttpContext);
+
+            cartOrder.AddOrderLine(add);
+
+            ShoppingCart.UpdateCartContent(HttpContext, cartOrder);
+        }
+
+        private async void ValidateCartSession()
+        {
+            Order cartOrder = ShoppingCart.GetCartContent(User, HttpContext);
+
+            CommWrap<Order> comm =  await RemoteCall.GetInstance().SendOrder(cartOrder);
+            
+
+        }
 
         // pre : employer contient ses orders.
         private Order GetCurrentOrder(Employee employee)
@@ -269,61 +309,6 @@ namespace ClientProject.Controllers
             {
                 return order.First();
             }
-        }
-
-        private void addOrderLineToCartSession(OrderLine add)
-        {
-            string id = _userManager.GetUserId(User);
-
-            DateTime now = DateTime.Now;
-            DateTime delivreryDate;
-            if (now.Hour >= 10)
-            {
-                delivreryDate = DateTime.Today.AddDays(1.0);
-            }
-            else
-            {
-                delivreryDate = DateTime.Today;
-            }
-
-            string serializable = HttpContext.Session.GetString("cart");
-
-            Order TodayOrder;
-            if (serializable == null || serializable.Equals(""))
-            {
-                TodayOrder = new Order { DateOfDelivery = delivreryDate, TotalAmount = 0, OrderLines = new List<OrderLine>() };
-            }
-            else
-            {
-                TodayOrder = JsonConvert.DeserializeObject<Order>(serializable);
-            }
-
-            if (TodayOrder == null)
-            {
-                TodayOrder = new Order { DateOfDelivery = delivreryDate, TotalAmount = 0, OrderLines = new List<OrderLine>()};
-            }
-
-            TodayOrder.AddOrderLine(add);
-
-            serializable = JsonConvert.SerializeObject(TodayOrder);
-
-            HttpContext.Session.SetString("cart", serializable);
-        }
-
-        private async void validateCartSession()
-        {
-            string serializable = HttpContext.Session.GetString("cart");
-
-            if (serializable == null || serializable.Equals(""))
-            {
-                return;
-            }
-
-            Order TodayOrder = JsonConvert.DeserializeObject<Order>(serializable);
-
-            CommWrap<Order> comm =  await RemoteCall.GetInstance().sendOrder(TodayOrder);
-            
-
         }
 
         private void AddErrors(String errorMessage)
