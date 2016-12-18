@@ -69,7 +69,7 @@ namespace ClientProject.Controllers
             foreach (Order order in employee.Orders){
                 foreach (OrderLine orderline in order.OrderLines)
                 {
-                   CommWrap<Sandwich> CommSan = await RemoteCall.GetInstance().getSandwichById(orderline.Sandwich.Id);
+                   CommWrap<Sandwich> CommSan = await RemoteCall.GetInstance().GetSandwichById(orderline.Sandwich.Id);
                     if(CommSan.RequestStatus == 1)
                     {
                         orderline.Sandwich = CommSan.Content;
@@ -79,7 +79,7 @@ namespace ClientProject.Controllers
                     }
                     foreach(OrderLineVegetable orderLineVeg in orderline.OrderLineVegetables)
                     {
-                        CommWrap<Vegetable> CommVeg = await RemoteCall.GetInstance().getVegetableById(orderLineVeg.Vegetable.Id);
+                        CommWrap<Vegetable> CommVeg = await RemoteCall.GetInstance().GetVegetableById(orderLineVeg.Vegetable.Id);
                         if (CommVeg.RequestStatus == 1)
                         {
                             orderLineVeg.Vegetable = CommVeg.Content;

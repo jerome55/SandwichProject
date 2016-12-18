@@ -11,9 +11,10 @@
 }
 
 <h2>Carte du snack</h2>
-
+<hr />
 @using (Html.BeginForm())
 {
+    <h4>Sandwiches :</h4>
     <table class="table">
         <thead>
             <tr>
@@ -53,9 +54,9 @@
             }
         </tbody>
     </table>
+    <hr />
 
-
-
+    <h4>Crudités :</h4>
     @Html.HiddenFor(modelItem => Model.VegetablesPrice)
     <table class="table">
         <thead>
