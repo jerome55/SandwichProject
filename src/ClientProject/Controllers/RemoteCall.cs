@@ -37,6 +37,7 @@ namespace ClientProject.Controllers
             return Instance;
         }
         
+
         public async Task<CommWrap<Company>> RegisterCompany(Company company)
         {
             CommWrap<Company> responseReturn = null;
@@ -49,12 +50,26 @@ namespace ClientProject.Controllers
             
             return responseReturn;
         }
+
+        public async Task<CommWrap<Menu>> GetMenu()
+        {
+            CommWrap<Menu> responseReturn = null;
+
+            HttpResponseMessage response = await this.client.GetAsync("api/Menu");
+            if (response.IsSuccessStatusCode)
+            {
+                responseReturn = await response.Content.ReadAsAsync<CommWrap<Menu>>();
+            }
+
+            return responseReturn;
+        }
+
         //Permet de recuperer un sandwich par son id
-        public async Task<CommWrap<Sandwich>> getSandwichById(int id)
+        public async Task<CommWrap<Sandwich>> GetSandwichById(int id)
         {
             CommWrap<Sandwich> responseReturn = null;
 
-            HttpResponseMessage response = await this.client.GetAsync("api/Sandwich?id="+id);
+            HttpResponseMessage response = await this.client.GetAsync("api/Sandwich?id=" + id);
             if (response.IsSuccessStatusCode)
             {
                 responseReturn = await response.Content.ReadAsAsync<CommWrap<Sandwich>>();
@@ -62,8 +77,9 @@ namespace ClientProject.Controllers
 
             return responseReturn;
         }
+
         //Permet de recuperer une cruditée par son id
-        public async Task<CommWrap<Vegetable>> getVegetableById(int id)
+        public async Task<CommWrap<Vegetable>> GetVegetableById(int id)
         {
             CommWrap<Vegetable> responseReturn = null;
 
@@ -75,18 +91,19 @@ namespace ClientProject.Controllers
 
             return responseReturn;
         }
-        public async Task<Menu> GetMenu()
-        {
-            Menu responseReturn = null;
 
-            HttpResponseMessage response = await this.client.GetAsync("api/Menu");
+        
+        public async Task<CommWrap<Order>> SendOrder(Order toSend)
+        {
+            CommWrap<Order> responseReturn = null;
+
+            HttpResponseMessage response = await this.client.PostAsJsonAsync("api/Order", toSend);
             if (response.IsSuccessStatusCode)
             {
-                responseReturn = await response.Content.ReadAsAsync<Menu>();
+                responseReturn = await response.Content.ReadAsAsync<CommWrap<Order>>();
             }
 
             return responseReturn;
         }
-
     }
 }

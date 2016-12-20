@@ -12,14 +12,21 @@ namespace SnackProject.Models
     {
         [DataMember]
         public int Id { get; set; }
-        [DataMember]
         [Display(Name = "Nom")]
+        [DataMember]
         public string Name { get; set; }
-        [DataMember]
         [Display(Name = "Description")]
-        public string Description { get; set; }
         [DataMember]
-        [Display(Name = "Disponible")]
+        public string Description { get; set; }
+        [Display(Name = "Disponibilité")]
         public bool Available { get; set; }
+
+
+        /*public Vegetable(string name, string description, bool available)
+        {
+            this.Name = name;
+            this.Description = description;
+            this.Available = available;
+        }*/
     }
 }

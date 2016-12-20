@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using ClientProject.Models.Communication;
+using ClientProject.Models.MenuViewModels;
+using System.Diagnostics;
 
 namespace ClientProject.Controllers
 {
@@ -26,38 +29,56 @@ namespace ClientProject.Controllers
             _context = context;
             _userManager = userManager;
         }
-
-        private Order GetCurrentOrder(Employee employee)
-        {
-
-
-            DateTime now = DateTime.Now;
-            DateTime delivreryDate;
-            if (now.Hour >= 10)
-            {
-                delivreryDate = DateTime.Today.AddDays(1.0);
-            }
-            else{
-                delivreryDate = DateTime.Today;
-            }
-
-            List<Order> order = employee.Orders.Where(o => o.DateOfDelivery.Equals(delivreryDate)).ToList();
-            //List<Order> order = _context.Orders.Where(o => o.DateOfDelivery.Equals(delivreryDate)).ToList();//o => o.Employee == employee && 
-
-            if (order.Count == 0)
-            {
-                return null;
-            }
-            else
-            {
-                return order.First();
-            }
-        }
-
-
+        
         // GET: Menu
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
+            RemoteCall remoteCaller = RemoteCall.GetInstance();
+            CommWrap<Menu> responseMenu = await remoteCaller.GetMenu();
+
+            MenuViewModel menuViewModel = new MenuViewModel();
+
+            if (responseMenu.RequestStatus == 1)
+            {
+                Menu menu = responseMenu.Content;
+
+                menuViewModel.ListSandwiches = menu.Sandwiches.ToList();
+                menuViewModel.SelectedSandwich = null;
+
+                menuViewModel.VegetablesPrice = menu.VegetablesPrice;
+                List<VegWithChkBxViewModel> listVegWithChkBxViewModels = new List<VegWithChkBxViewModel>();
+                foreach (Vegetable veg in menu.Vegetables) {
+                    VegWithChkBxViewModel vegWithChkBxViewModel = new VegWithChkBxViewModel { Checked = false, Id = veg.Id, Name = veg.Name, Description = veg.Description };
+                    listVegWithChkBxViewModels.Add(vegWithChkBxViewModel);
+                }
+                menuViewModel.ListVegetablesWithCheckBoxes = listVegWithChkBxViewModels;
+
+                return View(menuViewModel);
+            }
+            AddErrors("Le menu n'a pu être chargé correctement");
+
+            return View(menuViewModel);
+
+            /*string id = _userManager.GetUserId(User);
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var employee = await _context.Employees
+                                .Include(emp => emp.Orders)
+                                    .ThenInclude(order => order.OrderLines)
+                                        .ThenInclude(orderLine => orderLine.Sandwich)
+                                .Include(emp => emp.Orders)
+                                    .ThenInclude(order => order.OrderLines)
+                                        .ThenInclude(orderLine => orderLine.OrderLineVegetables)
+                                            .ThenInclude(orderLineVegetable => orderLineVegetable.Vegetable)
+                                .SingleOrDefaultAsync(m => m.Id == id);
+
+            */
+
             //string id = _userManager.GetUserId(User);
 
             //Employee emp = _context.Employees.Where(e => e.Id == id).FirstOrDefault();
@@ -68,20 +89,55 @@ namespace ClientProject.Controllers
 
             //Order order = JsonConvert.DeserializeObject<Order>(serializable);
 
-            //return View(order.OrderLines.ToList());
-
-            Menu menu = await RemoteCall.GetInstance().GetMenu();
-
-            if(menu == null)
-            {
-                return View(menu);
-            }
-            else
-            {
-                return NotFound();
-            }
+            //return View(order.OrderLines.ToList());            
         }
 
+        
+        // POST: OrderLines/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Employe, Responsable")]
+        public async Task<IActionResult> Index(MenuViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                /*String selectedVegetables = "";
+                foreach (VegWithChkBxViewModel vegWithChkBx in model.ListVegetablesWithCheckBoxes)
+                {
+                    if(vegWithChkBx.Checked == true)
+                    {
+                        selectedVegetables += vegWithChkBx.Id + "/";
+                    }
+                }
+                Debug.WriteLine("-------------- selectedSandwich : " + model.SelectedSandwich);
+                Debug.WriteLine("-------------- selectedVegetables : " + selectedVegetables);
+                */
+                if(model.SelectedSandwich != null)
+                {
+                    OrderLine newOrderLine = new OrderLine { Quantity = 1, VegetablesPrice = model.VegetablesPrice, OrderLineVegetables = new List<OrderLineVegetable>() };
+
+                    Sandwich selectedSandwich = model.ListSandwiches.Where(s => s.Id == Int32.Parse(model.SelectedSandwich)).First();
+                    newOrderLine.Sandwich = selectedSandwich;
+
+                    foreach (VegWithChkBxViewModel vegWithChkBx in model.ListVegetablesWithCheckBoxes)
+                    {
+                        if (vegWithChkBx.Checked == true)
+                        {
+                            VegWithChkBxViewModel selectedVegWithChkBx = model.ListVegetablesWithCheckBoxes.Where(v => v.Id == vegWithChkBx.Id).First();
+                            Vegetable selectedVegetable = new Vegetable { Id = selectedVegWithChkBx.Id, Name = selectedVegWithChkBx.Name, Description = selectedVegWithChkBx.Description };
+                            newOrderLine.AddVegetable(selectedVegetable);
+                        }
+                    }
+
+                    AddOrderLineToCartSession(newOrderLine);
+                }
+            }
+            return View(model);
+        }
+        
+        /*
         // GET: OrderLines/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -201,10 +257,63 @@ namespace ClientProject.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
+        */
+
+
 
         private bool OrderLineExists(int id)
         {
             return _context.OrderLines.Any(e => e.Id == id);
+        }
+        
+        private void AddOrderLineToCartSession(OrderLine add)
+        {
+            Order cartOrder = ShoppingCart.GetCartContent(User, HttpContext);
+
+            cartOrder.AddOrderLine(add);
+
+            ShoppingCart.UpdateCartContent(HttpContext, cartOrder);
+        }
+
+        private async void ValidateCartSession()
+        {
+            Order cartOrder = ShoppingCart.GetCartContent(User, HttpContext);
+
+            CommWrap<Order> comm =  await RemoteCall.GetInstance().SendOrder(cartOrder);
+            
+
+        }
+
+        // pre : employer contient ses orders.
+        private Order GetCurrentOrder(Employee employee)
+        {
+            DateTime now = DateTime.Now;
+            DateTime delivreryDate;
+            if (now.Hour >= 10)
+            {
+                delivreryDate = DateTime.Today.AddDays(1.0);
+            }
+            else
+            {
+                delivreryDate = DateTime.Today;
+            }
+
+            List<Order> order = employee.Orders.Where(o => o.DateOfDelivery.Equals(delivreryDate)).ToList();
+            //List<Order> order = _context.Orders.Where(o => o.DateOfDelivery.Equals(delivreryDate)).ToList();//o => o.Employee == employee && 
+
+            if (order.Count == 0)
+            {
+                return null;
+            }
+            else
+            {
+                return order.First();
+            }
+        }
+
+        private void AddErrors(String errorMessage)
+        {
+            ModelState.AddModelError(string.Empty, errorMessage);
         }
     }
 }

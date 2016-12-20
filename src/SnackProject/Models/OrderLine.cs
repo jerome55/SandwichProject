@@ -28,5 +28,29 @@ namespace SnackProject.Models
             this.Quantity = quantity;
             this.OrderLineVegetables = orderLineVegetables;
         }*/
+
+        public bool Equals(OrderLine other)
+        {
+            List<OrderLineVegetable> listOrderLineVegetables = OrderLineVegetables.ToList();
+            List<OrderLineVegetable> listOther = other.OrderLineVegetables.ToList();
+
+            bool follow = Sandwich.Id==other.Sandwich.Id && Sandwich.Available && other.Sandwich.Available;
+
+            for (int i=0;i< listOther.Count && follow==true; ++i)
+            {
+                for(int j=0;j< listOrderLineVegetables.Count && follow==true; ++i)
+                {
+                    follow = listOther[i].Equals(listOrderLineVegetables[j]);
+                }
+            }
+
+
+            return follow;
+        }
+
+        public decimal GetPrice()
+        {
+            return Sandwich.Price * Quantity + (new Menu()).VegetablesPrice;
+        }
     }
 }

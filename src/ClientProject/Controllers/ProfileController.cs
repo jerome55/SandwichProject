@@ -10,6 +10,7 @@ using ClientProject.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Diagnostics;
 using ClientProject.Models.Communication;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClientProject.Controllers
 {
@@ -25,6 +26,7 @@ namespace ClientProject.Controllers
         }
 
         // GET: Employees
+        [Authorize(Roles = "Employe, Responsable")]
         public async Task<IActionResult> Index()
         {
             string id = _userManager.GetUserId(User);
@@ -67,7 +69,7 @@ namespace ClientProject.Controllers
             foreach (Order order in employee.Orders){
                 foreach (OrderLine orderline in order.OrderLines)
                 {
-                   CommWrap<Sandwich> CommSan = await RemoteCall.GetInstance().getSandwichById(orderline.Sandwich.Id);
+                   CommWrap<Sandwich> CommSan = await RemoteCall.GetInstance().GetSandwichById(orderline.Sandwich.Id);
                     if(CommSan.RequestStatus == 1)
                     {
                         orderline.Sandwich = CommSan.Content;
@@ -77,7 +79,7 @@ namespace ClientProject.Controllers
                     }
                     foreach(OrderLineVegetable orderLineVeg in orderline.OrderLineVegetables)
                     {
-                        CommWrap<Vegetable> CommVeg = await RemoteCall.GetInstance().getVegetableById(orderLineVeg.Vegetable.Id);
+                        CommWrap<Vegetable> CommVeg = await RemoteCall.GetInstance().GetVegetableById(orderLineVeg.Vegetable.Id);
                         if (CommVeg.RequestStatus == 1)
                         {
                             orderLineVeg.Vegetable = CommVeg.Content;
@@ -92,6 +94,7 @@ namespace ClientProject.Controllers
             return View(employee);
         }
 
+        /*
         // GET: Employees/Details/5s
         public async Task<IActionResult> Details(string id)
         {
@@ -198,7 +201,7 @@ namespace ClientProject.Controllers
 
             return View(employee);
         }
-
+        */
         // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using ClientProject.Models.EmployeesManagementViewModels;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClientProject.Controllers
 {
@@ -43,6 +44,7 @@ namespace ClientProject.Controllers
 
         //
         // GET: /EmployeesManagement
+        [Authorize(Roles = "Responsable")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Employees.ToListAsync());
@@ -50,6 +52,7 @@ namespace ClientProject.Controllers
 
         //
         // GET: /EmployeesManagement/Create
+        [Authorize(Roles = "Responsable")]
         public IActionResult Create()
         {
             return View();
@@ -61,6 +64,7 @@ namespace ClientProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Responsable")]
         public async Task<IActionResult> Create(CreateViewModel model)
         {
             if (ModelState.IsValid)
@@ -70,7 +74,7 @@ namespace ClientProject.Controllers
                 
                 if (user.Succeeded)
                 {
-                    IdentityRole role = new IdentityRole { Name = "Responsable", NormalizedName = "RESPONSABLE" };
+                    IdentityRole role = new IdentityRole { Name = "Employe", NormalizedName = "EMPLOYE" };
                     bool roleExist = await _roleManager.RoleExistsAsync(role.NormalizedName);
                     if (!roleExist)
                     {
@@ -99,6 +103,7 @@ namespace ClientProject.Controllers
 
         //
         // GET: EmployeesManagement/Edit/5
+        [Authorize(Roles = "Responsable")]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -120,6 +125,7 @@ namespace ClientProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Responsable")]
         public async Task<IActionResult> Edit(string id, [Bind("Id,FirstName,LastName,UserName,Email")] Employee model)
         {
             if (id != model.Id)
@@ -161,6 +167,7 @@ namespace ClientProject.Controllers
 
         //
         // GET: EmployeesManagement/AddToWallet/5
+        [Authorize(Roles = "Responsable")]
         public async Task<IActionResult> AddToWallet(string id)
         {
             if (id == null)
@@ -185,6 +192,7 @@ namespace ClientProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Responsable")]
         public async Task<IActionResult> AddToWallet(AddToWalletViewModel model)
         {
             if (ModelState.IsValid)

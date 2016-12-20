@@ -1,104 +1,104 @@
-@model IEnumerable<ClientProject.Models.OrderLine>
+﻿@model ClientProject.Models.MenuViewModels.MenuViewModel
+
+@using Microsoft.AspNetCore.Identity
+@using ClientProject.Models
+
+@inject SignInManager<Employee> SignInManager
+@inject UserManager<Employee> UserManager
 
 @{
     ViewData["Title"] = "Carte du snack";
 }
 
 <h2>Carte du snack</h2>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th></th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sandwich.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sandwich.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sandwich.Description)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<hr />
+@using (Html.BeginForm())
+{
+    <h4>Sandwiches :</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ListSandwiches.First().Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ListSandwiches.First().Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ListSandwiches.First().Description)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var i=0; i<Model.ListSandwiches.Count; i++)
+            {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.quantity)
+                    @Html.HiddenFor(modelItem => Model.ListSandwiches[i].Id)
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        @Html.RadioButtonFor(m => m.SelectedSandwich, Model.ListSandwiches[i].Id)
+                    }
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                    @Html.HiddenFor(modelItem => Model.ListSandwiches[i].Name)
+                    @Html.DisplayFor(modelItem => Model.ListSandwiches[i].Name)
+                </td>
+                <td>
+                    @Html.HiddenFor(modelItem => Model.ListSandwiches[i].Price)
+                    @Html.DisplayFor(modelItem => Model.ListSandwiches[i].Price)
+                </td>
+                <td>
+                    @Html.HiddenFor(modelItem => Model.ListSandwiches[i].Description)
+                    @Html.DisplayFor(modelItem => Model.ListSandwiches[i].Description)
                 </td>
             </tr>
-        }
-    </tbody>
-</table>
+            }
+        </tbody>
+    </table>
+    <hr />
 
-<table>
-    <thead>
-        <tr>
-            <th></th>
-            <th>
-                @Html.DisplayNameFor(model => model.Vegetable.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Menu.VegetablesPrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Vegetable.Description)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <h4>Crudités :</h4>
+    @Html.HiddenFor(modelItem => Model.VegetablesPrice)
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.quantity)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-                </td>
+                <th></th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ListVegetablesWithCheckBoxes.First().Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ListVegetablesWithCheckBoxes.First().Description)
+                </th>
             </tr>
-        }
-    </tbody>
-</table>
-
-
-
-
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.quantity)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.quantity)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-            </td>
-        </tr>
+        </thead>
+        <tbody>
+            @for (var i=0; i<Model.ListVegetablesWithCheckBoxes.Count; i++)
+            {
+                <tr>
+                    <td>
+                        @Html.HiddenFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Id)
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            @Html.CheckBoxFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Checked, new { @checked = false })
+                        }
+                    </td>
+                    <td>
+                        @Html.HiddenFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Name)
+                        @Html.DisplayFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Name)
+                    </td>
+                    <td>
+                        @Html.HiddenFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Description)
+                        @Html.DisplayFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Description)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <input type="submit" value="Ajouter au panier" class="btn btn-default" />
+    }
 }
-    </tbody>
-</table>
+
