@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using SnackProject.Data;
 using SnackProject.Models;
 using SnackProject.Automatics;
+using System.Diagnostics;
 
 namespace SnackProject.Controllers
 {
@@ -56,12 +57,13 @@ namespace SnackProject.Controllers
             return View();
         }
 
+        ///
         // POST: Vegetable/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,available,description,name")] Vegetable vegetable)
+        public async Task<IActionResult> Create([Bind("Id,Available,Description,Name")] Vegetable vegetable)
         {
             if (ModelState.IsValid)
             {
@@ -94,8 +96,10 @@ namespace SnackProject.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //public async Task<IActionResult> Edit(int id, [Bind("id,available,description,name")] Vegetable vegetable)
-        public IActionResult Edit(int id, [Bind("id,available,description,name")] Vegetable vegetable)
+        public IActionResult Edit(int id, [Bind("Id,Available,Description,Name")] Vegetable vegetable)
         {
+            Debug.WriteLine("id = " + id);
+            Debug.WriteLine("id sandwich" + vegetable.Id);
             if (id != vegetable.Id)
             {
                 return NotFound();
