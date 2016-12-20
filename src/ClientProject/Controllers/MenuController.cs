@@ -217,7 +217,7 @@ namespace ClientProject.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employee.SingleOrDefaultAsync(m => m.id == id);
+            var employee = await _context.Employees.SingleOrDefaultAsync(m => m.id == id);
             if (employee == null)
             {
                 return NotFound();
