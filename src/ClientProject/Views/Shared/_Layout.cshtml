@@ -68,7 +68,7 @@
                                     String vegetablesListDisplay = "";
                                     if (orderLine.OrderLineVegetables.Count != 0)
                                     {
-                                        for (var i = 1; i < orderLine.OrderLineVegetables.Count; i++)
+                                        for (var i = 0; i < orderLine.OrderLineVegetables.Count-1; i++)
                                         {
                                             vegetablesListDisplay += orderLine.OrderLineVegetables.ElementAt(i).Vegetable.Name + ", ";
                                         }
