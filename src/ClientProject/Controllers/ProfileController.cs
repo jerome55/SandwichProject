@@ -201,7 +201,7 @@ namespace ClientProject.Controllers
 
             return View(employee);
         }
-
+        */
         // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -211,7 +211,7 @@ namespace ClientProject.Controllers
             _context.Employees.Remove(employee);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
-        }*/
+        }
 
         private bool EmployeeExists(string id)
         {
