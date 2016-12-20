@@ -74,6 +74,8 @@ namespace SnackProject.Controllers
         {
             if (ModelState.IsValid)
             {
+                //Par défaut, un sandwich créé est available après sa création
+                sandwich.Available = true;
                 _context.Add(sandwich);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");

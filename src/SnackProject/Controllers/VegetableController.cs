@@ -67,6 +67,8 @@ namespace SnackProject.Controllers
         {
             if (ModelState.IsValid)
             {
+                //Par défaut, une crudité créée est available après sa création
+                vegetable.Available = true;
                 _context.Add(vegetable);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
