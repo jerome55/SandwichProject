@@ -202,11 +202,19 @@ namespace ClientProject.Controllers
         // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == id);
+            Order order = await _context.Orders
+                .Include(ord => ord.OrderLines)
+                    .ThenInclude(ordlin => ordlin.Sandwich)
+                .Include(ord => ord.OrderLines)
+                    .ThenInclude(ordLin => ordLin.OrderLineVegetables)
+                    .ThenInclude(ordLinVeg => ordLinVeg.Vegetable)
+                .SingleOrDefaultAsync(m => m.Id == id);
+
+           /* var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == id);
             _context.Employees.Remove(employee);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();*/
             return RedirectToAction("Index");
         }
 
