@@ -10,24 +10,28 @@ using ClientProject.Models;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace ClientProject.Controllers
 {
-    public class OrderLinesController : Controller
+    public class MenuController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<Employee> _userManager;
 
-        public OrderLinesController(ApplicationDbContext context, UserManager<Employee> userManager)
+        public MenuController(ApplicationDbContext context, UserManager<Employee> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
-        private Order getCurrentOrder(Employee employee)
+        private Order GetCurrentOrder(Employee employee)
         {
-            DateTime now = DateTime.Now;
 
+
+            DateTime now = DateTime.Now;
             DateTime delivreryDate;
             if (now.Hour >= 10)
             {
@@ -51,17 +55,31 @@ namespace ClientProject.Controllers
         }
 
 
-        // GET: OrderLines
-        [Authorize]
+        // GET: Menu
         public async Task<IActionResult> Index()
         {
-            string id = _userManager.GetUserId(User);
+            //string id = _userManager.GetUserId(User);
 
-            Employee emp = _context.Employees.Where(e => e.Id == id).FirstOrDefault();
+            //Employee emp = _context.Employees.Where(e => e.Id == id).FirstOrDefault();
 
-            Order order = getCurrentOrder(emp);
+            //Order order = GetCurrentOrder(emp);
 
-            return View(order.OrderLines.ToList());
+            //string serializable = HttpContext.Session.GetString("cart");
+
+            //Order order = JsonConvert.DeserializeObject<Order>(serializable);
+
+            //return View(order.OrderLines.ToList());
+
+            Menu menu = await RemoteCall.GetInstance().GetMenu();
+
+            if(menu == null)
+            {
+                return View(menu);
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         // GET: OrderLines/Details/5
@@ -97,8 +115,10 @@ namespace ClientProject.Controllers
             
             if (ModelState.IsValid)
             {
-                _context.Add(orderLine);
-                await _context.SaveChangesAsync();
+                string orderLineSerializable = JsonConvert.SerializeObject(orderLine);
+                HttpContext.Session.SetString("cart", orderLineSerializable);
+                //_context.Add(orderLine);
+                //await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             return View(orderLine);

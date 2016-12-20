@@ -1,0 +1,102 @@
+@model ClientProject.Models.Employee
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Employee</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.UserName) :
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Email) :
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName) :
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName) :
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Wallet) :
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Wallet)
+        </dd>
+        <dt>
+            Change Password :
+        </dt>
+        <dd>
+
+        </dd>
+    </dl>
+     @if (Model.Orders.Count <= 0)
+     {
+
+         <p>Il n'y a aucune commande en cours </p>
+     }
+     else
+     {
+        <table class="table-bordered table table-condensed">
+            <thead>
+                <tr>
+                    <td>
+                        <p> Sandwich </p>
+                    </td>
+                    <td>
+                       <p> Cruditées </p>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model.Orders)
+                {
+                    <p> Prix de la commande : @order.TotalAmount </p>
+                    @foreach (var orderLine in order.OrderLines)
+                    {
+                        <tr>
+                            <td>
+                               <p> @orderLine.Sandwich.Name </p>
+                            </td>
+                            <td>
+                                @if (orderLine.OrderLineVegetables.Count <= 0)
+                                {
+                                    <p> Pas de cruditées</p>
+                                }
+                                else
+                                {
+                                   <p> @foreach (var lineVegetables in orderLine.OrderLineVegetables)
+                                    {
+                                        @lineVegetables.Vegetable.Name
+                                    }
+                                    </p>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+     }
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

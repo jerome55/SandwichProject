@@ -10,10 +10,16 @@ namespace ClientProject.Models
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class Employee : IdentityUser
     {
+        [Required]
+        [StringLength(100, ErrorMessage = "Le {0} doit contenir entre {2} et {1} caractères.", MinimumLength = 1)]
         [Display(Name = "Prénom")]
         public string LastName { get; set; }
+        [Required]
+        [StringLength(100, ErrorMessage = "Le {0} doit contenir entre {2} et {1} caractères.", MinimumLength = 1)]
         [Display(Name = "Nom")]
         public string FirstName { get; set; }
+        [Required]
+        [DataType(DataType.Currency)]
         [Display(Name = "Porte-monnaie")]
         public decimal Wallet { get; set; }
 

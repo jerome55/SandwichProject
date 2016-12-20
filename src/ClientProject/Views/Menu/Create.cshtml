@@ -1,4 +1,4 @@
-@model ClientProject.Models.OrderLine
+﻿@model ClientProject.Models.OrderLine
 
 @{
     ViewData["Title"] = "Create";
@@ -12,10 +12,10 @@
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
-            <label asp-for="quantity" class="col-md-2 control-label"></label>
+            <label asp-for="Quantity" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="quantity" class="form-control" />
-                <span asp-validation-for="quantity" class="text-danger" />
+                <input asp-for="Quantity" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger" />
             </div>
         </div>
         <div class="form-group">
