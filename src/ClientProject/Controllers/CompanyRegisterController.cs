@@ -51,6 +51,7 @@ namespace ClientProject.Controllers
         // GET: /CompanyRegister
         [HttpGet]
         [AllowAnonymous]
+        [Route("CompanyRegister/Index")]
         public async Task<IActionResult> Index(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -66,6 +67,7 @@ namespace ClientProject.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [Route("CompanyRegister/Index")]
         public async Task<IActionResult> Index(RegisterViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;

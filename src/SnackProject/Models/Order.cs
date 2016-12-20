@@ -18,6 +18,14 @@ namespace SnackProject.Models
         [DataMember]
         public decimal TotalAmount { get; set; }
 
+        //Concurrency Token, voir le code fluent dans le fichier ApplicationDbContext.
+        //Lorsque plusieurs clients d'une même société soumettent leurs Orders au snack en même temps, 
+        //le Order total pour cette société peut subir des updates en concurrence.
+        //Ce concurrency token permet de savoir lors d'une update si une autre update n'est pas venue
+        //s'infiltrer entre temps.
+        //Pour plus d'info : https://www.asp.net/mvc/overview/getting-started/getting-started-with-ef-using-mvc/handling-concurrency-with-the-entity-framework-in-an-asp-net-mvc-application  
+        public byte[] RowVersion { get; set; }
+
         [DataMember]
         public ICollection<OrderLine> OrderLines { get; set; }
 
@@ -33,13 +41,13 @@ namespace SnackProject.Models
         {
             lock(this)
             {
-                List<OrderLine> listAdd = AddOrderLines.ToList();
-                List<OrderLine> listCurrent = OrderLines.ToList();
+                //List<OrderLine> listAdd = AddOrderLines.ToList();
+                //List<OrderLine> listCurrent = OrderLines.ToList();
 
-                for(int i=0;i<listAdd.Count;++i)
+                for(int i=0;i<AddOrderLines.Count;++i)
                 {
                     int j = 0;
-                    for (j = 0; j < listCurrent.Count && !listCurrent[j].Equals(listAdd); ++j);
+                    for (j = 0; j < OrderLines.Count && !OrderLines.ElementAt(j).Equals(listAdd); ++j);
 
                     if(j == listCurrent.Count)
                     {

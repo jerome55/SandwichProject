@@ -69,7 +69,7 @@ namespace ClientProject.Controllers
         {
             CommWrap<Sandwich> responseReturn = null;
 
-            HttpResponseMessage response = await this.client.GetAsync("api/Sandwich?id=" + id);
+            HttpResponseMessage response = await this.client.GetAsync("api/Sandwich/" + id);
             if (response.IsSuccessStatusCode)
             {
                 responseReturn = await response.Content.ReadAsAsync<CommWrap<Sandwich>>();
@@ -83,7 +83,7 @@ namespace ClientProject.Controllers
         {
             CommWrap<Vegetable> responseReturn = null;
 
-            HttpResponseMessage response = await this.client.GetAsync("api/Vegetable?id=" + id);
+            HttpResponseMessage response = await this.client.GetAsync("api/Vegetable/" + id);
             if (response.IsSuccessStatusCode)
             {
                 responseReturn = await response.Content.ReadAsAsync<CommWrap<Vegetable>>();

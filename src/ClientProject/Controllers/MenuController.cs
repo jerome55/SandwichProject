@@ -32,6 +32,7 @@ namespace ClientProject.Controllers
         
         // GET: Menu
         [AllowAnonymous]
+        [Route("Menu/Index")]
         public async Task<IActionResult> Index()
         {
             RemoteCall remoteCaller = RemoteCall.GetInstance();
@@ -99,6 +100,7 @@ namespace ClientProject.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Employe, Responsable")]
+        [Route("Menu/Index")]
         public async Task<IActionResult> Index(MenuViewModel model)
         {
             if (ModelState.IsValid)
@@ -136,7 +138,7 @@ namespace ClientProject.Controllers
             }
             return View(model);
         }
-        
+
         /*
         // GET: OrderLines/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -259,6 +261,19 @@ namespace ClientProject.Controllers
         }
         */
 
+        [Authorize(Roles = "Employe, Responsable")]
+        [Route("Menu/ValidateSessionCart")]
+        public async Task<IActionResult> ValidateSessionCart()
+        {
+            Order cartOrder = ShoppingCart.GetCartContent(User, HttpContext);
+
+            Debug.WriteLine("--------------Confirm Session Cart");
+
+            CommWrap<Order> comm =  await RemoteCall.GetInstance().SendOrder(cartOrder);
+
+            return RedirectToAction("Index");
+        }
+
 
 
         private bool OrderLineExists(int id)
@@ -274,16 +289,7 @@ namespace ClientProject.Controllers
 
             ShoppingCart.UpdateCartContent(HttpContext, cartOrder);
         }
-
-        private async void ValidateCartSession()
-        {
-            Order cartOrder = ShoppingCart.GetCartContent(User, HttpContext);
-
-            CommWrap<Order> comm =  await RemoteCall.GetInstance().SendOrder(cartOrder);
-            
-
-        }
-
+        
         // pre : employer contient ses orders.
         private Order GetCurrentOrder(Employee employee)
         {

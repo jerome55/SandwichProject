@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
@@ -17,6 +18,10 @@ namespace SnackProject.Models
 
         [DataMember]
         public Sandwich Sandwich { get; set; }
+
+        //VegetablePrice n'est pas stocké en db et sert juste à calculer le prix dans la méthode GetPrice()
+        [NotMapped]
+        public decimal VegetablesPrice { get; set; }
 
         [DataMember]
         public ICollection<OrderLineVegetable> OrderLineVegetables { get; set; }

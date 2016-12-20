@@ -24,6 +24,9 @@ namespace SnackProject.Data
 
             builder.Entity<OrderLineVegetable>()
                 .HasKey(c => new { c.OrderLineId, c.VegetableId });
+
+            builder.Entity<Order>()
+                .Property(p => p.RowVersion).IsConcurrencyToken();
         }
 
         public DbSet<Company> Companies { get; set; }

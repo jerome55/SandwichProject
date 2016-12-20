@@ -20,7 +20,9 @@ namespace SnackProject.Controllers.WebServices
         {
             _context = context;
         }
+
         [HttpGet]
+        [Route("api/Sandwich/{id}")]
         //Permet de recuperer un sandwich par son id
         public async Task<CommWrap<Sandwich>> Get(int id)
         {
