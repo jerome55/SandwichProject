@@ -29,7 +29,7 @@ namespace SnackProject.Controllers
                              select s;
 
             sandwiches = sandwiches.OrderBy(s => s.Available ? 0 : 1);
-            return View(await _context.Sandwiches.ToListAsync());
+            return View(await sandwiches.AsNoTracking().ToListAsync());
         }
 
 
