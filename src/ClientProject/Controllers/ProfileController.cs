@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Diagnostics;
 using ClientProject.Models.Communication;
 using Microsoft.AspNetCore.Authorization;
+using SnackProject.Models.Communication;
 
 namespace ClientProject.Controllers
 {
@@ -207,6 +208,7 @@ namespace ClientProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+
             Order order = await _context.Orders
                 .Include(ord => ord.OrderLines)
                     .ThenInclude(ordlin => ordlin.Sandwich)
@@ -215,9 +217,24 @@ namespace ClientProject.Controllers
                     .ThenInclude(ordLinVeg => ordLinVeg.Vegetable)
                 .SingleOrDefaultAsync(m => m.Id == id);
 
-           /* var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Employees.Remove(employee);
-            await _context.SaveChangesAsync();*/
+            OrderCompany_Com orderCompCom = new OrderCompany_Com();
+            orderCompCom.Order_com = order;
+            orderCompCom.Company_com = _context.Companies.First();
+            int rep = await RemoteCall.GetInstance().SendOrderForDelete(orderCompCom);
+
+            if (rep == 1)
+            {
+                foreach(OrderLine orderLine in order.OrderLines)
+                {
+                    foreach(OrderLineVegetable ordLinVeg in orderLine.OrderLineVegetables)
+                    {
+                        _context.OrderLineVegetables.Remove(ordLinVeg);
+                    }
+                    _context.OrderLines.Remove(orderLine);
+                }
+                _context.Orders.Remove(order);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction("Index");
         }
 

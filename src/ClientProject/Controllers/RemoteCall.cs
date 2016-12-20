@@ -1,5 +1,6 @@
 ﻿using ClientProject.Models;
 using ClientProject.Models.Communication;
+using SnackProject.Models.Communication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -104,6 +105,15 @@ namespace ClientProject.Controllers
             }
 
             return responseReturn;
+        }
+        public async Task<int> SendOrderForDelete(OrderCompany_Com orderCompCom){
+            int i = -1;
+            HttpResponseMessage response = await this.client.PutAsJsonAsync("api/Order",orderCompCom);
+            if (response.IsSuccessStatusCode)
+            {
+                i = await response.Content.ReadAsAsync<int>();
+            }
+            return i;
         }
     }
 }
