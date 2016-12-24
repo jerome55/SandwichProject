@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Diagnostics;
 using ClientProject.Models.Communication;
 using Microsoft.AspNetCore.Authorization;
+using SnackProject.Models.Communication;
 
 namespace ClientProject.Controllers
 {
@@ -201,17 +202,41 @@ namespace ClientProject.Controllers
 
             return View(employee);
         }
-
+        */
         // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Employees.Remove(employee);
-            await _context.SaveChangesAsync();
+
+            Order order = await _context.Orders
+                .Include(ord => ord.OrderLines)
+                    .ThenInclude(ordlin => ordlin.Sandwich)
+                .Include(ord => ord.OrderLines)
+                    .ThenInclude(ordLin => ordLin.OrderLineVegetables)
+                    .ThenInclude(ordLinVeg => ordLinVeg.Vegetable)
+                .SingleOrDefaultAsync(m => m.Id == id);
+
+            OrderCompany_Com orderCompCom = new OrderCompany_Com();
+            orderCompCom.Order_com = order;
+            orderCompCom.Company_com = _context.Companies.First();
+            int rep = await RemoteCall.GetInstance().SendOrderForDelete(orderCompCom);
+
+            if (rep == 1)
+            {
+                foreach(OrderLine orderLine in order.OrderLines)
+                {
+                    foreach(OrderLineVegetable ordLinVeg in orderLine.OrderLineVegetables)
+                    {
+                        _context.OrderLineVegetables.Remove(ordLinVeg);
+                    }
+                    _context.OrderLines.Remove(orderLine);
+                }
+                _context.Orders.Remove(order);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction("Index");
-        }*/
+        }
 
         private bool EmployeeExists(string id)
         {

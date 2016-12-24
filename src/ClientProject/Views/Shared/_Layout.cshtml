@@ -68,7 +68,7 @@
                                     String vegetablesListDisplay = "";
                                     if (orderLine.OrderLineVegetables.Count != 0)
                                     {
-                                        for (var i = 1; i < orderLine.OrderLineVegetables.Count; i++)
+                                        for (var i = 0; i < orderLine.OrderLineVegetables.Count-1; i++)
                                         {
                                             vegetablesListDisplay += orderLine.OrderLineVegetables.ElementAt(i).Vegetable.Name + ", ";
                                         }
@@ -89,8 +89,8 @@
                                 }
                             </tbody>
                         </table>
+                        <p><b>@Html.DisplayNameFor(mItem => cartOrder.TotalAmount) : </b>@Html.DisplayFor(mItem => cartOrder.TotalAmount) €</p>
                     }
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
