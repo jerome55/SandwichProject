@@ -79,8 +79,8 @@ namespace SnackProject.Controllers.WebServices
             }
         }
 
-        [HttpDelete]
-        public async Task<int> delete([FromBody]OrderCompany_Com communication)
+        [HttpPost]
+        public async Task<int> PostSupp([FromBody]OrderCompany_Com communication)
         {
             DateTime now = DateTime.Now;
 
