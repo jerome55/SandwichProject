@@ -94,51 +94,64 @@ namespace SnackProject.Controllers.WebServices
                 delivreryDate = DateTime.Today;
             }
 
-            if(delivreryDate.Equals(communication.Order_com.DateOfDelivery))
+            if (delivreryDate.Equals(communication.Order_com.DateOfDelivery))
             {
-                Company company = _context.Companies
-                    .Include(compQ => compQ.Orders.Where(q=>q.DateOfDelivery.Equals(delivreryDate)).First())
-                        .ThenInclude(orderQ => orderQ.OrderLines)
-                        .ThenInclude(orderLineQ => orderLineQ.OrderLineVegetables)
-                        .ThenInclude(veg => veg.Vegetable)
-                    .Include(compQ => compQ.Orders.Where(q => q.DateOfDelivery.Equals(delivreryDate)).First())
-                        .ThenInclude(orderQ => orderQ.OrderLines)
-                        .ThenInclude(orderLineQ => orderLineQ.Sandwich)
-                    .Where(q => q.Id == communication.Company_com.Id).First();
-
-                Order order = company.Orders.First();
-
-                for(int i=0;i<order.OrderLines.Count;++i)
+                using (var transaction = _context.Database.BeginTransaction(System.Data.IsolationLevel.Serializable))
                 {
-                    int j;
-                    for (j = 0; j < communication.Order_com.OrderLines.Count && !order.OrderLines.ElementAt(i).Equals(communication.Order_com.OrderLines.ElementAt(j)); ++j) ;
-
-                    order.TotalAmount -= communication.Order_com.OrderLines.ElementAt(j).Quantity * communication.Order_com.OrderLines.ElementAt(j).GetPrice();
-
-
-                    order.OrderLines.ElementAt(i).Quantity -= communication.Order_com.OrderLines.ElementAt(j).Quantity;
-
-                    if (order.OrderLines.ElementAt(i).Quantity == 0)
+                    try
                     {
-                        _context.OrderLines.Attach(order.OrderLines.ElementAt(i));
-                        _context.OrderLines.Remove(order.OrderLines.ElementAt(i));
-                    }
-                    else
-                    {
-                        _context.OrderLines.Attach(order.OrderLines.ElementAt(i));
-                        var entry = _context.Entry(order.OrderLines.ElementAt(i));
-                        entry.Property(e => e.Quantity).IsModified = true;
-                    }
+                        Company company = _context.Companies
+                            .Include(compQ => compQ.Orders.Where(q => q.DateOfDelivery.Equals(delivreryDate)).First())
+                                .ThenInclude(orderQ => orderQ.OrderLines)
+                                .ThenInclude(orderLineQ => orderLineQ.OrderLineVegetables)
+                                .ThenInclude(veg => veg.Vegetable)
+                            .Include(compQ => compQ.Orders.Where(q => q.DateOfDelivery.Equals(delivreryDate)).First())
+                                .ThenInclude(orderQ => orderQ.OrderLines)
+                                .ThenInclude(orderLineQ => orderLineQ.Sandwich)
+                            .Where(q => q.Id == communication.Company_com.Id).First();
 
+                        Order order = company.Orders.First();
+
+                        for (int i = 0; i < order.OrderLines.Count; ++i)
+                        {
+                            int j;
+                            for (j = 0; j < communication.Order_com.OrderLines.Count && !order.OrderLines.ElementAt(i).Equals(communication.Order_com.OrderLines.ElementAt(j)); ++j) ;
+
+                            order.TotalAmount -= communication.Order_com.OrderLines.ElementAt(j).Quantity * communication.Order_com.OrderLines.ElementAt(j).GetPrice();
+
+
+                            order.OrderLines.ElementAt(i).Quantity -= communication.Order_com.OrderLines.ElementAt(j).Quantity;
+
+                            if (order.OrderLines.ElementAt(i).Quantity == 0)
+                            {
+                                _context.OrderLines.Attach(order.OrderLines.ElementAt(i));
+                                _context.OrderLines.Remove(order.OrderLines.ElementAt(i));
+                            }
+                            else
+                            {
+                                _context.OrderLines.Attach(order.OrderLines.ElementAt(i));
+                                var entry = _context.Entry(order.OrderLines.ElementAt(i));
+                                entry.Property(e => e.Quantity).IsModified = true;
+                            }
+
+                        }
+
+                        _context.Orders.Attach(order);
+                        var entryOrder = _context.Entry(order);
+                        entryOrder.Property(e => e.TotalAmount).IsModified = true;
+
+                        _context.SaveChanges();
+
+                        transaction.Commit();
+                        return 1;
+
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        return 0;
+                    }
                 }
-
-                _context.Orders.Attach(order);
-                var entryOrder = _context.Entry(order);
-                entryOrder.Property(e => e.TotalAmount).IsModified = true;
-
-                _context.SaveChanges();
-
-                return 1;
             }
             else
             {
