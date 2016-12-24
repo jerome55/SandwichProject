@@ -36,26 +36,50 @@ namespace SnackProject.Models
 
         public bool Equals(OrderLine other)
         {
-            List<OrderLineVegetable> listOrderLineVegetables = OrderLineVegetables.ToList();
-            List<OrderLineVegetable> listOther = other.OrderLineVegetables.ToList();
-
-            bool follow = Sandwich.Id==other.Sandwich.Id && Sandwich.Available && other.Sandwich.Available;
-
-            for (int i=0;i< listOther.Count && follow==true; ++i)
+            if (this.Sandwich.Id != other.Sandwich.Id)
             {
-                for(int j=0;j< listOrderLineVegetables.Count && follow==true; ++i)
+                return false;
+            }
+
+            if(this.OrderLineVegetables.Count != other.OrderLineVegetables.Count)
+            {
+                return false;
+            }
+            
+            for (int i=0; i<this.OrderLineVegetables.Count; ++i)
+            {
+                bool found = false;
+                for(int j=0; j<other.OrderLineVegetables.Count; ++j)
                 {
-                    follow = listOther[i].Equals(listOrderLineVegetables[j]);
+                    if(this.OrderLineVegetables.ElementAt(i).Vegetable.Id == other.OrderLineVegetables.ElementAt(j).Vegetable.Id)
+                    {
+                        found = true;
+                    }
+                }
+                //Si une des crudités n'a pas été trouvée, pas la peine d'aller plus loin, 
+                //c'est un échec.
+                if (found == false)
+                {
+                    return false;
                 }
             }
 
-
-            return follow;
+            //Si aucun des tests au dessus n'a échoué ce que forcement les deux OrderLines 
+            //sont identiques.
+            return true;
         }
 
         public decimal GetPrice()
         {
-            return Sandwich.Price * Quantity + (new Menu()).VegetablesPrice;
+            decimal price = this.Sandwich.Price;
+            //Si il n'y a pas de crudité, ne pas faire payer le prix du supplément crudité
+            if (this.OrderLineVegetables.Count != 0)
+            {
+                price += this.VegetablesPrice;
+            }
+            price = price * this.Quantity;
+
+            return price;
         }
     }
 }

@@ -18,14 +18,6 @@ namespace SnackProject.Models
         [DataMember]
         public decimal TotalAmount { get; set; }
 
-        //Concurrency Token, voir le code fluent dans le fichier ApplicationDbContext.
-        //Lorsque plusieurs clients d'une même société soumettent leurs Orders au snack en même temps, 
-        //le Order total pour cette société peut subir des updates en concurrence.
-        //Ce concurrency token permet de savoir lors d'une update si une autre update n'est pas venue
-        //s'infiltrer entre temps.
-        //Pour plus d'info : https://www.asp.net/mvc/overview/getting-started/getting-started-with-ef-using-mvc/handling-concurrency-with-the-entity-framework-in-an-asp-net-mvc-application  
-        public byte[] RowVersion { get; set; }
-
         [DataMember]
         public ICollection<OrderLine> OrderLines { get; set; }
 
@@ -37,30 +29,42 @@ namespace SnackProject.Models
             this.OrderLines = orderLines;
         }*/
 
-        public void AddOrderLine(ICollection<OrderLine> AddOrderLines)
+        public void UpdateTotalAmount()
         {
-            lock(this)
+            this.TotalAmount = 0;
+            for (int i=0; i<this.OrderLines.Count; i++)
             {
-                //List<OrderLine> listAdd = AddOrderLines.ToList();
-                //List<OrderLine> listCurrent = OrderLines.ToList();
+                this.TotalAmount += this.OrderLines.ElementAt(i).GetPrice();
+            }
+        }
 
-                for(int i=0;i<AddOrderLines.Count;++i)
+        public void SumUpOrders(Order otherOrder)
+        {
+            //Combiner les OrderLines (si identique increment quantité, sinon add to list)
+            for (int i=0; i<otherOrder.OrderLines.Count; ++i)
+            {
+                bool found = false;
+                int j = 0;
+                for (j = 0; j < this.OrderLines.Count && found == false; ++j)
                 {
-                    int j = 0;
-                    for (j = 0; j < OrderLines.Count && !OrderLines.ElementAt(j).Equals(listAdd); ++j);
-
-                    if(j == listCurrent.Count)
+                    if (otherOrder.OrderLines.ElementAt(i).Equals(this.OrderLines.ElementAt(j)))
                     {
-                        OrderLines.Add(listAdd[i]);
-                        TotalAmount += listAdd[i].GetPrice();
-                    }
-                    else
-                    {
-                        listCurrent[j].Quantity += listAdd[i].Quantity;
-                        TotalAmount += listAdd[i].GetPrice();
+                        found = true;
                     }
                 }
+
+                OrderLine current = otherOrder.OrderLines.ElementAt(i);
+                if (found == false)
+                {
+                    this.OrderLines.Add(current);
+                }
+                else
+                {
+                    this.OrderLines.ElementAt(j).Quantity += current.Quantity;
+                }
             }
+            //Additionner les totaux
+            this.TotalAmount += otherOrder.TotalAmount;
         }
     }
 }

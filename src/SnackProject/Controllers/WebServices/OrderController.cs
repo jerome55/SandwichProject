@@ -2,11 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using System.Data.Entity.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SnackProject.Models;
 using SnackProject.Data;
 using SnackProject.Models.Communication;
+using Microsoft.EntityFrameworkCore;
 
 namespace SnackProject.Controllers.WebServices
 {
@@ -14,7 +18,7 @@ namespace SnackProject.Controllers.WebServices
     [Route("api/Order")]
     public class OrderController : Controller
     {
-        public static Dictionary<string, OrderCompany_Com> orderToValidate = new Dictionary<string, OrderCompany_Com>();
+        public static Dictionary<string, OrderCompany_Com> ordersToValidate = new Dictionary<string, OrderCompany_Com>();
         ApplicationDbContext _context;
 
         public OrderController(ApplicationDbContext context)
@@ -54,7 +58,7 @@ namespace SnackProject.Controllers.WebServices
          *                                                                  ------
          **/
         [HttpPost]
-        public async Task<CommWrap<OrderCompany_Com>> Post([FromBody]OrderCompany_Com communication)
+        public async Task<CommWrap<OrderGuid_Com>> Post([FromBody]OrderCompany_Com communication)
         {
             Order orderClient = communication.Order_com;
             Company company = communication.Company_com;
@@ -62,9 +66,10 @@ namespace SnackProject.Controllers.WebServices
             Company companyDB = null;
             List<Company> companyList = _context.Companies.Where(q => q.Id == company.Id && q.Chkcode == company.Chkcode).ToList();
 
+            //Si la company dans l'employé prétend faire partie n'est pas trouvée, s'arrêter.
             if (companyList.Count == 0)
             {
-                return new CommWrap<OrderCompany_Com> { RequestStatus = 0 };
+                return new CommWrap<OrderGuid_Com> { RequestStatus = 0 };
             }
             else
             {
@@ -86,7 +91,7 @@ namespace SnackProject.Controllers.WebServices
 
                 //Rafraichir les anciennes données avec des nouvelles par mesure de sécurité (les commandes 
                 //aux alentours de 10h sont susceptibles d'être altérées)
-                using (var dbContextTransaction = _context.Database.BeginTransaction())
+                using (var tx = _context.Database.BeginTransaction())
                 {
                     try
                     {
@@ -98,7 +103,9 @@ namespace SnackProject.Controllers.WebServices
 
                             for (int j = 0; j < orderClient.OrderLines.ElementAt(i).OrderLineVegetables.Count; j++)
                             {
+                                //On en aura besoin plus tard pour le calcul du prix (ce n'est pas sauvegardé dans la DB).
                                 orderClient.OrderLines.ElementAt(i).VegetablesPrice = _context.Menus.First().VegetablesPrice;
+
                                 orderClient.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable.Name = _context.Vegetables.Where(v => v.Id == orderClient.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable.Id).First().Name;
                                 orderClient.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable.Description = _context.Vegetables.Where(v => v.Id == orderClient.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable.Id).First().Description;
                             }
@@ -106,10 +113,19 @@ namespace SnackProject.Controllers.WebServices
                     }
                     catch (Exception e)
                     {
-                        return new CommWrap<OrderCompany_Com> { RequestStatus = 0 };
+                        return new CommWrap<OrderGuid_Com> { RequestStatus = 0 };
                     }
-                
-                return new CommWrap<OrderCompany_Com> { RequestStatus = 1, Content = communication};
+                    tx.Commit();
+                }
+
+                //Mettre à jour le prix de la commande avec les nouvelles données.
+                orderClient.UpdateTotalAmount();
+
+                string orderTemporaryCode = Guid.NewGuid().ToString();
+                ordersToValidate.Add(orderTemporaryCode, communication);
+
+                OrderGuid_Com response = new OrderGuid_Com { Guid_com = orderTemporaryCode, Order_com = communication.Order_com };
+                return new CommWrap<OrderGuid_Com> { RequestStatus = 1, Content = response };
             }
         }
 
@@ -187,7 +203,105 @@ namespace SnackProject.Controllers.WebServices
 
         [HttpPost]
         [Route("api/Order/Confirm")]
-        public async Task<void> Confirm([FromBody]OrderCompany_Com communication)
+        public async Task<CommWrap<string>> Confirm([FromBody]CommWrap<string> communication)
         {
+            //Si le client indique un echec de son coté (pas assez de crédit par exemple)
+            if (communication.RequestStatus == 0)
+            {
+                if (ordersToValidate.ContainsKey(communication.Content))
+                {
+                    //Supprimer l'Order de la liste en attente
+                    ordersToValidate.Remove(communication.Content);
+                    return new CommWrap<string> { RequestStatus = 0 };
+                }
+            }
+
+            //Si il n'y a pas de eu de soucis chez le client, on continue 
+            if (ordersToValidate.ContainsKey(communication.Content))
+            {
+                OrderCompany_Com orderInValidationInfo = ordersToValidate[communication.Content];
+
+                ////////////
+                //Récolte des infos Db nécessaire pour enregistrer la commande.
+                ////////////
+                Company company = orderInValidationInfo.Company_com;
+                Order orderInValidation = orderInValidationInfo.Order_com;
+
+                Company companyDb = await _context.Companies
+                                        .Include(emp => emp.Orders.Where(o => o.DateOfDelivery.Equals(orderInValidation.DateOfDelivery)))
+                                            .ThenInclude(order => order.OrderLines)
+                                                .ThenInclude(odLin => odLin.Sandwich)
+                                        .Include(emp => emp.Orders.Where(o => o.DateOfDelivery.Equals(orderInValidation.DateOfDelivery)))
+                                            .ThenInclude(order => order.OrderLines)
+                                                .ThenInclude(odLin => odLin.OrderLineVegetables)
+                                                    .ThenInclude(odLinVeg => odLinVeg.Vegetable)
+                                    .SingleOrDefaultAsync(c => c.Id == company.Id && c.Chkcode == company.Chkcode);
+
+                if (companyDb == null)
+                {
+                    //Si, étrangement, on n'a pas trouvé la company (mesure de sécurité).
+                    return new CommWrap<string> { RequestStatus = 0 };
+                }
+                
+                //Si aucune commande pour cette journée n'a été trouvée, on lui assigne la nouvelle commande.
+                if (companyDb.Orders.Count == 0)
+                {
+                    companyDb.Orders.Add(orderInValidation);
+                }
+                else
+                {
+                    Order orderDb = company.Orders.First();
+                    orderDb.SumUpOrders(orderInValidation);
+                }
+
+                orderDB.
+
+                companyDb.Orders.Add()
+                }
+
+
+            }
+
+                //Si commande existe déjà pour cette date, la récupérer
+                List<Order> orders = companyDB.Orders.Where(q => q.DateOfDelivery.Equals(delivreryDate)).ToList();
+
+                Order orderDB = null;
+                if (orders.Count == 0)
+                {
+                    orderDB = new Order { DateOfDelivery = delivreryDate, OrderLines = new List<OrderLine>() };
+
+                    companyDB.Orders.Add(orderDB);
+                }
+                else
+                {
+                    orderDB = orders.First();
+                }
+
+                //Boucler sur chaque OrderLine de l'objet Order reçu par le serveur
+                for (int i = 0; i < orderAdd.OrderLines.Count; i++)
+                {
+                    //Rafraichir les anciennes données avec des nouvelles par mesure de sécurité (les commandes 
+                    //aux alentours de 10h sont susceptibles d'être altérées)
+                    orderAdd.OrderLines.ElementAt(i).Sandwich.Price = _context.Sandwiches.Where(s => s.Id == orderAdd.OrderLines.ElementAt(i).Sandwich.Id).First().Price;
+                    orderAdd.OrderLines.ElementAt(i).Sandwich.Name = _context.Sandwiches.Where(s => s.Id == orderAdd.OrderLines.ElementAt(i).Sandwich.Id).First().Name;
+                    orderAdd.OrderLines.ElementAt(i).Sandwich.Description = _context.Sandwiches.Where(s => s.Id == orderAdd.OrderLines.ElementAt(i).Sandwich.Id).First().Description;
+
+                    for (int j = 0; j < orderAdd.OrderLines.ElementAt(i).OrderLineVegetables.Count; j++)
+                    {
+                        orderAdd.OrderLines.ElementAt(i).VegetablesPrice = _context.Menus.First().VegetablesPrice;
+                        orderAdd.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable.Name = _context.Vegetables.Where(v => v.Id == orderAdd.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable.Id).First().Name;
+                        orderAdd.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable.Description = _context.Vegetables.Where(v => v.Id == orderAdd.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable.Id).First().Description;
+                    }
+
+                    //Ajouter chaque OrderLine de l'object Order reçu par le serveur
+                    orderDB.AddOrderLine();
+                }
+
+                orderDB.AddOrderLine(orderLineAddList);
+
+                _context.SaveChanges();
+
+                return new CommWrap<Order> { RequestStatus = 1, Content = orderDB };
+            }
         }
 }
