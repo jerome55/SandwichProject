@@ -129,8 +129,8 @@ namespace SnackProject.Controllers.WebServices
             }
         }
         
-        [HttpPost]
-        [Route("api/Order/Confirm")]
+        [HttpPost("Confirm")]
+        //[Route("api/Order/Confirm")]
         public async Task<CommWrap<string>> Confirm([FromBody]CommWrap<string> communication)
         {
             //Si le client indique un echec de son coté (pas assez de crédit par exemple)
@@ -163,14 +163,15 @@ namespace SnackProject.Controllers.WebServices
                 using (var tx = _context.Database.BeginTransaction(System.Data.IsolationLevel.Serializable))
                 {
                     Company companyDb = await _context.Companies
-                                        .Include(emp => emp.Orders.Where(o => o.DateOfDelivery.Equals(orderInValidation.DateOfDelivery)))
+                                        .Include(emp => emp.Orders.Where(o => o.DateOfDelivery.Equals(orderInValidation.DateOfDelivery)).First())
                                             .ThenInclude(order => order.OrderLines)
                                                 .ThenInclude(odLin => odLin.Sandwich)
-                                        .Include(emp => emp.Orders.Where(o => o.DateOfDelivery.Equals(orderInValidation.DateOfDelivery)))
+                                        .Include(emp => emp.Orders.Where(o => o.DateOfDelivery.Equals(orderInValidation.DateOfDelivery)).First())
                                             .ThenInclude(order => order.OrderLines)
                                                 .ThenInclude(odLin => odLin.OrderLineVegetables)
                                                     .ThenInclude(odLinVeg => odLinVeg.Vegetable)
                                     .SingleOrDefaultAsync(c => c.Id == company.Id && c.Chkcode == company.Chkcode);
+                    //Company companyDb = null;//To delete
 
                     if (companyDb == null)
                     {
