@@ -139,6 +139,14 @@ namespace ClientProject.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Employe, Responsable")]
+        public async Task<IActionResult> InvalidateCartSession()
+        {
+            HttpContext.Session.SetString("cart", "");
+
+            return Redirect(Request.Headers["Referer"].ToString());
+        }
+
         /*
         // GET: OrderLines/Details/5
         public async Task<IActionResult> Details(int? id)
