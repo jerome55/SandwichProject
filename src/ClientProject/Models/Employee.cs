@@ -33,7 +33,7 @@ namespace ClientProject.Models
          * pre : on suppose que le prix est positif, et que la validation de sa commande a pu se faire
          * return : true si apres le debit, wallet >= 0, false sinon
          */
-        public Boolean DebitWallet(decimal totalAmount)
+        public bool DebitWallet(decimal totalAmount)
         {
             if (this.Wallet - totalAmount >= 0)
             {
@@ -48,7 +48,7 @@ namespace ClientProject.Models
          * param : credit : somme a rajouter a wallet
          * return : true si credit > 0, false sinon
          */
-        public Boolean CreditWallet(decimal credit)
+        public bool CreditWallet(decimal credit)
         {
             if (credit > 0)
             {

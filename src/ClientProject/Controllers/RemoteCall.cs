@@ -93,14 +93,35 @@ namespace ClientProject.Controllers
         }
 
         
-        public async Task<CommWrap<Order>> SendOrder(Order toSend)
+        public async Task<CommWrap<OrderGuid_Com>> SendOrder(Order orderToSend, Company company)
         {
-            CommWrap<Order> responseReturn = null;
+            CommWrap<OrderGuid_Com> responseReturn = null;
+            OrderCompany_Com orderCompany = new OrderCompany_Com { Order_com = orderToSend, Company_com = company };
 
-            HttpResponseMessage response = await this.client.PostAsJsonAsync("api/Order", toSend);
+            HttpResponseMessage response = await this.client.PostAsJsonAsync("api/Order", orderCompany);
             if (response.IsSuccessStatusCode)
             {
-                responseReturn = await response.Content.ReadAsAsync<CommWrap<Order>>();
+                responseReturn = await response.Content.ReadAsAsync<CommWrap<OrderGuid_Com>>();
+            }
+
+            return responseReturn;
+        }
+
+        public async Task<CommWrap<string>> ConfirmOrder(bool validate, string orderGuid)
+        {
+            CommWrap<string> responseReturn = null;
+            CommWrap<string> validationMessage = new CommWrap<string> { Content = orderGuid };
+            if(validate == true) {
+                validationMessage.RequestStatus = 1;
+            }
+            else {
+                validationMessage.RequestStatus = 0;
+            }
+
+            HttpResponseMessage response = await this.client.PostAsJsonAsync("api/Order/Confirm", validationMessage);
+            if (response.IsSuccessStatusCode)
+            {
+                responseReturn = await response.Content.ReadAsAsync<CommWrap<string>>();
             }
 
             return responseReturn;

@@ -91,7 +91,7 @@ namespace SnackProject.Controllers.WebServices
 
                 //Rafraichir les anciennes données avec des nouvelles par mesure de sécurité (les commandes 
                 //aux alentours de 10h sont susceptibles d'être altérées)
-                using (var tx = _context.Database.BeginTransaction())
+                using (var tx = _context.Database.BeginTransaction(System.Data.IsolationLevel.Serializable))
                 {
                     try
                     {
@@ -160,7 +160,9 @@ namespace SnackProject.Controllers.WebServices
                 Company company = orderInValidationInfo.Company_com;
                 Order orderInValidation = orderInValidationInfo.Order_com;
 
-                Company companyDb = await _context.Companies
+                using (var tx = _context.Database.BeginTransaction(System.Data.IsolationLevel.Serializable))
+                {
+                    Company companyDb = await _context.Companies
                                         .Include(emp => emp.Orders.Where(o => o.DateOfDelivery.Equals(orderInValidation.DateOfDelivery)))
                                             .ThenInclude(order => order.OrderLines)
                                                 .ThenInclude(odLin => odLin.Sandwich)
@@ -170,25 +172,27 @@ namespace SnackProject.Controllers.WebServices
                                                     .ThenInclude(odLinVeg => odLinVeg.Vegetable)
                                     .SingleOrDefaultAsync(c => c.Id == company.Id && c.Chkcode == company.Chkcode);
 
-                if (companyDb == null)
-                {
-                    //Si, étrangement, on n'a pas trouvé la company (mesure de sécurité).
-                    return new CommWrap<string> { RequestStatus = 0 };
-                }
-                
-                if (companyDb.Orders.Count == 0)
-                {
-                    //Si aucune commande pour cette journée n'a été trouvée, on lui assigne la nouvelle commande.
-                    companyDb.Orders.Add(orderInValidation);
-                }
-                else
-                {
-                    //Une commande à été trouvé pour la journée, on somme celle-ci avec la nouvelle.
-                    Order orderDb = company.Orders.First();
-                    orderDb.SumUpOrders(orderInValidation);
-                }
+                    if (companyDb == null)
+                    {
+                        //Si, étrangement, on n'a pas trouvé la company (mesure de sécurité).
+                        return new CommWrap<string> { RequestStatus = 0 };
+                    }
 
-                _context.SaveChanges();
+                    if (companyDb.Orders.Count == 0)
+                    {
+                        //Si aucune commande pour cette journée n'a été trouvée, on lui assigne la nouvelle commande.
+                        companyDb.Orders.Add(orderInValidation);
+                    }
+                    else
+                    {
+                        //Une commande à été trouvé pour la journée, on somme celle-ci avec la nouvelle.
+                        Order orderDb = company.Orders.First();
+                        orderDb.SumUpOrders(orderInValidation);
+                    }
+
+                    _context.SaveChanges();
+                    tx.Commit();
+                }
 
                 return new CommWrap<string> { RequestStatus = 1, Content = "" };
             }

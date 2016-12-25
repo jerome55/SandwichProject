@@ -35,22 +35,26 @@
             {
             <tr>
                 <td>
-                    @Html.HiddenFor(modelItem => Model.ListSandwiches[i].Id)
+                    <div style="display: none;">@Html.EditorFor(modelItem => Model.ListSandwiches[i].Id)</div>
+                    @*@Html.Hidden(modelItem => Model.ListSandwiches[i].Id)*@
                     @if (SignInManager.IsSignedIn(User))
                     {
                         @Html.RadioButtonFor(m => m.SelectedSandwich, Model.ListSandwiches[i].Id)
                     }
                 </td>
                 <td>
-                    @Html.HiddenFor(modelItem => Model.ListSandwiches[i].Name)
+                    <div style="display: none;">@Html.EditorFor(modelItem => Model.ListSandwiches[i].Name)</div>
+                    @*@Html.HiddenFor(modelItem => Model.ListSandwiches[i].Name)*@
                     @Html.DisplayFor(modelItem => Model.ListSandwiches[i].Name)
                 </td>
                 <td>
-                    @Html.HiddenFor(modelItem => Model.ListSandwiches[i].Price)
+                    <div style="display: none;">@Html.EditorFor(modelItem => Model.ListSandwiches[i].Price)</div>
+                    @*@Html.HiddenFor(modelItem => Model.ListSandwiches[i].Price)*@
                     @Html.DisplayFor(modelItem => Model.ListSandwiches[i].Price)
                 </td>
                 <td>
-                    @Html.HiddenFor(modelItem => Model.ListSandwiches[i].Description)
+                    <div style="display: none;">@Html.EditorFor(modelItem => Model.ListSandwiches[i].Description)</div>
+                    @*@Html.HiddenFor(modelItem => Model.ListSandwiches[i].Description)*@
                     @Html.DisplayFor(modelItem => Model.ListSandwiches[i].Description)
                 </td>
             </tr>
@@ -78,18 +82,21 @@
             {
                 <tr>
                     <td>
-                        @Html.HiddenFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Id)
+                        <div style="display: none;">@Html.EditorFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Id)</div>
+                        @*@Html.HiddenFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Id)*@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             @Html.CheckBoxFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Checked, new { @checked = false })
                         }
                     </td>
                     <td>
-                        @Html.HiddenFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Name)
+                        <div style="display: none;">@Html.EditorFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Name)</div>
+                        @*@Html.HiddenFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Name)*@
                         @Html.DisplayFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Name)
                     </td>
                     <td>
-                        @Html.HiddenFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Description)
+                        <div style="display: none;">@Html.EditorFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Description)</div>
+                        @*@Html.HiddenFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Description)*@
                         @Html.DisplayFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Description)
                     </td>
                 </tr>

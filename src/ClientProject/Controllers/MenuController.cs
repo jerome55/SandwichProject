@@ -267,11 +267,55 @@ namespace ClientProject.Controllers
         {
             Order cartOrder = ShoppingCart.GetCartContent(User, HttpContext);
 
-            Debug.WriteLine("--------------Confirm Session Cart");
+            Company companyDb = _context.Companies.First();
+            //Si la company n'est visible en DB, c'est qui il y a un gros problème.
+            if (companyDb == null)
+            {
+                return NotFound();//Ou page d'erreur
+            }
 
-            CommWrap<Order> comm =  await RemoteCall.GetInstance().SendOrder(cartOrder);
+            CommWrap<OrderGuid_Com> comm =  await RemoteCall.GetInstance().SendOrder(cartOrder, companyDb);
+            if(comm.RequestStatus == 0)
+            {
+                //Si une erreur est survenue sur le serveur : company pas trouvée, erreur Db, ...
+                return NotFound();//Or pas d'erreur
+            }
+            Order orderUpdatedByServ = comm.Content.Order_com;
+            string orderUpdatedGuid = comm.Content.Guid_com;
 
-            return RedirectToAction("Index");
+            string employeeId = _userManager.GetUserId(User);
+            var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == employeeId);
+
+            bool reussite = employee.DebitWallet(orderUpdatedByServ.TotalAmount);
+            if (reussite == false)
+            {
+                //L'employé n'a pas suffisement d'argent.
+                CommWrap<string> commCancellation = await RemoteCall.GetInstance().ConfirmOrder(false, orderUpdatedGuid);
+                if(commCancellation.RequestStatus != 0)
+                {
+                    //Il faut afficher à l'utilisateur qu'il n'a pas assez d'argent.
+                    //return
+                }
+                //L'annulation n'a pas aboutie, si on arrive ici, c'est que quelque 
+                //chose d'inattendu s'est produit ou peut être que la requête a été 
+                //appelée manuelle par l'utilisateur.
+                //return
+            }
+
+            //L'employé avait suffisement de crédit et sa commande se confirme.
+            CommWrap<string> commConfirmation = await RemoteCall.GetInstance().ConfirmOrder(true, orderUpdatedGuid);
+            if(commConfirmation.RequestStatus != 0)
+            {
+                //Tout s'est bien passé, on peut vider le panier
+                ShoppingCart.UpdateCartContent(HttpContext, null);
+                return RedirectToAction("Index");
+            }
+
+            //La confirmation n'a pas aboutie, si on arrive ici, c'est que quelque 
+            //chose d'inattendu s'est produit ou peut être que la requête a été 
+            //appelée manuelle par l'utilisateur.
+            //return
+            return RedirectToAction("Index");//temporaire juste le temps des tests
         }
 
 
