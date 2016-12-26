@@ -19,9 +19,10 @@ namespace SnackProject.Models
         public decimal TotalAmount { get; set; }
 
         [DataMember]
-        public ICollection<OrderLine> OrderLines { get; set; }
+        public virtual ICollection<OrderLine> OrderLines { get; set; } = new List<OrderLine>();
 
-        
+        public virtual Company Company { get; set; }
+
         /*public Order(DateTime dateOfDelivery, decimal totalAmount, ICollection<OrderLine> orderLines)
         {
             this.DateOfDelivery = dateOfDelivery;

@@ -16,10 +16,12 @@ namespace SnackProject.Models
         [DataMember]
         public decimal VegetablesPrice { get; set; }
 
-        [DataMember][NotMapped]
-        public ICollection<Sandwich> Sandwiches { get; set; }
-        [DataMember][NotMapped]
-        public ICollection<Vegetable> Vegetables { get; set; }
+        [DataMember]
+        [NotMapped]
+        public virtual ICollection<Sandwich> Sandwiches { get; set; } = new List<Sandwich>();
+        [DataMember]
+        [NotMapped]
+        public virtual ICollection<Vegetable> Vegetables { get; set; } = new List<Vegetable>();
 
 
         /*public Menu(decimal vegetablesPrice, ICollection<Sandwich> sandwiches, ICollection<Vegetable> vegetables)

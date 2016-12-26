@@ -31,5 +31,20 @@ namespace ClientProject.Models
         [Display(Name = "Status")]
         [DataMember][NotMapped]
         public bool Status { get; set; }
+
+
+        //Just a test
+        public override bool Equals(System.Object obj)
+        {
+            var item = obj as Company;
+
+            if(item == null) { return false; }
+            return (this.Id == item.Id && this.ChkCode == item.ChkCode);
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Id.GetHashCode();
+        }
     }
 }

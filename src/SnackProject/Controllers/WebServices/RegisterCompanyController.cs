@@ -34,7 +34,7 @@ namespace SnackProject.Controllers.WebServices
             CommWrap<Company> response = new CommWrap<Company> { RequestStatus = 0, Content = newCompany };
             try {
                 newCompany.Status = true;
-                newCompany.Chkcode = RandomString(10);
+                newCompany.ChkCode = RandomString(10);
                 _context.Add(newCompany);
                 await _context.SaveChangesAsync();
                 response = new CommWrap<Company> { RequestStatus = 1, Content = newCompany };

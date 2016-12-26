@@ -199,9 +199,13 @@ namespace ClientProject.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Responsable")]
-        [Route("EmployeesManagement/AddToWallet")]
-        public async Task<IActionResult> AddToWallet(AddToWalletViewModel model)
+        [Route("EmployeesManagement/AddToWallet/{id?}")]
+        public async Task<IActionResult> AddToWallet(string id, AddToWalletViewModel model)
         {
+            if (id != model.Id)
+            {
+                return NotFound();
+            }
             if (ModelState.IsValid)
             {
                 var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == model.Id);

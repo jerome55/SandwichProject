@@ -64,7 +64,7 @@ namespace SnackProject.Controllers.WebServices
             Company company = communication.Company_com;
 
             Company companyDB = null;
-            List<Company> companyList = _context.Companies.Where(q => q.Id == company.Id && q.Chkcode == company.Chkcode).ToList();
+            List<Company> companyList = _context.Companies.Where(q => q.Id == company.Id && q.ChkCode == company.ChkCode).ToList();
 
             //Si la company dans l'employé prétend faire partie n'est pas trouvée, s'arrêter.
             if (companyList.Count == 0)
@@ -162,16 +162,14 @@ namespace SnackProject.Controllers.WebServices
 
                 using (var tx = _context.Database.BeginTransaction(System.Data.IsolationLevel.Serializable))
                 {
-                    Company companyDb = await _context.Companies
-                                        .Include(emp => emp.Orders.Where(o => o.DateOfDelivery.Equals(orderInValidation.DateOfDelivery)).First())
-                                            .ThenInclude(order => order.OrderLines)
+                    Company companyDb = await _context.Companies.SingleOrDefaultAsync(c => c.Id == company.Id && c.ChkCode == company.ChkCode);
+                    Order orderDb = await _context.Orders
+                                            .Include(order => order.OrderLines)
                                                 .ThenInclude(odLin => odLin.Sandwich)
-                                        .Include(emp => emp.Orders.Where(o => o.DateOfDelivery.Equals(orderInValidation.DateOfDelivery)).First())
-                                            .ThenInclude(order => order.OrderLines)
+                                            .Include(order => order.OrderLines)
                                                 .ThenInclude(odLin => odLin.OrderLineVegetables)
                                                     .ThenInclude(odLinVeg => odLinVeg.Vegetable)
-                                    .SingleOrDefaultAsync(c => c.Id == company.Id && c.Chkcode == company.Chkcode);
-                    //Company companyDb = null;//To delete
+                                    .SingleOrDefaultAsync(o => o.Company.Equals(companyDb) && o.DateOfDelivery.Equals(orderInValidation.DateOfDelivery));
 
                     if (companyDb == null)
                     {
@@ -179,15 +177,23 @@ namespace SnackProject.Controllers.WebServices
                         return new CommWrap<string> { RequestStatus = 0 };
                     }
 
-                    if (companyDb.Orders.Count == 0)
+                    if (orderDb == null)
                     {
                         //Si aucune commande pour cette journée n'a été trouvée, on lui assigne la nouvelle commande.
+                        for (int i = 0; i < orderInValidation.OrderLines.Count; i++)
+                        {
+                            _context.Sandwiches.Attach(orderInValidation.OrderLines.ElementAt(i).Sandwich);
+                            
+                            for (int j = 0; j < orderInValidation.OrderLines.ElementAt(i).OrderLineVegetables.Count; j++)
+                            {
+                                _context.Vegetables.Attach(orderInValidation.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable);
+                            }
+                        }
                         companyDb.Orders.Add(orderInValidation);
                     }
                     else
                     {
                         //Une commande à été trouvé pour la journée, on somme celle-ci avec la nouvelle.
-                        Order orderDb = company.Orders.First();
                         orderDb.SumUpOrders(orderInValidation);
                     }
 

@@ -24,9 +24,10 @@ namespace SnackProject.Models
         public decimal VegetablesPrice { get; set; }
 
         [DataMember]
-        public ICollection<OrderLineVegetable> OrderLineVegetables { get; set; }
+        public virtual ICollection<OrderLineVegetable> OrderLineVegetables { get; set; } = new List<OrderLineVegetable>();
 
-        
+        public virtual Order Order { get; set; }
+
         /*public OrderLine(Sandwich sandwich, int quantity, ICollection<OrderLineVegetable> orderLineVegetables)
         {
             this.Sandwich = sandwich;

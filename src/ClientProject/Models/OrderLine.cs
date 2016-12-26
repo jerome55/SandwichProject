@@ -25,7 +25,7 @@ namespace ClientProject.Models
 
         [Display(Name = "Liste des crudités")]
         [DataMember]
-        public virtual ICollection<OrderLineVegetable> OrderLineVegetables { get; set; }
+        public virtual ICollection<OrderLineVegetable> OrderLineVegetables { get; set; } = new List<OrderLineVegetable>();
 
         public virtual Order Order { get; set; }
 
