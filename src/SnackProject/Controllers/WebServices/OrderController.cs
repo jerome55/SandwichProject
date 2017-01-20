@@ -182,11 +182,15 @@ namespace SnackProject.Controllers.WebServices
                         //Si aucune commande pour cette journée n'a été trouvée, on lui assigne la nouvelle commande.
                         for (int i = 0; i < orderInValidation.OrderLines.Count; i++)
                         {
-                            _context.Sandwiches.Attach(orderInValidation.OrderLines.ElementAt(i).Sandwich);
-                            
+                            Sandwich sandwichTemp = await _context.Sandwiches.SingleOrDefaultAsync(s => s.Id == orderInValidation.OrderLines.ElementAt(i).Sandwich.Id);
+                            orderInValidation.OrderLines.ElementAt(i).Sandwich = sandwichTemp;
+                            //_context.Entry(orderInValidation.OrderLines.ElementAt(i).Sandwich).State = EntityState.Unchanged;
+
                             for (int j = 0; j < orderInValidation.OrderLines.ElementAt(i).OrderLineVegetables.Count; j++)
                             {
-                                _context.Vegetables.Attach(orderInValidation.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable);
+                                Vegetable vegetableTemp = await _context.Vegetables.SingleOrDefaultAsync(s => s.Id == orderInValidation.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable.Id);
+                                orderInValidation.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable = vegetableTemp;
+                                //_context.Entry(orderInValidation.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable).State = EntityState.Unchanged;
                             }
                         }
                         companyDb.Orders.Add(orderInValidation);

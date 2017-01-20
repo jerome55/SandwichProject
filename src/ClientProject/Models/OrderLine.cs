@@ -30,6 +30,41 @@ namespace ClientProject.Models
         public virtual Order Order { get; set; }
 
 
+        public bool Equals(OrderLine other)
+        {
+            if (this.Sandwich.Id != other.Sandwich.Id)
+            {
+                return false;
+            }
+
+            if (this.OrderLineVegetables.Count != other.OrderLineVegetables.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < this.OrderLineVegetables.Count; ++i)
+            {
+                bool found = false;
+                for (int j = 0; j < other.OrderLineVegetables.Count; ++j)
+                {
+                    if (this.OrderLineVegetables.ElementAt(i).Vegetable.Id == other.OrderLineVegetables.ElementAt(j).Vegetable.Id)
+                    {
+                        found = true;
+                    }
+                }
+                //Si une des crudités n'a pas été trouvée, pas la peine d'aller plus loin, 
+                //c'est un échec.
+                if (found == false)
+                {
+                    return false;
+                }
+            }
+
+            //Si aucun des tests au dessus n'a échoué ce que forcement les deux OrderLines 
+            //sont identiques.
+            return true;
+        }
+
         public decimal GetPrice()
         {
             decimal price = this.Sandwich.Price;

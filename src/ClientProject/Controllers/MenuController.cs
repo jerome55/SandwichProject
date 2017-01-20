@@ -292,9 +292,9 @@ namespace ClientProject.Controllers
             string orderUpdatedGuid = comm.Content.Guid_com;
 
             string employeeId = _userManager.GetUserId(User);
-            var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == employeeId);
+            var employeeDb = await _context.Employees.SingleOrDefaultAsync(m => m.Id == employeeId);
 
-            bool reussite = employee.DebitWallet(orderUpdatedByServ.TotalAmount);
+            bool reussite = employeeDb.DebitWallet(orderUpdatedByServ.TotalAmount);
             if (reussite == false)
             {
                 //L'employé n'a pas suffisement d'argent.
@@ -314,6 +314,50 @@ namespace ClientProject.Controllers
             CommWrap<string> commConfirmation = await RemoteCall.GetInstance().ConfirmOrder(true, orderUpdatedGuid);
             if(commConfirmation.RequestStatus != 0)
             {
+                //Sauvegarder dans la DB coté client
+
+
+                using (var tx = _context.Database.BeginTransaction(System.Data.IsolationLevel.Serializable))
+                {
+                    Order orderDb = await _context.Orders
+                                            .Include(order => order.OrderLines)
+                                                .ThenInclude(odLin => odLin.Sandwich)
+                                            .Include(order => order.OrderLines)
+                                                .ThenInclude(odLin => odLin.OrderLineVegetables)
+                                                    .ThenInclude(odLinVeg => odLinVeg.Vegetable)
+                                    .SingleOrDefaultAsync(o => o.Employee.Equals(employeeDb) && o.DateOfDelivery.Equals(orderUpdatedByServ.DateOfDelivery));
+
+                    if (orderDb == null)
+                    {
+                        //Si aucune commande pour cette journée n'a été trouvée, on lui assigne la nouvelle commande.
+                        for (int i = 0; i < orderUpdatedByServ.OrderLines.Count; i++)
+                        {
+                            Sandwich sandwichTemp = await _context.Sandwiches.SingleOrDefaultAsync(s => s.Id == orderUpdatedByServ.OrderLines.ElementAt(i).Sandwich.Id);
+                            if(sandwichTemp != null) { orderUpdatedByServ.OrderLines.ElementAt(i).Sandwich = sandwichTemp; }
+                            //_context.Entry(orderInValidation.OrderLines.ElementAt(i).Sandwich).State = EntityState.Unchanged;
+
+                            for (int j = 0; j < orderUpdatedByServ.OrderLines.ElementAt(i).OrderLineVegetables.Count; j++)
+                            {
+                                Vegetable vegetableTemp = await _context.Vegetables.SingleOrDefaultAsync(s => s.Id == orderUpdatedByServ.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable.Id);
+                                if (vegetableTemp != null) { orderUpdatedByServ.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable = vegetableTemp; }
+                                //_context.Entry(orderInValidation.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable).State = EntityState.Unchanged;
+                            }
+                        }
+                        employeeDb.Orders.Add(orderUpdatedByServ);
+                    }
+                    else
+                    {
+                        //Une commande à été trouvé pour la journée, on somme celle-ci avec la nouvelle.
+                        orderDb.SumUpOrders(orderUpdatedByServ);
+                    }
+
+                    _context.SaveChanges();
+                    tx.Commit();
+                }
+
+
+
+
                 //Tout s'est bien passé, on peut vider le panier
                 ShoppingCart.UpdateCartContent(HttpContext, null);
                 return RedirectToAction("Index");

@@ -37,5 +37,34 @@ namespace ClientProject.Models
             ol.Order = null;
             this.TotalAmount -= ol.GetPrice();
         }
+
+        public void SumUpOrders(Order otherOrder)
+        {
+            //Combiner les OrderLines (si identique increment quantité, sinon add to list)
+            for (int i = 0; i < otherOrder.OrderLines.Count; ++i)
+            {
+                bool found = false;
+                int j = 0;
+                for (j = 0; j < this.OrderLines.Count && found == false; ++j)
+                {
+                    if (otherOrder.OrderLines.ElementAt(i).Equals(this.OrderLines.ElementAt(j)))
+                    {
+                        found = true;
+                    }
+                }
+
+                OrderLine current = otherOrder.OrderLines.ElementAt(i);
+                if (found == false)
+                {
+                    this.OrderLines.Add(current);
+                }
+                else
+                {
+                    this.OrderLines.ElementAt(j).Quantity += current.Quantity;
+                }
+            }
+            //Additionner les totaux
+            this.TotalAmount += otherOrder.TotalAmount;
+        }
     }
 }
