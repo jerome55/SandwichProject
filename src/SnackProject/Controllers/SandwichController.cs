@@ -17,40 +17,39 @@ namespace SnackProject.Controllers
 
         public SandwichController(ApplicationDbContext context)
         {
-            _context = context;    
+            _context = context;
         }
 
 
-        //Tri les sandwichs par odre de disponibilité
-        // GET: Sandwich
-        public async Task<IActionResult> Index()
+        /* Récupère et trie les sandwichs par odre de disponibilité
+         * GET: Sandwich*/
+        public IActionResult Index()
         {
-            var sandwiches = from s in _context.Sandwiches
-                             select s;
-
-            sandwiches = sandwiches.OrderBy(s => s.Available ? 0 : 1);
-            return View(await _context.Sandwiches.ToListAsync());
+            var i = TenHourExecutionManager.context.Sandwiches.OrderBy(x => x.Available ? 0 : 1);
+            //Si le contexte contient des entrées ajoutées ou modifiées du type sandwich, récupère les sandwichs depuis le change tracker
+            if (TenHourExecutionManager.context.ChangeTracker.Entries<Sandwich>().Any())
+            {
+                var j = TenHourExecutionManager.context.ChangeTracker.Entries<Sandwich>().Select(x => x.Entity as Sandwich).AsQueryable();
+                i = j.OrderBy(x => x.Available ? 0 : 1);
+            }
+            return View(i);
         }
-
-
-        /*
-        // GET: Sandwich
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Sandwiches.ToListAsync());
-        }
-        */
 
 
         // GET: Sandwich/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // pas utilisé dans notre projet
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.Id == id);
+            var sandwich = TenHourExecutionManager.context.Sandwiches.SingleOrDefault(m => m.Id == id);
+            if (TenHourExecutionManager.context.ChangeTracker.Entries<Sandwich>().Any())
+            {
+                sandwich = TenHourExecutionManager.context.ChangeTracker.Entries<Sandwich>().Select(x => x.Entity as Sandwich).AsQueryable().SingleOrDefault(m => m.Id == id);
+            }
             if (sandwich == null)
             {
                 return NotFound();
@@ -70,26 +69,27 @@ namespace SnackProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Available,Description,Name,Price")] Sandwich sandwich)
+        public IActionResult Create([Bind("Id,Available,Description,Name,Price")] Sandwich sandwich)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(sandwich);
-                await _context.SaveChangesAsync();
+                sandwich.Available = true;
+                TenHourExecutionManager.context.Entry(sandwich).State = EntityState.Added;
                 return RedirectToAction("Index");
             }
             return View(sandwich);
         }
 
         // GET: Sandwich/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.Id == id);
+            var sandwich = TenHourExecutionManager.context.ChangeTracker.Entries<Sandwich>().Select(x => x.Entity as Sandwich).AsQueryable().SingleOrDefault(m => m.Id == id);
+
             if (sandwich == null)
             {
                 return NotFound();
@@ -102,7 +102,7 @@ namespace SnackProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("id,available,description,name,price")] Sandwich sandwich)
+        //public IActionResult Edit(int id, [Bind("id,available,description,name,price")] Sandwich sandwich)
         public IActionResult Edit(int id, [Bind("Id,Available,Description,Name,Price")] Sandwich sandwich)
         {
             if (id != sandwich.Id)
@@ -112,65 +112,25 @@ namespace SnackProject.Controllers
 
             if (ModelState.IsValid)
             {
-                UpdateSandwichTask newUpdateSandwichTask = new UpdateSandwichTask(sandwich);
-                TenHourExecutionManager.AddNewTask(newUpdateSandwichTask);
-
-                //CE CODE SE SITUE MAINTENANT DANS UpdateSandwichTask
-                /*try
+                var oldEntity = TenHourExecutionManager.context.ChangeTracker.Entries<Sandwich>().Select(x => x.Entity as Sandwich).AsQueryable().SingleOrDefault(m => m.Id == id);
+                if(TenHourExecutionManager.context.ChangeTracker.Entries().LastOrDefault().Context.Entry(oldEntity).State == EntityState.Added)
                 {
-                    _context.Update(sandwich);
-                    await _context.SaveChangesAsync();
+                    oldEntity.Available = sandwich.Available;
+                    oldEntity.Description = sandwich.Description;
+                    oldEntity.Name = sandwich.Name;
+                    oldEntity.Price = sandwich.Price;
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!SandwichExists(sandwich.id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }*/
+                    TenHourExecutionManager.context.Entry(oldEntity).State = EntityState.Detached;
+                    TenHourExecutionManager.context.Entry(sandwich).State = EntityState.Modified;
+                }
+                
                 return RedirectToAction("Index");
             }
             return View(sandwich);
         }
 
-        /*
-         * ON NE SUPPRIME JAMAIS LES SANDWICHES
-         * 
-         * // GET: Sandwich/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.id == id);
-            if (sandwich == null)
-            {
-                return NotFound();
-            }
-
-            return View(sandwich);
-        }
-
-        // POST: Sandwich/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var sandwich = await _context.Sandwiches.SingleOrDefaultAsync(m => m.id == id);
-            _context.Sandwiches.Remove(sandwich);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
-
-        private bool SandwichExists(int id)
-        {
-            return _context.Sandwiches.Any(e => e.id == id);
-        }*/
+        //on ne supprime jamais les sandwichs
     }
 }

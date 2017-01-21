@@ -1,4 +1,5 @@
 ﻿using SnackProject.Data;
+using SnackProject.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,10 @@ namespace SnackProject.Automatics
     public class TenHourExecutionManager
     {
         private static bool started = false;
-        private static readonly object syncLock = new object();
 
-        private static ApplicationDbContext context;
-
-        private static Dictionary<string,ExecutionTask> taskList = new Dictionary<string,ExecutionTask>();
-        private static Timer timer = new Timer(ExecuteAllTask);
+        public static ApplicationDbContext context;
+        
+        private static Timer timer = new Timer(Save);
 
         private static DateTime now;
         private static DateTime tenHours;
@@ -28,23 +27,10 @@ namespace SnackProject.Automatics
             }
         }
 
-        public static void AddNewTask(ExecutionTask newTask)
-        {
-            lock (syncLock)
-            {
-                string key = newTask.GetKey();
-                if(taskList.ContainsKey(key))
-                {
-                    taskList.Remove(key);
-                }
-                taskList.Add(newTask.GetKey(), newTask);
-            }
-        }
-
         private static void StartTimer()
         {
             now = DateTime.Now;
-            tenHours = DateTime.Today.AddHours(15.0).AddMinutes(15);//10.0
+            tenHours = DateTime.Today.AddHours(10.0).AddMinutes(0);//10.0
 
             //Si on est déjà au delà de 10 heures, alors ce sera demain
             if (now > tenHours)
@@ -56,20 +42,12 @@ namespace SnackProject.Automatics
             //programmer le timer pour l'heure
             timer.Change(msUntilTen, Timeout.Infinite);
         }
-        
-        private static void ExecuteAllTask(object state)
-        {
-            lock (syncLock)
-            {
-                foreach (KeyValuePair<string, ExecutionTask> keyValuePair in taskList)
-                {
-                    keyValuePair.Value.Execute(context);
-                }
-                taskList.Clear();
 
-                //Ca redemarre le timer tous les jours
-                StartTimer();
-            }
+        //sauvegarde le contexte dans la bd et redémarre le timer
+        private async static void Save(object state)
+        {
+            await context.SaveChangesAsync();
+            StartTimer();
         }
     }
 }

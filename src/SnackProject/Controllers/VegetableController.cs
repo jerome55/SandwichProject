@@ -24,25 +24,33 @@ namespace SnackProject.Controllers
 
         //Tri l'affichage des crudités par ordre de disponibilité
         // GET: Crudité
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var vegies = from v in _context.Vegetables
-                             select v;
-
-            vegies = vegies.OrderBy(s => s.Available ? 0 : 1);
-            return View(await vegies.AsNoTracking().ToListAsync());
+            var i = TenHourExecutionManager.context.Vegetables.OrderBy(x => x.Available ? 0 : 1);
+            //Si le contexte contient des entrées ajoutées ou modifiées du type vegetable, récupère les crudités depuis le change tracker
+            if (TenHourExecutionManager.context.ChangeTracker.Entries<Vegetable>().Any())
+            {
+                var j = TenHourExecutionManager.context.ChangeTracker.Entries<Vegetable>().Select(x => x.Entity as Vegetable).AsQueryable();
+                i = j.OrderBy(x => x.Available ? 0 : 1);
+            }
+            return View(i);
         }
 
 
         // GET: Vegetable/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.Id == id);
+            var vegetable = TenHourExecutionManager.context.Vegetables.SingleOrDefault(m => m.Id == id);
+            if (TenHourExecutionManager.context.ChangeTracker.Entries<Vegetable>().Any())
+            {
+                vegetable = TenHourExecutionManager.context.ChangeTracker.Entries<Vegetable>().Select(x => x.Entity as Vegetable).AsQueryable().SingleOrDefault(m => m.Id == id);
+            }
+
             if (vegetable == null)
             {
                 return NotFound();
@@ -63,26 +71,26 @@ namespace SnackProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Available,Description,Name")] Vegetable vegetable)
+        public IActionResult Create([Bind("Id,Available,Description,Name")] Vegetable vegetable)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(vegetable);
-                await _context.SaveChangesAsync();
+                vegetable.Available = true;
+                TenHourExecutionManager.context.Entry(vegetable).State = EntityState.Added;
                 return RedirectToAction("Index");
             }
             return View(vegetable);
         }
 
         // GET: Vegetable/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.Id == id);
+            var vegetable = TenHourExecutionManager.context.ChangeTracker.Entries<Vegetable>().Select(x => x.Entity as Vegetable).AsQueryable().SingleOrDefault(m => m.Id == id);
             if (vegetable == null)
             {
                 return NotFound();
@@ -98,8 +106,6 @@ namespace SnackProject.Controllers
         //public async Task<IActionResult> Edit(int id, [Bind("id,available,description,name")] Vegetable vegetable)
         public IActionResult Edit(int id, [Bind("Id,Available,Description,Name")] Vegetable vegetable)
         {
-            Debug.WriteLine("id = " + id);
-            Debug.WriteLine("id sandwich" + vegetable.Id);
             if (id != vegetable.Id)
             {
                 return NotFound();
@@ -107,65 +113,24 @@ namespace SnackProject.Controllers
 
             if (ModelState.IsValid)
             {
-                UpdateVegetableTask newUpdateVegetableTask = new UpdateVegetableTask(vegetable);
-                TenHourExecutionManager.AddNewTask(newUpdateVegetableTask);
-
-                //CE CODE SE SITUE MAINTENANT DANS UpdateVegetableTask
-                /*try
+                var oldEntity = TenHourExecutionManager.context.ChangeTracker.Entries<Vegetable>().Select(x => x.Entity as Vegetable).AsQueryable().SingleOrDefault(m => m.Id == id);
+                if (TenHourExecutionManager.context.ChangeTracker.Entries().LastOrDefault().Context.Entry(oldEntity).State == EntityState.Added)
                 {
-                    _context.Update(vegetable);
-                    await _context.SaveChangesAsync();
+                    oldEntity.Available = vegetable.Available;
+                    oldEntity.Description = vegetable.Description;
+                    oldEntity.Name = vegetable.Name;
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!VegetableExists(vegetable.id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }*/
+                    TenHourExecutionManager.context.Entry(oldEntity).State = EntityState.Detached;
+                    TenHourExecutionManager.context.Entry(vegetable).State = EntityState.Modified;
+                }
+
                 return RedirectToAction("Index");
             }
             return View(vegetable);
         }
 
-        /*
-         * ON NE SUPPRIME JAMAIS LES SANDWICHES
-         * 
-         * // GET: Vegetable/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.id == id);
-            if (vegetable == null)
-            {
-                return NotFound();
-            }
-
-            return View(vegetable);
-        }
-
-        // POST: Vegetable/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var vegetable = await _context.Vegetables.SingleOrDefaultAsync(m => m.id == id);
-            _context.Vegetables.Remove(vegetable);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
-
-        private bool VegetableExists(int id)
-        {
-            return _context.Vegetables.Any(e => e.id == id);
-        }*/
+        //On ne supprime jamais une crudité
     }
 }
