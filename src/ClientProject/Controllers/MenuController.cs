@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using ClientProject.Models.Communication;
 using ClientProject.Models.MenuViewModels;
 using System.Diagnostics;
+using ClientProject.Controllers.Remote;
 
 namespace ClientProject.Controllers
 {

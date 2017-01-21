@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace ClientProject.Controllers
+namespace ClientProject.Controllers.Remote
 {
     public sealed class RemoteCall
     {
@@ -20,6 +20,9 @@ namespace ClientProject.Controllers
         private RemoteCall()
         {
             client = new HttpClient();
+            //Timeout change for debugging purpose
+            client.Timeout = new TimeSpan(0, 40, 0);
+            
             client.BaseAddress = new Uri("http://localhost:55367/");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

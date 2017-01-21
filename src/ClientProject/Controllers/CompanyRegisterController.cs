@@ -14,6 +14,7 @@ using ClientProject.Models.Communication;
 using ClientProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using ClientProject.Controllers.Remote;
 
 namespace ClientProject.Controllers
 {

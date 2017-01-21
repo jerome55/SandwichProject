@@ -45,11 +45,15 @@ namespace ClientProject.Models
             {
                 bool found = false;
                 int j = 0;
-                for (j = 0; j < this.OrderLines.Count && found == false; ++j)
+                while (j < this.OrderLines.Count && found == false)
                 {
                     if (otherOrder.OrderLines.ElementAt(i).Equals(this.OrderLines.ElementAt(j)))
                     {
                         found = true;
+                    }
+                    else
+                    {
+                        ++j;
                     }
                 }
 

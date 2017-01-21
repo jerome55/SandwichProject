@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Diagnostics;
 using ClientProject.Models.Communication;
 using Microsoft.AspNetCore.Authorization;
+using ClientProject.Controllers.Remote;
 
 namespace ClientProject.Controllers
 {

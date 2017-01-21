@@ -153,7 +153,7 @@ namespace SnackProject.Controllers.WebServices
             else
             {
                 OrderCompany_Com orderInValidationInfo = ordersToValidate[communication.Content];
-
+                ordersToValidate.Remove(communication.Content);
                 ////////////
                 //Récolte des infos Db nécessaire pour enregistrer la commande.
                 ////////////
@@ -177,22 +177,24 @@ namespace SnackProject.Controllers.WebServices
                         return new CommWrap<string> { RequestStatus = 0 };
                     }
 
+
+                    for (int i = 0; i < orderInValidation.OrderLines.Count; i++)
+                    {
+                        Sandwich sandwichTemp = await _context.Sandwiches.SingleOrDefaultAsync(s => s.Id == orderInValidation.OrderLines.ElementAt(i).Sandwich.Id);
+                        orderInValidation.OrderLines.ElementAt(i).Sandwich = sandwichTemp;
+                        //_context.Entry(orderInValidation.OrderLines.ElementAt(i).Sandwich).State = EntityState.Unchanged;
+
+                        for (int j = 0; j < orderInValidation.OrderLines.ElementAt(i).OrderLineVegetables.Count; j++)
+                        {
+                            Vegetable vegetableTemp = await _context.Vegetables.SingleOrDefaultAsync(s => s.Id == orderInValidation.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable.Id);
+                            orderInValidation.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable = vegetableTemp;
+                            //_context.Entry(orderInValidation.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable).State = EntityState.Unchanged;
+                        }
+                    }
+
                     if (orderDb == null)
                     {
                         //Si aucune commande pour cette journée n'a été trouvée, on lui assigne la nouvelle commande.
-                        for (int i = 0; i < orderInValidation.OrderLines.Count; i++)
-                        {
-                            Sandwich sandwichTemp = await _context.Sandwiches.SingleOrDefaultAsync(s => s.Id == orderInValidation.OrderLines.ElementAt(i).Sandwich.Id);
-                            orderInValidation.OrderLines.ElementAt(i).Sandwich = sandwichTemp;
-                            //_context.Entry(orderInValidation.OrderLines.ElementAt(i).Sandwich).State = EntityState.Unchanged;
-
-                            for (int j = 0; j < orderInValidation.OrderLines.ElementAt(i).OrderLineVegetables.Count; j++)
-                            {
-                                Vegetable vegetableTemp = await _context.Vegetables.SingleOrDefaultAsync(s => s.Id == orderInValidation.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable.Id);
-                                orderInValidation.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable = vegetableTemp;
-                                //_context.Entry(orderInValidation.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable).State = EntityState.Unchanged;
-                            }
-                        }
                         companyDb.Orders.Add(orderInValidation);
                     }
                     else
