@@ -19,9 +19,10 @@ namespace SnackProject.Models
         public decimal TotalAmount { get; set; }
 
         [DataMember]
-        public ICollection<OrderLine> OrderLines { get; set; }
+        public virtual ICollection<OrderLine> OrderLines { get; set; } = new List<OrderLine>();
 
-        
+        public virtual Company Company { get; set; }
+
         /*public Order(DateTime dateOfDelivery, decimal totalAmount, ICollection<OrderLine> orderLines)
         {
             this.DateOfDelivery = dateOfDelivery;
@@ -29,30 +30,46 @@ namespace SnackProject.Models
             this.OrderLines = orderLines;
         }*/
 
-        public void AddOrderLine(ICollection<OrderLine> AddOrderLines)
+        public void UpdateTotalAmount()
         {
-            lock(this)
+            this.TotalAmount = 0;
+            for (int i=0; i<this.OrderLines.Count; i++)
             {
-                List<OrderLine> listAdd = AddOrderLines.ToList();
-                List<OrderLine> listCurrent = OrderLines.ToList();
+                this.TotalAmount += this.OrderLines.ElementAt(i).GetPrice();
+            }
+        }
 
-                for(int i=0;i<listAdd.Count;++i)
+        public void SumUpOrders(Order otherOrder)
+        {
+            //Combiner les OrderLines (si identique increment quantité, sinon add to list)
+            for (int i=0; i<otherOrder.OrderLines.Count; ++i)
+            {
+                bool found = false;
+                int j = 0;
+                while (j < this.OrderLines.Count && found == false)
                 {
-                    int j = 0;
-                    for (j = 0; j < listCurrent.Count && !listCurrent[j].Equals(listAdd); ++j);
-
-                    if(j == listCurrent.Count)
+                    if (otherOrder.OrderLines.ElementAt(i).Equals(this.OrderLines.ElementAt(j)))
                     {
-                        OrderLines.Add(listAdd[i]);
-                        TotalAmount += listAdd[i].GetPrice();
+                        found = true;
                     }
                     else
                     {
-                        listCurrent[j].Quantity += listAdd[i].Quantity;
-                        TotalAmount += listAdd[i].GetPrice();
+                        ++j;
                     }
                 }
+
+                OrderLine current = otherOrder.OrderLines.ElementAt(i);
+                if (found == false)
+                {
+                    this.OrderLines.Add(current);
+                }
+                else
+                {
+                    this.OrderLines.ElementAt(j).Quantity += current.Quantity;
+                }
             }
+            //Additionner les totaux
+            this.TotalAmount += otherOrder.TotalAmount;
         }
     }
 }

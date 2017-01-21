@@ -19,7 +19,7 @@ namespace ClientProject.Models
         public decimal TotalAmount { get; set; }
 
         [DataMember]
-        public virtual ICollection<OrderLine> OrderLines { get; set; }
+        public virtual ICollection<OrderLine> OrderLines { get; set; } = new List<OrderLine>();
 
         public virtual Employee Employee { get; set; }
 
@@ -36,6 +36,39 @@ namespace ClientProject.Models
             this.OrderLines.Remove(ol);
             ol.Order = null;
             this.TotalAmount -= ol.GetPrice();
+        }
+
+        public void SumUpOrders(Order otherOrder)
+        {
+            //Combiner les OrderLines (si identique increment quantité, sinon add to list)
+            for (int i = 0; i < otherOrder.OrderLines.Count; ++i)
+            {
+                bool found = false;
+                int j = 0;
+                while (j < this.OrderLines.Count && found == false)
+                {
+                    if (otherOrder.OrderLines.ElementAt(i).Equals(this.OrderLines.ElementAt(j)))
+                    {
+                        found = true;
+                    }
+                    else
+                    {
+                        ++j;
+                    }
+                }
+
+                OrderLine current = otherOrder.OrderLines.ElementAt(i);
+                if (found == false)
+                {
+                    this.OrderLines.Add(current);
+                }
+                else
+                {
+                    this.OrderLines.ElementAt(j).Quantity += current.Quantity;
+                }
+            }
+            //Additionner les totaux
+            this.TotalAmount += otherOrder.TotalAmount;
         }
     }
 }

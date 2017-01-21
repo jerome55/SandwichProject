@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Diagnostics;
 using ClientProject.Models.Communication;
 using Microsoft.AspNetCore.Authorization;
-using SnackProject.Models.Communication;
+using ClientProject.Controllers.Remote;
 
 namespace ClientProject.Controllers
 {
@@ -28,6 +28,7 @@ namespace ClientProject.Controllers
 
         // GET: Employees
         [Authorize(Roles = "Employe, Responsable")]
+        [Route("Profile/Index")]
         public async Task<IActionResult> Index()
         {
             string id = _userManager.GetUserId(User);

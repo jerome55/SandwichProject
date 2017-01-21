@@ -11,7 +11,7 @@ namespace ClientProject.Data
         public static void Initialize(ApplicationDbContext context)
         {
             context.Database.EnsureCreated();
-            InitializeOrders(context);
+            //InitializeOrders(context);//Désactivé à cause des conflit avec confimOrder
         }
         private static void InitializeOrders(ApplicationDbContext context)
         {

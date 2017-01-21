@@ -14,6 +14,7 @@ using ClientProject.Models.Communication;
 using ClientProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using ClientProject.Controllers.Remote;
 
 namespace ClientProject.Controllers
 {
@@ -51,6 +52,7 @@ namespace ClientProject.Controllers
         // GET: /CompanyRegister
         [HttpGet]
         [AllowAnonymous]
+        [Route("CompanyRegister/Index")]
         public async Task<IActionResult> Index(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -66,6 +68,7 @@ namespace ClientProject.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [Route("CompanyRegister/Index")]
         public async Task<IActionResult> Index(RegisterViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;

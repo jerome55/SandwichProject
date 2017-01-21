@@ -13,7 +13,7 @@ namespace SnackProject.Models
         [DataMember]
         public int Id { get; set; }
         [DataMember]
-        public string Chkcode { get; set; }
+        public string ChkCode { get; set; }
         [DataMember]
         [Display(Name = "Nom")]
         //[Index(IsUnique=true)]
@@ -31,8 +31,22 @@ namespace SnackProject.Models
         [DataMember]
         public bool Status { get; set; }
 
-        public ICollection<Order> Orders { get; set; }
-        
+        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
+
+        //Just a test
+        public override bool Equals(System.Object obj)
+        {
+            var item = obj as Company;
+
+            if (item == null) { return false; }
+            return (this.Id == item.Id && this.ChkCode == item.ChkCode);
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Id.GetHashCode();
+        }
 
         /*public Company(string chkcode, string name, int nbEmployes, string mail, string address, bool status, ICollection<Order> orders)
         {

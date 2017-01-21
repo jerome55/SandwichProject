@@ -45,6 +45,7 @@ namespace ClientProject.Controllers
         //
         // GET: /EmployeesManagement
         [Authorize(Roles = "Responsable")]
+        [Route("EmployeesManagement/Index")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Employees.ToListAsync());
@@ -53,6 +54,7 @@ namespace ClientProject.Controllers
         //
         // GET: /EmployeesManagement/Create
         [Authorize(Roles = "Responsable")]
+        [Route("EmployeesManagement/Create")]
         public IActionResult Create()
         {
             return View();
@@ -65,6 +67,7 @@ namespace ClientProject.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Responsable")]
+        [Route("EmployeesManagement/Create")]
         public async Task<IActionResult> Create(CreateViewModel model)
         {
             if (ModelState.IsValid)
@@ -104,6 +107,7 @@ namespace ClientProject.Controllers
         //
         // GET: EmployeesManagement/Edit/5
         [Authorize(Roles = "Responsable")]
+        [Route("EmployeesManagement/Edit/{id?}")]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -126,6 +130,7 @@ namespace ClientProject.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Responsable")]
+        [Route("EmployeesManagement/Edit/{id?}")]
         public async Task<IActionResult> Edit(string id, [Bind("Id,FirstName,LastName,UserName,Email")] Employee model)
         {
             if (id != model.Id)
@@ -168,6 +173,7 @@ namespace ClientProject.Controllers
         //
         // GET: EmployeesManagement/AddToWallet/5
         [Authorize(Roles = "Responsable")]
+        [Route("EmployeesManagement/AddToWallet/{id?}")]
         public async Task<IActionResult> AddToWallet(string id)
         {
             if (id == null)
@@ -193,8 +199,13 @@ namespace ClientProject.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Responsable")]
-        public async Task<IActionResult> AddToWallet(AddToWalletViewModel model)
+        [Route("EmployeesManagement/AddToWallet/{id?}")]
+        public async Task<IActionResult> AddToWallet(string id, AddToWalletViewModel model)
         {
+            if (id != model.Id)
+            {
+                return NotFound();
+            }
             if (ModelState.IsValid)
             {
                 var employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == model.Id);

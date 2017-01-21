@@ -42,7 +42,7 @@
         </dd>
     </dl>
 
-    <form asp-action="AddToWallet">
+    <form method="post" asp-action="AddToWallet">
         <div class="form-horizontal">
             <div class="form-group">
                 <div class="row">
@@ -53,7 +53,7 @@
                         <input asp-for="AddToWallet" class="form-control" />
                     </div>
                     <div class="col-md-4">
-                        <button type="submit" class="btn btn-default col-md-3">Ajouter</button>
+                        <input type="submit" value="Ajouter" class="btn btn-default col-md-3" />
                     </div>
                 </div>
                 <div class="row">

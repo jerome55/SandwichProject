@@ -24,6 +24,7 @@ namespace SnackProject.Data
 
             builder.Entity<OrderLineVegetable>()
                 .HasKey(c => new { c.OrderLineId, c.VegetableId });
+            
         }
 
         public DbSet<Company> Companies { get; set; }

@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using ClientProject.Models.Communication;
 using ClientProject.Models.MenuViewModels;
 using System.Diagnostics;
+using ClientProject.Controllers.Remote;
 
 namespace ClientProject.Controllers
 {
@@ -32,6 +33,7 @@ namespace ClientProject.Controllers
         
         // GET: Menu
         [AllowAnonymous]
+        [Route("Menu/Index")]
         public async Task<IActionResult> Index()
         {
             RemoteCall remoteCaller = RemoteCall.GetInstance();
@@ -99,6 +101,7 @@ namespace ClientProject.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Employe, Responsable")]
+        [Route("Menu/Index")]
         public async Task<IActionResult> Index(MenuViewModel model)
         {
             if (ModelState.IsValid)
@@ -136,7 +139,15 @@ namespace ClientProject.Controllers
             }
             return View(model);
         }
-        
+
+        [Authorize(Roles = "Employe, Responsable")]
+        public async Task<IActionResult> InvalidateCartSession()
+        {
+            HttpContext.Session.SetString("cart", "");
+
+            return Redirect(Request.Headers["Referer"].ToString());
+        }
+
         /*
         // GET: OrderLines/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -259,6 +270,107 @@ namespace ClientProject.Controllers
         }
         */
 
+        [Authorize(Roles = "Employe, Responsable")]
+        [Route("Menu/ValidateSessionCart")]
+        public async Task<IActionResult> ValidateSessionCart()
+        {
+            Order cartOrder = ShoppingCart.GetCartContent(User, HttpContext);
+
+            Company companyDb = _context.Companies.First();
+            //Si la company n'est visible en DB, c'est qui il y a un gros problème.
+            if (companyDb == null)
+            {
+                return NotFound();//Ou page d'erreur
+            }
+
+            CommWrap<OrderGuid_Com> comm =  await RemoteCall.GetInstance().SendOrder(cartOrder, companyDb);
+            if(comm.RequestStatus == 0)
+            {
+                //Si une erreur est survenue sur le serveur : company pas trouvée, erreur Db, ...
+                return NotFound();//Or pas d'erreur
+            }
+            Order orderUpdatedByServ = comm.Content.Order_com;
+            string orderUpdatedGuid = comm.Content.Guid_com;
+
+            string employeeId = _userManager.GetUserId(User);
+            var employeeDb = await _context.Employees.SingleOrDefaultAsync(m => m.Id == employeeId);
+
+            bool reussite = employeeDb.DebitWallet(orderUpdatedByServ.TotalAmount);
+            if (reussite == false)
+            {
+                //L'employé n'a pas suffisement d'argent.
+                CommWrap<string> commCancellation = await RemoteCall.GetInstance().ConfirmOrder(false, orderUpdatedGuid);
+                if(commCancellation.RequestStatus != 0)
+                {
+                    //Il faut afficher à l'utilisateur qu'il n'a pas assez d'argent.
+                    //return
+                }
+                //L'annulation n'a pas aboutie, si on arrive ici, c'est que quelque 
+                //chose d'inattendu s'est produit ou peut être que la requête a été 
+                //appelée manuelle par l'utilisateur.
+                //return
+            }
+
+            //L'employé avait suffisement de crédit et sa commande se confirme.
+            CommWrap<string> commConfirmation = await RemoteCall.GetInstance().ConfirmOrder(true, orderUpdatedGuid);
+            if(commConfirmation.RequestStatus != 0)
+            {
+                //Sauvegarder dans la DB coté client
+
+
+                using (var tx = _context.Database.BeginTransaction(System.Data.IsolationLevel.Serializable))
+                {
+                    Order orderDb = await _context.Orders
+                                            .Include(order => order.OrderLines)
+                                                .ThenInclude(odLin => odLin.Sandwich)
+                                            .Include(order => order.OrderLines)
+                                                .ThenInclude(odLin => odLin.OrderLineVegetables)
+                                                    .ThenInclude(odLinVeg => odLinVeg.Vegetable)
+                                    .SingleOrDefaultAsync(o => o.Employee.Equals(employeeDb) && o.DateOfDelivery.Equals(orderUpdatedByServ.DateOfDelivery));
+
+                    if (orderDb == null)
+                    {
+                        //Si aucune commande pour cette journée n'a été trouvée, on lui assigne la nouvelle commande.
+                        for (int i = 0; i < orderUpdatedByServ.OrderLines.Count; i++)
+                        {
+                            Sandwich sandwichTemp = await _context.Sandwiches.SingleOrDefaultAsync(s => s.Id == orderUpdatedByServ.OrderLines.ElementAt(i).Sandwich.Id);
+                            if(sandwichTemp != null) { orderUpdatedByServ.OrderLines.ElementAt(i).Sandwich = sandwichTemp; }
+                            //_context.Entry(orderInValidation.OrderLines.ElementAt(i).Sandwich).State = EntityState.Unchanged;
+
+                            for (int j = 0; j < orderUpdatedByServ.OrderLines.ElementAt(i).OrderLineVegetables.Count; j++)
+                            {
+                                Vegetable vegetableTemp = await _context.Vegetables.SingleOrDefaultAsync(s => s.Id == orderUpdatedByServ.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable.Id);
+                                if (vegetableTemp != null) { orderUpdatedByServ.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable = vegetableTemp; }
+                                //_context.Entry(orderInValidation.OrderLines.ElementAt(i).OrderLineVegetables.ElementAt(j).Vegetable).State = EntityState.Unchanged;
+                            }
+                        }
+                        employeeDb.Orders.Add(orderUpdatedByServ);
+                    }
+                    else
+                    {
+                        //Une commande à été trouvé pour la journée, on somme celle-ci avec la nouvelle.
+                        orderDb.SumUpOrders(orderUpdatedByServ);
+                    }
+
+                    _context.SaveChanges();
+                    tx.Commit();
+                }
+
+
+
+
+                //Tout s'est bien passé, on peut vider le panier
+                ShoppingCart.UpdateCartContent(HttpContext, null);
+                return RedirectToAction("Index");
+            }
+
+            //La confirmation n'a pas aboutie, si on arrive ici, c'est que quelque 
+            //chose d'inattendu s'est produit ou peut être que la requête a été 
+            //appelée manuelle par l'utilisateur.
+            //return
+            return RedirectToAction("Index");//temporaire juste le temps des tests
+        }
+
 
 
         private bool OrderLineExists(int id)
@@ -274,16 +386,7 @@ namespace ClientProject.Controllers
 
             ShoppingCart.UpdateCartContent(HttpContext, cartOrder);
         }
-
-        private async void ValidateCartSession()
-        {
-            Order cartOrder = ShoppingCart.GetCartContent(User, HttpContext);
-
-            CommWrap<Order> comm =  await RemoteCall.GetInstance().SendOrder(cartOrder);
-            
-
-        }
-
+        
         // pre : employer contient ses orders.
         private Order GetCurrentOrder(Employee employee)
         {
