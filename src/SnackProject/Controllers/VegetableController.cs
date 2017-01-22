@@ -9,6 +9,7 @@ using SnackProject.Data;
 using SnackProject.Models;
 using SnackProject.Automatics;
 using System.Diagnostics;
+using SnackProject.Models.VegetableViewModels;
 
 namespace SnackProject.Controllers
 {
@@ -33,7 +34,31 @@ namespace SnackProject.Controllers
                 var j = TenHourExecutionManager.context.ChangeTracker.Entries<Vegetable>().Select(x => x.Entity as Vegetable).AsQueryable();
                 i = j.OrderBy(x => x.Available ? 0 : 1);
             }
-            return View(i);
+
+            IList<Vegetable> vegetables = i.ToList();
+            decimal VegetablesPrice = TenHourExecutionManager.context.Menus.First().VegetablesPrice;
+            if (TenHourExecutionManager.context.ChangeTracker.Entries<Menu>().Any())
+            {
+                VegetablesPrice = TenHourExecutionManager.context.ChangeTracker.Entries<Menu>().First().Entity.VegetablesPrice;
+            }
+            VegetableViewModel model = new VegetableViewModel { Vegetables = vegetables, VegetablesPrice = VegetablesPrice };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Index(VegetableViewModel model)
+        {
+            Menu menu = TenHourExecutionManager.context.Menus.First();
+            if (TenHourExecutionManager.context.ChangeTracker.Entries<Menu>().Any())
+            {
+                menu = TenHourExecutionManager.context.ChangeTracker.Entries<Menu>().First().Entity;
+            }
+            if (menu != null)
+            {
+                menu.VegetablesPrice = model.VegetablesPrice;
+            }
+            return Index();
         }
 
 
