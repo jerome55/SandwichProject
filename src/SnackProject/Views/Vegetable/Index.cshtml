@@ -1,0 +1,65 @@
+﻿@model SnackProject.Models.VegetableViewModels.VegetableViewModel
+
+@{
+    ViewData["Title"] = "Liste des crudités";
+}
+
+<h2>Liste des crudités</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Vegetables.First().Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Vegetables.First().Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Vegetables.First().Available)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Vegetables) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Available)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Modifier</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+    <p style="text-align:right;">
+        <a asp-action="Create">Ajouter une crudité</a>
+        
+    </p>
+<form method="post">
+    <div class="form-horizontal">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-offset-2 col-md-3">
+                    <label asp-for="VegetablesPrice" class="control-label"></label>
+                </div>
+                <div class="col-md-2">
+                    <input asp-for="VegetablesPrice" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-default col-md-3">Modifier</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

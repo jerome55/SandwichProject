@@ -8,38 +8,51 @@ namespace SnackProject.Data
 {
     public class DbInitializer {
 
-        public static void Initialize(SnackContext context) {
+        public static void Initialize(ApplicationDbContext context) {
             context.Database.EnsureCreated();
+            InitializeVegetablePrice(context);
             InitializeSandwich(context);
-            InitializeCrutity(context);
+            InitializeVegetable(context); 
         }
 
-        private static void InitializeSandwich(SnackContext context) {
-            if (context.sandwiches.Any()) {
+        private static void InitializeVegetablePrice(ApplicationDbContext context)
+        {
+            if (context.Menus.Any())
+            {
+                return;
+            }
+            var menu = new Menu { VegetablesPrice = (decimal)0.50 };
+            context.Menus.Add(menu);
+            context.SaveChanges();
+        }
+
+        private static void InitializeSandwich(ApplicationDbContext context) {
+            if (context.Sandwiches.Any()) {
                 return;
             }
             var sandwiches = new Sandwich[] {
-                new Sandwich { name="Americain", description="...", price=2.5D, available=true },
-                new Sandwich { name="Dagobert", description="...", price=1.5D, available=true }
+                new Sandwich { Name="Americain", Description="...", Price=(decimal)2.50, Available=true },
+                new Sandwich { Name="Dagobert", Description="...", Price=(decimal)1.50, Available=true }
             };
             foreach (Sandwich s in sandwiches) {
-                context.sandwiches.Add(s);
+                context.Sandwiches.Add(s);
             }
             context.SaveChanges();
         }
 
-        private static void InitializeCrutity(SnackContext context) {
-            if (context.vegetables.Any()) {
+        private static void InitializeVegetable(ApplicationDbContext context) {
+            if (context.Vegetables.Any()) {
                 return;
             }
-            var vegetables = new Crudity[] {
-                new Crudity{ name="Carotte", description="...", available=true },
-                new Crudity { name="Salade", description="...", available=true }
+            var vegetables = new Vegetable[] {
+                new Vegetable{ Name="Carotte", Description="...", Available=true },
+                new Vegetable { Name="Salade", Description="...", Available=true }
             };
-            foreach (Crudity s in vegetables) {
-                context.vegetables.Add(s);
+            foreach (Vegetable s in vegetables) {
+                context.Vegetables.Add(s);
             }
             context.SaveChanges();
         }
+        
     }
 }

@@ -1,16 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace SnackProject.Models
 {
+    [DataContract]
     public class Menu
     {
-        public int ID { get; set; }
-        public double crudityPrice { get; set; }
+        public int Id { get; set; }
+        [Display(Name = "Tarif du supplément crudité")]
+        [DataMember]
+        public decimal VegetablesPrice { get; set; }
 
-        public ICollection<Crudity> Crudities { get; set; }
-        public ICollection<Sandwich> Sandwichs { get; set; }
+        [DataMember]
+        [NotMapped]
+        public virtual ICollection<Sandwich> Sandwiches { get; set; } = new List<Sandwich>();
+        [DataMember]
+        [NotMapped]
+        public virtual ICollection<Vegetable> Vegetables { get; set; } = new List<Vegetable>();
+
+
+        /*public Menu(decimal vegetablesPrice, ICollection<Sandwich> sandwiches, ICollection<Vegetable> vegetables)
+        {
+            this.VegetablesPrice = vegetablesPrice;
+            this.Sandwiches = sandwiches;
+            this.Vegetables = vegetables;
+        }*/
     }
 }

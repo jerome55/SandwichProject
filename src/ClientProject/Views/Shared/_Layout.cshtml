@@ -1,4 +1,12 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using ClientProject.Models
+@using ClientProject.Data;
+
+@inject SignInManager<Employee> SignInManager
+@inject UserManager<Employee> UserManager
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -17,6 +25,82 @@
     </environment>
 </head>
 <body>
+    @{ 
+        Order cartOrder = ShoppingCart.GetCartContent(User, HttpContextAccessor.HttpContext);
+    }
+    <div class="modal fade" id="myCart" tabindex="-1" role="dialog" aria-labelledby="cartModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p style="display:inline;">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <img src="~/images/ShoppingCartIcon.png" height="30px" width="30px" style="display: inline;" />
+                        <h4 class="modal-title" id="cartModalLabel" style="display: inline;">Panier</h4>
+                    </p>
+                </div>
+                <div class="modal-body">
+                    
+                    @if (cartOrder.OrderLines.Count == 0)
+                    {
+                        @:Votre panier est vide.
+                    }
+                    else
+                    {
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(m => cartOrder.OrderLines.First().Quantity)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(m => cartOrder.OrderLines.First().Sandwich)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(m => cartOrder.OrderLines.First().OrderLineVegetables)
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var orderLine in cartOrder.OrderLines)
+                                {
+                                    String vegetablesListDisplay = "";
+                                    if (orderLine.OrderLineVegetables.Count != 0)
+                                    {
+                                        for (var i = 0; i < orderLine.OrderLineVegetables.Count-1; i++)
+                                        {
+                                            vegetablesListDisplay += orderLine.OrderLineVegetables.ElementAt(i).Vegetable.Name + ", ";
+                                        }
+                                        vegetablesListDisplay += orderLine.OrderLineVegetables.ElementAt(orderLine.OrderLineVegetables.Count - 1).Vegetable.Name;
+                                    }
+                                
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(mItem => orderLine.Quantity)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(mItem => orderLine.Sandwich.Name)
+                                        </td>
+                                        <td>
+                                            @vegetablesListDisplay
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <p><b>@Html.DisplayNameFor(mItem => cartOrder.TotalAmount) : </b>@Html.DisplayFor(mItem => cartOrder.TotalAmount) €</p>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <a asp-controller="Menu" asp-action="InvalidateCartSession"><button type="button" class="btn btn-danger">Vider le panier</button></a>
+                    <a asp-controller="Menu" asp-action="ValidateSessionCart"><button type="button" class="btn btn-primary">Passer la commande</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -26,13 +110,20 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">ClientProject</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Sandwicherie</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    <li><a asp-area="" asp-controller="Menu" asp-action="Index">Carte du snack</a></li>
+                    @if (User != null)
+                    {
+                        var user = await UserManager.GetUserAsync(User);
+                        @if (user != null && await UserManager.IsInRoleAsync(user, "Responsable"))
+                        {
+                        <li><a asp-area="" asp-controller="EmployeesManagement" asp-action="Index">Gestion des employés</a></li>
+                        }
+                    }
+                    @*<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
             </div>
@@ -46,6 +137,7 @@
         </footer>
     </div>
 
+    
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>

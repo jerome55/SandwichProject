@@ -1,0 +1,110 @@
+﻿@model ClientProject.Models.MenuViewModels.MenuViewModel
+
+@using Microsoft.AspNetCore.Identity
+@using ClientProject.Models
+
+@inject SignInManager<Employee> SignInManager
+@inject UserManager<Employee> UserManager
+
+@{
+    ViewData["Title"] = "Carte du snack";
+}
+
+<h2>Carte du snack</h2>
+<hr />
+@using (Html.BeginForm())
+{
+    <h4>Sandwiches :</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ListSandwiches.First().Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ListSandwiches.First().Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ListSandwiches.First().Description)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var i=0; i<Model.ListSandwiches.Count; i++)
+            {
+            <tr>
+                <td>
+                    @*<div style="display: none;">@Html.EditorFor(modelItem => Model.ListSandwiches[i].Id)</div>*@
+                    @Html.HiddenFor(modelItem => Model.ListSandwiches[i].Id)
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        @Html.RadioButtonFor(m => m.SelectedSandwich, Model.ListSandwiches[i].Id)
+                    }
+                </td>
+                <td>
+                    @*<div style="display: none;">@Html.EditorFor(modelItem => Model.ListSandwiches[i].Name)</div>*@
+                    @Html.HiddenFor(modelItem => Model.ListSandwiches[i].Name)
+                    @Html.DisplayFor(modelItem => Model.ListSandwiches[i].Name)
+                </td>
+                <td>
+                    @*<div style="display: none;">@Html.EditorFor(modelItem => Model.ListSandwiches[i].Price)</div>*@
+                    @Html.HiddenFor(modelItem => Model.ListSandwiches[i].Price)
+                    @Html.DisplayFor(modelItem => Model.ListSandwiches[i].Price)
+                </td>
+                <td>
+                    @*<div style="display: none;">@Html.EditorFor(modelItem => Model.ListSandwiches[i].Description)</div>*@
+                    @Html.HiddenFor(modelItem => Model.ListSandwiches[i].Description)
+                    @Html.DisplayFor(modelItem => Model.ListSandwiches[i].Description)
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    <hr />
+
+    <h4>Crudités : supplément de @Html.DisplayTextFor(modelItem => Model.VegetablesPrice) €</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ListVegetablesWithCheckBoxes.First().Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ListVegetablesWithCheckBoxes.First().Description)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var i=0; i<Model.ListVegetablesWithCheckBoxes.Count; i++)
+            {
+                <tr>
+                    <td>
+                        @*<div style="display: none;">@Html.EditorFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Id)</div>*@
+                        @Html.HiddenFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Id)
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            @Html.CheckBoxFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Checked, new { @checked = false })
+                        }
+                    </td>
+                    <td>
+                        @*<div style="display: none;">@Html.EditorFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Name)</div>*@
+                        @Html.HiddenFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Name)
+                        @Html.DisplayFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Name)
+                    </td>
+                    <td>
+                        @*<div style="display: none;">@Html.EditorFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Description)</div>*@
+                        @Html.HiddenFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Description)
+                        @Html.DisplayFor(modelItem => Model.ListVegetablesWithCheckBoxes[i].Description)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <input type="submit" value="Ajouter au panier" class="btn btn-default" />
+    }
+}
+
