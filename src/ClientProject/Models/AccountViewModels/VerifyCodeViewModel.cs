@@ -19,7 +19,7 @@ namespace ClientProject.Models.AccountViewModels
         [Display(Name = "Remember this browser?")]
         public bool RememberBrowser { get; set; }
 
-        [Display(Name = "Remember me?")]
+        [Display(Name = "Se souvenir de moi?")]
         public bool RememberMe { get; set; }
     }
 }

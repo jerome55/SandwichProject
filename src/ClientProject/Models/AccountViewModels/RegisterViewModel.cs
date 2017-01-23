@@ -16,12 +16,12 @@ namespace ClientProject.Models.AccountViewModels
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Mot de passe ")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Display(Name = "Confirmation mot de pass e")]
+        [Compare("Password", ErrorMessage = "Le mot de passe et la confirmation ne se correspondent pas.")]
         public string ConfirmPassword { get; set; }
     }
 }
