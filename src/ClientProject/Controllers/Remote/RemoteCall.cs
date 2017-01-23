@@ -1,6 +1,5 @@
 ﻿using ClientProject.Models;
 using ClientProject.Models.Communication;
-using SnackProject.Models.Communication;
 using System;
 using System.Collections.Generic;
 using System.Linq;

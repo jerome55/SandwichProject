@@ -63,7 +63,8 @@
     </table>
     <hr />
 
-    <h4>Crudités : supplément de @Html.DisplayTextFor(modelItem => Model.VegetablesPrice) €</h4>
+    <h4>Crudités : supplément de @Html.DisplayTextFor(modelItem => Model.VegetablesPrice) €
+        @Html.HiddenFor(modelItem => Model.VegetablesPrice)</h4>
     <table class="table">
         <thead>
             <tr>
