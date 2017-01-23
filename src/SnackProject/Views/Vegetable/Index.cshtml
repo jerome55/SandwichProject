@@ -1,7 +1,21 @@
 ﻿@model SnackProject.Models.VegetableViewModels.VegetableViewModel
+@using Microsoft.EntityFrameworkCore;
+@using SnackProject.Automatics;
 
 @{
     ViewData["Title"] = "Liste des crudités";
+}
+@functions{
+    public string stateText(EntityState state) {
+        switch (state) {
+            case EntityState.Added:
+                return "(Ajouté) ";
+            case EntityState.Modified:
+                return "(Modifié) ";
+            default:
+                return "";
+        }
+    }
 }
 
 <h2>Liste des crudités</h2>
@@ -22,8 +36,10 @@
     </thead>
     <tbody>
         @foreach (var item in Model.Vegetables) {
-            <tr>
+            <tr style="@Html.Raw(TenHourExecutionManager.context.Entry(item).State != EntityState.Unchanged &&
+                      TenHourExecutionManager.context.Entry(item).State != EntityState.Unchanged ? "color: red;" : "" )">
                 <td>
+                    @Html.Raw(stateText(TenHourExecutionManager.context.Entry(item).State))
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
@@ -47,19 +63,24 @@
         
     </p>
 <form method="post">
-    <div class="form-horizontal">
-        <div class="form-group">
-            <div class="row">
-                <div class="col-md-offset-2 col-md-3">
-                    <label asp-for="VegetablesPrice" class="control-label"></label>
-                </div>
-                <div class="col-md-2">
-                    <input asp-for="VegetablesPrice" class="form-control" />
-                </div>
-                <div class="col-md-4">
-                    <button type="submit" class="btn btn-default col-md-3">Modifier</button>
+        <div class="form-horizontal" style="@Html.Raw(TenHourExecutionManager.context.ChangeTracker.Entries<Menu>().First().State != EntityState.Unchanged &&
+                      TenHourExecutionManager.context.ChangeTracker.Entries<Menu>().First().State != EntityState.Unchanged ? "color: red;" : "" )">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-offset-2 col-md-3">
+                        @Html.Raw(stateText(TenHourExecutionManager.context.ChangeTracker.Entries<Menu>().First().State))
+                        <label asp-for="VegetablesPrice" class="control-label"></label>
+                    </div>
+                    <div class="col-md-2">
+                        <input asp-for="VegetablesPrice" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-default col-md-3">Modifier</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 </form>
+<br><br><br><p style="color: red;">
+    * Les éléments en rouge sont mis à jour à 10h.
+</p>
