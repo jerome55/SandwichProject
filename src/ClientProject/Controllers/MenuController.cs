@@ -148,6 +148,18 @@ namespace ClientProject.Controllers
             return Redirect(Request.Headers["Referer"].ToString());
         }
 
+        [Authorize(Roles = "Employe, Responsable")]
+        public async Task<IActionResult> SuppLineCart(int id)
+        {
+            Order cartOrder = ShoppingCart.GetCartContent(User, HttpContext);
+
+            cartOrder.DeleteOrderLine(id);
+
+            ShoppingCart.UpdateCartContent(HttpContext, cartOrder);
+
+            return Redirect(Request.Headers["Referer"].ToString());
+        }
+
         /*
         // GET: OrderLines/Details/5
         public async Task<IActionResult> Details(int? id)

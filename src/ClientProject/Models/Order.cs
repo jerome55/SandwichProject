@@ -31,6 +31,11 @@ namespace ClientProject.Models
             this.TotalAmount += ol.GetPrice();
         }
 
+        public void DeleteOrderLine(int id)
+        {
+            DeleteOrderLine(OrderLines.ElementAt(id));
+        }
+
         public void DeleteOrderLine(OrderLine ol)
         {
             this.OrderLines.Remove(ol);
