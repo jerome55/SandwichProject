@@ -18,8 +18,8 @@ namespace SnackProject.Models.AccountViewModels
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Display(Name = "Confirmation mot de passe ")]
+        [Compare("Password", ErrorMessage = "Le mot de passe et la confirmation ne se correspondent pas.")]
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }

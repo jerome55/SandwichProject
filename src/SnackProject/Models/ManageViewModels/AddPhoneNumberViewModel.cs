@@ -10,7 +10,7 @@ namespace SnackProject.Models.ManageViewModels
     {
         [Required]
         [Phone]
-        [Display(Name = "Phone number")]
+        [Display(Name = "Téléphone ")]
         public string PhoneNumber { get; set; }
     }
 }
