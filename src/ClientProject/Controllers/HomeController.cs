@@ -25,7 +25,7 @@ namespace ClientProject.Controllers
             }
             else
             {
-                return View();
+                return RedirectToAction("Index","Menu");
             }
         }
 
