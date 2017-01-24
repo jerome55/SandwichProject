@@ -20,7 +20,7 @@ namespace ClientProject.Models
         public string FirstName { get; set; }
         [Required]
         [DataType(DataType.Currency)]
-        [Display(Name = "Porte-monnaie")]
+        [Display(Name = "Porte-monnaie"), Range(0.0, 5000)]
         public decimal Wallet { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
