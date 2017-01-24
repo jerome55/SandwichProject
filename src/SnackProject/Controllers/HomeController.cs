@@ -10,7 +10,7 @@ namespace SnackProject.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Orders");
         }
 
         public IActionResult About()
