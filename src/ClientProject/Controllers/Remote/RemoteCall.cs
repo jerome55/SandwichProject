@@ -131,7 +131,7 @@ namespace ClientProject.Controllers.Remote
         }
         public async Task<int> SendOrderForDelete(OrderCompany_Com orderCompCom){
             int i = -1;
-            HttpResponseMessage response = await this.client.PutAsJsonAsync("api/Order",orderCompCom);
+            HttpResponseMessage response = await this.client.PostAsJsonAsync("api/Order/Supp",orderCompCom);
             if (response.IsSuccessStatusCode)
             {
                 i = await response.Content.ReadAsAsync<int>();
