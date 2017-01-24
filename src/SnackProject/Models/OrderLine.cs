@@ -15,7 +15,7 @@ namespace SnackProject.Models
         [Display(Name = "Quantité")]
         [DataMember]
         public int Quantity { get; set; }
-
+        
         [DataMember]
         public Sandwich Sandwich { get; set; }
 

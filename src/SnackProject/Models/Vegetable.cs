@@ -12,7 +12,7 @@ namespace SnackProject.Models
     {
         [DataMember]
         public int Id { get; set; }
-        [Display(Name = "Nom")]
+        [Display(Name = "Nom"),Required]
         [DataMember]
         public string Name { get; set; }
         [Display(Name = "Description")]
