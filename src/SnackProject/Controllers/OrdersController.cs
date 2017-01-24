@@ -34,7 +34,7 @@ namespace SnackProject.Controllers
 
             if (!String.IsNullOrEmpty(companyFilter))
             {
-                orders = orders.Where(e => e.Company.Id.ToString().Equals(companyFilter));
+                orders = orders.Where(e => e.Company.Id == Int32.Parse(companyFilter));
                 total = orders.First().TotalAmount;
             }
 
