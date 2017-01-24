@@ -19,6 +19,6 @@ namespace SnackProject.Models
         [DataMember]
         public string Description { get; set; }
         [Display(Name = "Disponibilité")]
-        public bool Available { get; set;
+        public bool Available { get; set; }
     }
 }
