@@ -316,8 +316,6 @@ namespace ClientProject.Controllers
                 return await Index();
                 if (commCancellation.RequestStatus != 0)
                 {
-                    ModelState.AddModelError(string.Empty, "Student Name already exists.");
-                    return RedirectToAction("Index");
                     //Il faut afficher à l'utilisateur qu'il n'a pas assez d'argent.
                     //return
                 }
