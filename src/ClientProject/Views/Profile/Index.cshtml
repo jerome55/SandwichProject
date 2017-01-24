@@ -62,6 +62,9 @@
                     <td>
                        <p> Cruditées </p>
                     </td>
+                    <td>
+                        <p> Quantitée </p>
+                    </td>
                 </tr>
             </thead>
             <tbody>
@@ -89,16 +92,20 @@
                                 }
                                 else
                                 {
-                                   <p> @foreach (var lineVegetables in orderLine.OrderLineVegetables)
-                                    {
-                                        @lineVegetables.Vegetable.Name
-                                    }
+                                   <p>
+                                       
+                                       @for (var i = 0; i < orderLine.OrderLineVegetables.Count-1; i++)
+                                       {
+                                       @Html.DisplayFor(mItem => orderLine.OrderLineVegetables.ElementAt(i).Vegetable.Name);<span>,</span>
+                                       }
+                                       @Html.DisplayFor(mItem => orderLine.OrderLineVegetables.ElementAt(orderLine.OrderLineVegetables.Count - 1).Vegetable.Name)<span>.</span>
                                     </p>
                                 }
                             </td>
+                            <td>@orderLine.Quantity</td>
                         </tr>
                     }
-                }
+                 }
             </tbody>
         </table>
      }
