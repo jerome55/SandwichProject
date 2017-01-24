@@ -56,11 +56,11 @@ namespace ClientProject.Controllers
                 }
                 menuViewModel.ListVegetablesWithCheckBoxes = listVegWithChkBxViewModels;
 
-                return View(menuViewModel);
+                return View("Index", menuViewModel);
             }
             AddErrors("Le menu n'a pu être chargé correctement");
 
-            return View(menuViewModel);
+            return View("Index",menuViewModel);
 
             /*string id = _userManager.GetUserId(User);
 
@@ -310,10 +310,14 @@ namespace ClientProject.Controllers
             bool reussite = employeeDb.DebitWallet(orderUpdatedByServ.TotalAmount);
             if (reussite == false)
             {
+                ModelState.AddModelError(string.Empty, "Porte monnaie insuffisant");
                 //L'employé n'a pas suffisement d'argent.
                 CommWrap<string> commCancellation = await RemoteCall.GetInstance().ConfirmOrder(false, orderUpdatedGuid);
-                if(commCancellation.RequestStatus != 0)
+                return await Index();
+                if (commCancellation.RequestStatus != 0)
                 {
+                    ModelState.AddModelError(string.Empty, "Student Name already exists.");
+                    return RedirectToAction("Index");
                     //Il faut afficher à l'utilisateur qu'il n'a pas assez d'argent.
                     //return
                 }

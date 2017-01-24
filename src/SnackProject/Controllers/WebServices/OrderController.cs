@@ -212,7 +212,7 @@ namespace SnackProject.Controllers.WebServices
             }
         }
 
-        [HttpPost]
+        [HttpPost("Supp")]
         public async Task<int> PostSupp([FromBody]OrderCompany_Com communication)
         {
             DateTime now = DateTime.Now;
