@@ -21,37 +21,39 @@ namespace SnackProject.Controllers
         }
 
         // GET: Orders
+        [HttpGet]
         public async Task<IActionResult> Index(string companyFilter,string sandwichFilter)
         {
             ViewData["CompanyFilter"] = companyFilter;
             ViewData["SandwichFilter"] = sandwichFilter;
 
-            var orders = from e in _context.Orders select e;
-            orders = orders.Where(e => e.DateOfDelivery == DateTime.Today);
+            var orders = _context.Orders.Include(u => u.OrderLines).ThenInclude(u => u.Sandwich).Include(u => u.OrderLines).ThenInclude(o => o.OrderLineVegetables).ThenInclude(u => u.Vegetable).AsQueryable();
+            //orders = orders.Where(e => e.DateOfDelivery == DateTime.Today);
 
             Decimal total = 0;
 
             if (!String.IsNullOrEmpty(companyFilter))
             {
-                orders = orders.Where(e => e.Company.Id.ToString() == companyFilter);
+                orders = orders.Where(e => e.Company.Id.ToString().Equals(companyFilter));
                 total = orders.First().TotalAmount;
             }
+
+            IQueryable<OrderLine> orderlines = reduceOrder(orders.ToList()).AsQueryable();
+
             if (!String.IsNullOrEmpty(sandwichFilter))
             {
-                orders = orders.Where(e => e.OrderLines.Select(a => a.Sandwich.Id).ToString() == sandwichFilter);
+                orderlines = orderlines.Where(e => e.Sandwich.Id.ToString().Equals(sandwichFilter));
             }
 
-            IList<OrderLine> sandwiches = reduceOrder(orders.ToList()); 
-
-            OrderViewModel model = new OrderViewModel { OrderLines = sandwiches, Sandwiches = _context.Sandwiches.OrderByDescending(x => x.Name).ToList(), Companies = _context.Companies.Where(e => e.Orders.Any()).OrderByDescending(e => e.Name).ToList(), Total = total};
+            OrderViewModel model = new OrderViewModel { OrderLines = orderlines.ToList(), Sandwiches = _context.Sandwiches.OrderByDescending(x => x.Name).ToList(), Companies = _context.Companies.Where(e => e.Orders.Any()).OrderByDescending(e => e.Name).ToList(), Total = total};
 
             return View(model);
         }
 
         //Amélioration possible avec les méthodes Enumerable.Distinct() et Enumerable.Zip()
-        private IList<OrderLine> reduceOrder(IList<Order> orders)
+        private List<OrderLine> reduceOrder(List<Order> orders)
         {
-            IList<OrderLine> reduced = new List<OrderLine>();
+            List<OrderLine> reduced = new List<OrderLine>();
 
             foreach (var order in orders)
             {

@@ -11,28 +11,30 @@
     <p>
         Filtrer :
         <select name="companyFilter">
+            <option value=""></option>
             @foreach (var item in Model.Companies)
             {
-                @if (ViewData["CompanyFilter"] != null && (int)ViewData["CompanyFilter"] == item.Id)
+                @if (ViewData["CompanyFilter"] != null && ViewData["CompanyFilter"].Equals(item.Id.ToString()))
                 {
-                    <option value="@Html.DisplayFor(modelItem => item.Id)" selected> @Html.DisplayFor(modelItem => item.Name)</option>
+                    <option value="@item.Id" selected> @Html.DisplayFor(modelItem => item.Name)</option>
                 }
                 else
                 {
-                    <option value="@Html.DisplayFor(modelItem => item.Id)"> @Html.DisplayFor(modelItem => item.Name)</option>
+                    <option value="@item.Id"> @Html.DisplayFor(modelItem => item.Name)</option>
                 }
             }
         </select>
         <select name="sandwichFilter">
+            <option value=""></option>
             @foreach (var item in Model.Sandwiches)
             {
-                @if (ViewData["SandwichFilter"] != null && (int)ViewData["SandwichFilter"] == item.Id)
+                @if (ViewData["SandwichFilter"] != null && ViewData["SandwichFilter"].Equals(item.Id.ToString()))
                 {
-                    <option value="@Html.DisplayFor(modelItem => item.Id)" selected> @Html.DisplayFor(modelItem => item.Name)</option>
+                    <option value="@item.Id" selected> @Html.DisplayFor(modelItem => item.Name)</option>
                 }
                 else
                 {
-                    <option value="@Html.DisplayFor(modelItem => item.Id)"> @Html.DisplayFor(modelItem => item.Name)</option>
+                    <option value="@item.Id"> @Html.DisplayFor(modelItem => item.Name)</option>
                 }
             }
         </select>
@@ -56,7 +58,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.OrderLines.First().Quantity)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -75,7 +76,7 @@
                     <thead>
                         <tr>
                             <th>
-                                @Html.DisplayNameFor(modelItem => item.OrderLineVegetables.First().Vegetable.Name)
+                                Crudités
                             </th>
                         </tr>
                     </thead>

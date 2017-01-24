@@ -8,7 +8,7 @@ namespace SnackProject.Models.OrderViewModels
 {
     public class OrderViewModel
     {
-        public IList<OrderLine> OrderLines { get; set; }
+        public List<OrderLine> OrderLines { get; set; }
         public IList<Company> Companies { get; set; }
         public IList<Sandwich> Sandwiches { get; set; }
         [Display(Name = "Montant total de la commande")]
