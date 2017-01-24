@@ -65,8 +65,9 @@ namespace SnackProject.Controllers
         }
 
         // POST: Sandwich/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /* Set le sandwich à available
+         * Ajoute le sandwich avec l'état added dans le context static
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create([Bind("Id,Available,Description,Name,Price")] Sandwich sandwich)
@@ -102,7 +103,6 @@ namespace SnackProject.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //public IActionResult Edit(int id, [Bind("id,available,description,name,price")] Sandwich sandwich)
         public IActionResult Edit(int id, [Bind("Id,Available,Description,Name,Price")] Sandwich sandwich)
         {
             if (id != sandwich.Id)
@@ -113,13 +113,15 @@ namespace SnackProject.Controllers
             if (ModelState.IsValid)
             {
                 var oldEntity = TenHourExecutionManager.context.ChangeTracker.Entries<Sandwich>().Select(x => x.Entity as Sandwich).AsQueryable().SingleOrDefault(m => m.Id == id);
-                if(TenHourExecutionManager.context.ChangeTracker.Entries().LastOrDefault().Context.Entry(oldEntity).State == EntityState.Added)
+                //dans le cas d'une entrée ajoutée et modifiée sans avoir encore été validée sur la bd, les modifications se font en dur (problème de référence des ids)
+                if (TenHourExecutionManager.context.ChangeTracker.Entries().LastOrDefault().Context.Entry(oldEntity).State == EntityState.Added)
                 {
                     oldEntity.Available = sandwich.Available;
                     oldEntity.Description = sandwich.Description;
                     oldEntity.Name = sandwich.Name;
                     oldEntity.Price = sandwich.Price;
                 }
+                //dans le cas de la modification d'une entité déjà présente sur la bd, l'entité du contexte static est détachée et la nouvelle est ajoutée comme updated.
                 else
                 {
                     TenHourExecutionManager.context.Entry(oldEntity).State = EntityState.Detached;

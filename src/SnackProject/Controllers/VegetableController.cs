@@ -36,6 +36,8 @@ namespace SnackProject.Controllers
             }
 
             IList<Vegetable> vegetables = i.ToList();
+
+            //récupère le prix des crudités depuis le contexte statique ou depuis le changeTracker du contexte statique si celui-ci a été modifié.
             decimal VegetablesPrice = TenHourExecutionManager.context.Menus.First().VegetablesPrice;
             if (TenHourExecutionManager.context.ChangeTracker.Entries<Menu>().Any())
             {
@@ -46,6 +48,7 @@ namespace SnackProject.Controllers
             return View(model);
         }
 
+        //mise à jour du prix dans le contexte statique
         [HttpPost]
         public IActionResult Index(VegetableViewModel model)
         {
@@ -93,10 +96,10 @@ namespace SnackProject.Controllers
             return View();
         }
 
-        ///
         // POST: Vegetable/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /* set la crudité à available
+         * Ajoute une crudité avec l'état added dans le contexte static
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create([Bind("Id,Available,Description,Name")] Vegetable vegetable)
@@ -142,12 +145,14 @@ namespace SnackProject.Controllers
             if (ModelState.IsValid)
             {
                 var oldEntity = TenHourExecutionManager.context.ChangeTracker.Entries<Vegetable>().Select(x => x.Entity as Vegetable).AsQueryable().SingleOrDefault(m => m.Id == id);
+                //dans le cas d'une entrée ajoutée et modifiée sans avoir encore été validée sur la bd, les modifications se font en dur (problème de référence des ids)
                 if (TenHourExecutionManager.context.ChangeTracker.Entries().LastOrDefault().Context.Entry(oldEntity).State == EntityState.Added)
                 {
                     oldEntity.Available = vegetable.Available;
                     oldEntity.Description = vegetable.Description;
                     oldEntity.Name = vegetable.Name;
                 }
+                //dans le cas de la modification d'une entité déjà présente sur la bd, l'entité du contexte static est détachée et la nouvelle est ajoutée comme updated.
                 else
                 {
                     TenHourExecutionManager.context.Entry(oldEntity).State = EntityState.Detached;

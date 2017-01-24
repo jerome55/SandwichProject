@@ -40,10 +40,12 @@
         </select>
         <input type="submit" value="Filtrer" class="btn btn-default"/>
     </p>
+
+    <!--Si le filtre sur l'entreprise est actif, affiche les prix total de la commande.-->
     @if (ViewData["CompanyFilter"] != null)
     {
         <p>
-            @Html.DisplayNameFor(model => model.Total) @Html.DisplayFor(model => model.Total)
+            <h4>@Html.DisplayNameFor(model => model.Total)</h4>@Html.DisplayFor(model => model.Total)
         </p>
     }
     

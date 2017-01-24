@@ -28,29 +28,37 @@ namespace SnackProject.Controllers
             ViewData["SandwichFilter"] = sandwichFilter;
 
             var orders = _context.Orders.Include(u => u.OrderLines).ThenInclude(u => u.Sandwich).Include(u => u.OrderLines).ThenInclude(o => o.OrderLineVegetables).ThenInclude(u => u.Vegetable).AsQueryable();
-            //orders = orders.Where(e => e.DateOfDelivery == DateTime.Today);
+            orders = orders.Where(e => e.DateOfDelivery == DateTime.Today);//filtre les commandes sur celles à livrer aujourd'hui
 
             Decimal total = 0;
 
+            //filtre les commandes selon l'entreprise choisie
             if (!String.IsNullOrEmpty(companyFilter))
             {
                 orders = orders.Where(e => e.Company.Id == Int32.Parse(companyFilter));
                 total = orders.First().TotalAmount;
             }
 
+            
             IQueryable<OrderLine> orderlines = reduceOrder(orders.ToList()).AsQueryable();
 
+            //filtre les lignes de commandes selon le sandwich choisi
             if (!String.IsNullOrEmpty(sandwichFilter))
             {
                 orderlines = orderlines.Where(e => e.Sandwich.Id.ToString().Equals(sandwichFilter));
             }
 
+            //retourne un viewModel contenant la liste de lignes de commandes, le prix de la commande (=0 si le filtre entreprise n'est pas actif), la liste des entreprises ayant des commandes en cours, la liste des sandwiches.
             OrderViewModel model = new OrderViewModel { OrderLines = orderlines.ToList(), Sandwiches = _context.Sandwiches.OrderByDescending(x => x.Name).ToList(), Companies = _context.Companies.Where(e => e.Orders.Any()).OrderByDescending(e => e.Name).ToList(), Total = total};
 
             return View(model);
         }
 
-        //Amélioration possible avec les méthodes Enumerable.Distinct() et Enumerable.Zip()
+        /* transforme la liste de commande en une liste de ligne de commande
+         * cette liste est réduite pour su'une ligne de commande corresponde à un ensemble sandwich, liste de crudités unique ainsi qu'un nombre de sandwich
+         * 
+         * Amélioration possible avec les méthodes Enumerable.Distinct() et Enumerable.Zip()
+        */
         private List<OrderLine> reduceOrder(List<Order> orders)
         {
             List<OrderLine> reduced = new List<OrderLine>();
@@ -76,129 +84,6 @@ namespace SnackProject.Controllers
             }
 
             return reduced;
-        }
-
-        // GET: Orders/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var order = await _context.Orders.SingleOrDefaultAsync(m => m.Id == id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            return View(order);
-        }
-
-        // GET: Orders/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Orders/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DateOfDelivery,TotalAmount")] Order order)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(order);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-            return View(order);
-        }
-
-        // GET: Orders/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var order = await _context.Orders.SingleOrDefaultAsync(m => m.Id == id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-            return View(order);
-        }
-
-        // POST: Orders/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DateOfDelivery,TotalAmount")] Order order)
-        {
-            if (id != order.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(order);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!OrderExists(order.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Index");
-            }
-            return View(order);
-        }
-
-        // GET: Orders/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var order = await _context.Orders.SingleOrDefaultAsync(m => m.Id == id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            return View(order);
-        }
-
-        // POST: Orders/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var order = await _context.Orders.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Orders.Remove(order);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
-        }
-
-        private bool OrderExists(int id)
-        {
-            return _context.Orders.Any(e => e.Id == id);
         }
     }
 }
