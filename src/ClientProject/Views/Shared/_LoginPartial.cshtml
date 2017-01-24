@@ -1,8 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using ClientProject.Models
+@using ClientProject.Data;
 
 @inject SignInManager<Employee> SignInManager
 @inject UserManager<Employee> UserManager
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 @if (SignInManager.IsSignedIn(User))
 {
@@ -10,7 +12,20 @@
         <ul class="nav navbar-nav navbar-right">
             <li>
                 <a data-toggle="modal" data-target="#myCart">
-                    <img src="~/images/ShoppingCartIcon.png" width="30px" height="25px" />
+                    @{
+                        Order cartOrder = ShoppingCart.GetCartContent(User, HttpContextAccessor.HttpContext);
+                    }
+
+                    @if (cartOrder.OrderLines.Count != 0)
+                    {
+                        <span class="small">
+                            @Html.DisplayFor(mItem => cartOrder.OrderLines.Count)
+                        </span>
+                    }
+                    <img src="~/images/ShoppingCartIcon.png" width="30px" height="25px"/>
+
+
+
                 </a>
             </li>
             <li>
