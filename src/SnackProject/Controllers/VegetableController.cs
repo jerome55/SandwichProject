@@ -49,14 +49,17 @@ namespace SnackProject.Controllers
         [HttpPost]
         public IActionResult Index(VegetableViewModel model)
         {
-            Menu menu = TenHourExecutionManager.context.Menus.First();
-            if (TenHourExecutionManager.context.ChangeTracker.Entries<Menu>().Any())
+            if(model.VegetablesPrice >= 0)
             {
-                menu = TenHourExecutionManager.context.ChangeTracker.Entries<Menu>().First().Entity;
-            }
-            if (menu != null)
-            {
-                menu.VegetablesPrice = model.VegetablesPrice;
+                Menu menu = TenHourExecutionManager.context.Menus.First();
+                if (TenHourExecutionManager.context.ChangeTracker.Entries<Menu>().Any())
+                {
+                    menu = TenHourExecutionManager.context.ChangeTracker.Entries<Menu>().First().Entity;
+                }
+                if (menu != null)
+                {
+                    menu.VegetablesPrice = model.VegetablesPrice;
+                }
             }
             return Index();
         }
