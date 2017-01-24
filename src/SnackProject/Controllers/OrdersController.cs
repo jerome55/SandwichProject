@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SnackProject.Data;
 using SnackProject.Models;
+using SnackProject.Models.OrderViewModels;
 
 namespace SnackProject.Controllers
 {
@@ -20,18 +21,59 @@ namespace SnackProject.Controllers
         }
 
         // GET: Orders
-        public async Task<IActionResult> Index(string filter)
+        public async Task<IActionResult> Index(string companyFilter,string sandwichFilter)
         {
-            ViewData["Filter"] = filter;
+            ViewData["CompanyFilter"] = companyFilter;
+            ViewData["SandwichFilter"] = sandwichFilter;
 
             var orders = from e in _context.Orders select e;
+            orders = orders.Where(e => e.DateOfDelivery == DateTime.Today);
 
-            if (!String.IsNullOrEmpty(filter))
+            Decimal total = 0;
+
+            if (!String.IsNullOrEmpty(companyFilter))
             {
-                orders = orders.Where(e => e.Company.Equals(filter));
+                orders = orders.Where(e => e.Company.Id.ToString() == companyFilter);
+                total = orders.First().TotalAmount;
+            }
+            if (!String.IsNullOrEmpty(sandwichFilter))
+            {
+                orders = orders.Where(e => e.OrderLines.Select(a => a.Sandwich.Id).ToString() == sandwichFilter);
             }
 
-            return View(await orders.AsNoTracking().ToListAsync());
+            IList<OrderLine> sandwiches = reduceOrder(orders.ToList()); 
+
+            OrderViewModel model = new OrderViewModel { OrderLines = sandwiches, Sandwiches = _context.Sandwiches.OrderByDescending(x => x.Name).ToList(), Companies = _context.Companies.Where(e => e.Orders.Any()).OrderByDescending(e => e.Name).ToList(), Total = total};
+
+            return View(model);
+        }
+
+        //Amélioration possible avec les méthodes Enumerable.Distinct() et Enumerable.Zip()
+        private IList<OrderLine> reduceOrder(IList<Order> orders)
+        {
+            IList<OrderLine> reduced = new List<OrderLine>();
+
+            foreach (var order in orders)
+            {
+                foreach (var orderline in order.OrderLines)
+                {
+                    bool found = false;
+                    for (int i = 0; i < reduced.Count && !found; i++)
+                    {
+                        if (reduced.ElementAt(i).Equals(orderline))
+                        {
+                            found = true;
+                            reduced.ElementAt(i).Quantity += orderline.Quantity;
+                        }
+                    }
+                    if (!found)
+                    {
+                        reduced.Add(orderline);
+                    }
+                }
+            }
+
+            return reduced;
         }
 
         // GET: Orders/Details/5
