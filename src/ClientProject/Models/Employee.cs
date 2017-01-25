@@ -19,6 +19,7 @@ namespace ClientProject.Models
         [Display(Name = "Nom")]
         public string FirstName { get; set; }
         [Required]
+        [Range(0.0, 5000.0, ErrorMessage = "Le montant doit etre compris entre 0 et 5000")]
         [DataType(DataType.Currency)]
         [Display(Name = "Porte-monnaie")]
         public decimal Wallet { get; set; }

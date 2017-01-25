@@ -63,6 +63,7 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @{ var line = 0; }
                                 @foreach (var orderLine in cartOrder.OrderLines)
                                 {
                                     String vegetablesListDisplay = "";
@@ -85,7 +86,11 @@
                                         <td>
                                             @vegetablesListDisplay
                                         </td>
+                                        <td>
+                                            <a asp-controller="Menu" asp-action="SuppLineCart" asp-route-id=line><button type="button" class="btn btn-danger btn-xs">X</button></a>
+                                        </td>
                                     </tr>
+                                    line++;
                                 }
                             </tbody>
                         </table>

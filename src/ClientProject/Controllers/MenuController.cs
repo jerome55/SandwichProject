@@ -56,11 +56,11 @@ namespace ClientProject.Controllers
                 }
                 menuViewModel.ListVegetablesWithCheckBoxes = listVegWithChkBxViewModels;
 
-                return View(menuViewModel);
+                return View("Index", menuViewModel);
             }
             AddErrors("Le menu n'a pu être chargé correctement");
 
-            return View(menuViewModel);
+            return View("Index",menuViewModel);
 
             /*string id = _userManager.GetUserId(User);
 
@@ -144,6 +144,18 @@ namespace ClientProject.Controllers
         public async Task<IActionResult> InvalidateCartSession()
         {
             HttpContext.Session.SetString("cart", "");
+
+            return Redirect(Request.Headers["Referer"].ToString());
+        }
+
+        [Authorize(Roles = "Employe, Responsable")]
+        public async Task<IActionResult> SuppLineCart(int id)
+        {
+            Order cartOrder = ShoppingCart.GetCartContent(User, HttpContext);
+
+            cartOrder.DeleteOrderLine(id);
+
+            ShoppingCart.UpdateCartContent(HttpContext, cartOrder);
 
             return Redirect(Request.Headers["Referer"].ToString());
         }
@@ -298,9 +310,11 @@ namespace ClientProject.Controllers
             bool reussite = employeeDb.DebitWallet(orderUpdatedByServ.TotalAmount);
             if (reussite == false)
             {
+                ModelState.AddModelError(string.Empty, "Porte monnaie insuffisant");
                 //L'employé n'a pas suffisement d'argent.
                 CommWrap<string> commCancellation = await RemoteCall.GetInstance().ConfirmOrder(false, orderUpdatedGuid);
-                if(commCancellation.RequestStatus != 0)
+                return await Index();
+                if (commCancellation.RequestStatus != 0)
                 {
                     //Il faut afficher à l'utilisateur qu'il n'a pas assez d'argent.
                     //return

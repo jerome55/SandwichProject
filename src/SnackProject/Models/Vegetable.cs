@@ -12,7 +12,7 @@ namespace SnackProject.Models
     {
         [DataMember]
         public int Id { get; set; }
-        [Display(Name = "Nom")]
+        [Display(Name = "Nom"),Required]
         [DataMember]
         public string Name { get; set; }
         [Display(Name = "Description")]
@@ -20,13 +20,5 @@ namespace SnackProject.Models
         public string Description { get; set; }
         [Display(Name = "Disponibilité")]
         public bool Available { get; set; }
-
-
-        /*public Vegetable(string name, string description, bool available)
-        {
-            this.Name = name;
-            this.Description = description;
-            this.Available = available;
-        }*/
     }
 }

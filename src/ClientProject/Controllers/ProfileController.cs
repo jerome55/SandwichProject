@@ -234,6 +234,14 @@ namespace ClientProject.Controllers
                     _context.OrderLines.Remove(orderLine);
                 }
                 _context.Orders.Remove(order);
+
+                string employeeId = _userManager.GetUserId(User);
+                Employee employee = await _context.Employees.SingleOrDefaultAsync(m => m.Id == employeeId);
+
+                employee.Wallet += order.TotalAmount;
+
+                _context.Update(employee);
+
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction("Index");

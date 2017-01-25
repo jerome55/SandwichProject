@@ -1,9 +1,22 @@
 ﻿@model IEnumerable<SnackProject.Models.Sandwich>
+@using Microsoft.EntityFrameworkCore;
+@using SnackProject.Automatics;
 
 @{
     ViewData["Title"] = "Liste des sandwichs";
 }
-
+@functions{
+    public string stateText(EntityState state) {
+        switch (state) {
+            case EntityState.Added:
+                return "(Ajouté) ";
+            case EntityState.Modified:
+                return "(Modifié) ";
+            default:
+                return "";
+        }
+    }
+}
 <h2>Liste des sandwichs</h2>
 <table class="table">
     <thead>
@@ -27,8 +40,10 @@
     </thead>
     <tbody>
         @foreach (var item in Model) {
-            <tr>
+            <tr style="@Html.Raw(TenHourExecutionManager.context.Entry(item).State != EntityState.Unchanged &&
+                      TenHourExecutionManager.context.Entry(item).State != EntityState.Unchanged ? "color: red;" : "" )">
                 <td>
+                    @Html.Raw(stateText(TenHourExecutionManager.context.Entry(item).State))
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
@@ -51,4 +66,7 @@
 </table>
 <p style="text-align:right;">
     <a asp-action="Create">Ajouter un sandwich</a>
+</p>
+<br><br><br><p style="color: red;">
+    * Les éléments en rouge sont mis à jour à 10h.
 </p>

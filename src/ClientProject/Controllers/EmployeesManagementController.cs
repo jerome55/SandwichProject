@@ -214,10 +214,13 @@ namespace ClientProject.Controllers
                     return NotFound();
                 }
 
-                employee.Wallet += model.AddToWallet;
+                if(employee.Wallet + model.AddToWallet >= 0)
+                {
+                    employee.Wallet += model.AddToWallet;
 
-                _context.Update(employee);
-                await _context.SaveChangesAsync();
+                    _context.Update(employee);
+                    await _context.SaveChangesAsync();
+                }
 
                 return RedirectToAction("Index");
             }

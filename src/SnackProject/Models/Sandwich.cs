@@ -11,13 +11,13 @@ namespace SnackProject.Models
     public class Sandwich {
         [DataMember]
         public int Id { get; set; }
-        [Display(Name = "Nom")]
+        [Display(Name = "Nom"),Required]
         [DataMember]
         public string Name { get; set; }
         [Display(Name = "Description")]
         [DataMember]
         public string Description { get; set; }
-        [Display(Name = "Prix")]
+        [Display(Name = "Prix"),Range(0.0,100.0)]
         [DataMember]
         public decimal Price { get; set; }
         [DataMember]
